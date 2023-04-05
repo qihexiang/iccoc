@@ -1,0 +1,49 @@
+import BUCT from "./index/BUCT.jpg"
+import ForbiddenCity from "./index/forbiddencity.jpg"
+import SummerPalace from "./index/summerpalace.jpg"
+import GreatWall from "./index/greatwall.jpg"
+import {ImageList, ImageListItem, ImageListItemBar} from "@mui/material"
+import Image from "next/image"
+import Head from "next/head"
+
+export const meta = {
+    title: "Welcome"
+}
+
+<Head>
+    <title>{`${meta.title} - ICOC2016`}</title>
+</Head>
+
+# {meta.title}
+
+It is our great pleasure to invite you to the International Symposium of Computational Organometallic Catalysis (ICOC2016), 
+which will be held in Beijing, China, from 20 October to 23 October 2016. This is an international conference dedicated to 
+promoting advances in the integration of theoretical and computational chemistry with catalysis.
+
+- The International Symposium on Computational Organometallic Catalysis 2016 (ICOC2016) focuses on the application of computational 
+chemistry in homogeneous and hetergeneous organometallic catalysis. Advances covered range from new catalyzed reactions and processes, 
+to ligand and catalyst design, and new mechanistic insights that can change implementation into practice.
+- Participants include scientists involved in computational chemistry related to catalysis, organometallic chemistry, organic synthesis, 
+and polymer synthesis, from both academia and industry. The ICOC2016 is trying to provide a platform to exchange academic ideas in this 
+field with a highly engaged discussion. The single oral session and one poster session style for oral presentations and posters promote 
+discussion and debate, as does the conference size (typically 100-150 participants). 
+
+## Important dates:
+
+- Abstract Submission Deadline: Sept. 15, 2016
+- Registration Deadline: Sept. 25, 2016
+- Conference Date: Oct. 20-23, 2016
+
+<ImageList cols={3}>
+    {
+        [
+            {...GreatWall, title: "The Great Wall"},
+            {...SummerPalace, title: "Summer Palace"},
+            {...ForbiddenCity, title: "Forbidden City"},
+        ].map((item, idx) => <ImageListItem key={idx}><img src={item.src}></img><ImageListItemBar title={item.title}></ImageListItemBar></ImageListItem>)
+    }
+</ImageList>
+
+Organizers:
+
+<Image src={BUCT}></Image>
