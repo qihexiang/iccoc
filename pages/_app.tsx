@@ -1,4 +1,5 @@
 import "@/styles/globals.css";
+import ICOC2016 from "./public/ICOC2016.jpg"
 import {
   Box,
   Tab,
@@ -55,7 +56,7 @@ export default function App({ Component, pageProps }: AppProps) {
       <Box
         component={"div"}
         style={{
-          backgroundImage: "url(/icoc2016/ICOC2016.jpg)",
+          backgroundImage: `url(${ICOC2016.src})`,
           backgroundPosition: "center center",
           backgroundSize: "cover",
           aspectRatio: "4/1",
