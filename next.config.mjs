@@ -18,7 +18,6 @@ const withMDX = mdx({
 const nextConfig = {
   pageExtensions: ['ts', 'tsx', 'js', 'jsx', 'md', 'mdx'],
   reactStrictMode: true,
-  basePath: '/icoc2016',
 }
 
 export default withMDX(nextConfig)
