@@ -3,8 +3,6 @@ import { withIronSessionApiRoute } from 'iron-session/next';
 import { NextApiRequest, NextApiResponse } from 'next';
 
 async function abstractsRoute(req: NextApiRequest, res: NextApiResponse) {
-    console.log(sessionOptions)
-    
     if (req.session.user !== undefined) {
         res.status(200).json({
             ok: true,
