@@ -6,7 +6,6 @@ import { withIronSessionApiRoute } from 'iron-session/next';
 import { NextApiRequest, NextApiResponse } from 'next';
 
 async function abstractRoute(req: NextApiRequest, res: NextApiResponse) {
-    const { id } = req.query;
     if (req.session.user === undefined) {
         res.status(403).json({
             ok: false, message: "Please login."
