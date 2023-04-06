@@ -45,7 +45,7 @@ Check out our [Next.js deployment documentation](https://nextjs.org/docs/deploym
 - APP_SECRET: Application global secret.
 
 ```powershell
-$env:DATABASE_URL="mysql://r6wdf5181hnm9u2dt229:pscale_pw_5WJhQpYsFypjDK669zVTWQKi5yg42f5hzx5SEjSDSHQ@aws.connect.psdb.cloud/iccoc_prod?sslaccept=strict"
+$env:DATABASE_URL="mysql://iccoc:dsaj39_348@localhost:13306/iccoc2023"
 $env:NODE_ENV="development"
 $env:SECRET_COOKIE_PASSWORD="ironsesspasswordironsesspassword"
 $env:APP_SECRET="hellonexticcoc"

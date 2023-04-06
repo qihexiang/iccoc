@@ -221,10 +221,16 @@ export default function Panel() {
                   </Button>
                   <Button
                     onClick={() => {
-                      setAbstracts([
-                        ...abstracts.slice(0, idx),
-                        ...abstracts.slice(idx + 1),
-                      ]);
+                      fetch(`/api/abstract/${abstract.id}`, {
+                        method: "DELETE"
+                      }).then(res => res.json())
+                        .then((res: APIResponse<{}>) => {
+                          if (res.ok) {
+                            setLastSaved(new Date().getTime())
+                          } else {
+                            setErrorMessage(res.message)
+                          }
+                        })
                     }}
                   >
                     <Delete></Delete>

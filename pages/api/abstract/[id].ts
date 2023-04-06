@@ -45,46 +45,69 @@ async function abstractRoute(req: NextApiRequest, res: NextApiResponse) {
                         ok: false, message: "Not permitted."
                     })
                 } else {
-                    const data = await req.body;
-                    const result = abstractSchema.safeParse(data)
-                    if (result.success) {
-                        const {
-                            title, content, authors, speaker, correspondAuthor
-                        } = result.data;
-                        const authorsToCreate = authors.map((author, idx) => ({ ...author, isSpeaker: idx === speaker, isCorrespondAuthor: idx === correspondAuthor }))
-                        const [_, updated] = await prisma.$transaction([
-                            prisma.abstract.update({
-                                where: { id: Number(id) },
-                                data: {
-                                    title, content, authors: {
-                                        deleteMany: {}
+                    const { title, content, authors } = await req.body;
+                    const [_, updated] = await prisma.$transaction([
+                        prisma.abstract.update({
+                            where: { id: Number(id) },
+                            data: {
+                                title, content, authors: {
+                                    deleteMany: {}
+                                }
+                            }
+                        }),
+                        prisma.abstract.update({
+                            where: { id: Number(id) },
+                            data: {
+                                authors: {
+                                    createMany: {
+                                        data: authors
                                     }
                                 }
-                            }),
-                            prisma.abstract.update({
-                                where: { id: Number(id) },
-                                data: {
-                                    authors: {
-                                        createMany: {
-                                            data: authorsToCreate
-                                        }
-                                    }
-                                }
-                            })
-                        ])
-                        res.status(200).json({
-                            ok: true, data: {
-                                abstract: updated
                             }
                         })
-                    } else {
-                        res.status(400).json({
-                            ok: false, message: result.error.message
-                        })
-                    }
+                    ])
+                    res.status(200).json({
+                        ok: true, data: {
+                            abstract: updated
+                        }
+                    })
                 }
+            } else if (req.method === "DELETE") {
+                const belongTo = await prisma.abstract.findFirst({
+                    where: {
+                        id: Number(id as string), user: {
+                            email
+                        }
+                    }, select: { title: true }
+                })
+                if (belongTo === null) {
+                    res.status(403).json({
+                        ok: false, message: "Not permitted."
+                    })
+                } else {
+                    prisma.$transaction([prisma.abstract.update({
+                        where: {
+                            id: Number(id)
+                        }, data: {
+                            authors: {
+                                deleteMany: {}
+                            }
+                        }
+                    }),
+                    prisma.abstract.delete({
+                        where: {
+                            id: Number(id)
+                        },
+                        include: {
+                            authors: true
+                        }
+                    })])
+                }
+                res.status(200).json({
+                    ok: true, data: {}
+                })
             } else {
-                res.status(405).setHeader("Allow", ["GET", "PUT"]).json({
+                res.status(405).setHeader("Allow", ["GET", "PUT", "DELETE"]).json({
                     ok: false, message: "Invalid request method."
                 })
             }

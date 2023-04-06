@@ -1,0 +1,12 @@
+version: "3.4"
+
+services:
+  database:
+    image: mariadb:latest
+    ports:
+      - 13306:3306
+    environment:
+      - MYSQL_RANDOM_ROOT_PASSWORD=1
+      - MYSQL_DATABASE=iccoc2023
+      - MYSQL_USER=iccoc
+      - MYSQL_PASSWORD=dsaj39_348

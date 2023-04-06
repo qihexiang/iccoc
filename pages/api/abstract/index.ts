@@ -20,7 +20,7 @@ async function abstractRoute(req: NextApiRequest, res: NextApiResponse) {
                 const abstract = await prisma.abstract.create({
                     data: {
                         title, content, authors: {
-                            createMany: authors
+                            createMany: { data: authors }
                         }, user: {
                             connect: {
                                 email
