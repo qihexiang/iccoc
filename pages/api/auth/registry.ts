@@ -9,9 +9,11 @@ async function registryRoute(req: NextApiRequest, res: NextApiResponse) {
     const { email, password } = await req.body;
     try {
         const existedEmail = await prisma.user.findFirst({
-            where: { email }, select: {}
+            where: { email }, select: {
+                email: true
+            }
         });
-        if (existedEmail !== null) {
+        if (existedEmail === null) {
             const createdUser = await prisma.user.create({
                 data: {
                     email, password: userPasswordHmac(password)

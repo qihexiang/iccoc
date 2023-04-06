@@ -1,7 +1,7 @@
 import { errorLog } from '@/lib/errors';
 import prisma from '@/lib/prisma';
 import { sessionOptions } from '@/lib/session';
-import { Abstract } from '@/pages/activities/panel';
+import { abstractSchema } from '@/pages/activities/panel';
 import { withIronSessionApiRoute } from 'iron-session/next';
 import { NextApiRequest, NextApiResponse } from 'next';
 
@@ -16,35 +16,23 @@ async function abstractRoute(req: NextApiRequest, res: NextApiResponse) {
         try {
             if (req.method === "POST") {
                 const data = await req.body;
-                const result = Abstract.safeParse(data);
-                if (result.success) {
-                    const {
-                        title, content, authors, speaker, correspondAuthor
-                    } = result.data;
-                    const authorsToCreate = authors.map((author, idx) => ({ ...author, isSpeaker: idx === speaker, isCorrespondAuthor: idx === correspondAuthor }))
-                    const abstract = await prisma.abstract.create({
-                        data: {
-                            title, content, authors: {
-                                createMany: {
-                                    data: authorsToCreate
-                                }
-                            }, user: {
-                                connect: {
-                                    email
-                                }
+                const { title, content, authors } = data;
+                const abstract = await prisma.abstract.create({
+                    data: {
+                        title, content, authors: {
+                            createMany: authors
+                        }, user: {
+                            connect: {
+                                email
                             }
                         }
-                    })
-                    res.status(200).json({
-                        ok: true, data: {
-                            abstract
-                        }
-                    })
-                } else {
-                    res.status(400).json({
-                        ok: false, message: result.error.message
-                    })
-                }
+                    }
+                })
+                res.status(200).json({
+                    ok: true, data: {
+                        abstract
+                    }
+                })
             } else {
                 res.status(405).setHeader("Allow", ["POST"]).json({
                     ok: false, message: "Invalid request method."

@@ -1,11 +1,14 @@
+import { APIResponse } from "@/lib/APIResponse";
+import { useUser } from "@/lib/useUser";
 import { Delete, Edit, Save } from "@mui/icons-material";
 import {
-  Checkbox,
+  Alert,
   Box,
   Button,
   ButtonGroup,
+  Checkbox,
+  Container,
   Modal,
-  Select,
   Table,
   TableBody,
   TableCell,
@@ -13,13 +16,14 @@ import {
   TableHead,
   TableRow,
   TextField,
-  Typography,
-  Container,
+  Typography
 } from "@mui/material";
+import { Abstract, Author } from "@prisma/client";
+import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { z } from "zod";
 
-const Abstract = z.object({
+export const abstractSchema = z.object({
   title: z
     .string()
     .min(10, "title too short, require at least 10 characters")
@@ -46,7 +50,7 @@ const Abstract = z.object({
   correspondAuthor: z.number().int().min(0, "must set a curresponding author"),
 });
 
-type AbstractType = z.infer<typeof Abstract>;
+type AbstractType = z.infer<typeof abstractSchema>;
 
 function createEmptyAbstract(): AbstractType {
   return {
@@ -66,21 +70,21 @@ function createEmptyAbstract(): AbstractType {
   };
 }
 
-function updateAbstract(
-  current: AbstractType,
+function updateAbstract<T extends AbstractType>(
+  current: T,
   update: Partial<AbstractType>
-): AbstractType {
+): T {
   return { ...current, ...update };
 }
 
-function addAuthor(
-  current: AbstractType,
+function addAuthor<T extends AbstractType>(
+  current: T,
   author: AbstractType["authors"][number]
-): AbstractType {
+): T {
   return { ...current, authors: [...current.authors, author] };
 }
 
-function removeAuthor(current: AbstractType, idx: number): AbstractType {
+function removeAuthor<T extends AbstractType>(current: T, idx: number): T {
   if (current.authors.length === 1) {
     return { ...current };
   } else {
@@ -101,11 +105,11 @@ function removeAuthor(current: AbstractType, idx: number): AbstractType {
   }
 }
 
-function updateAuthor(
-  current: AbstractType,
+function updateAuthor<T extends AbstractType>(
+  current: T,
   idx: number,
   update: Partial<AbstractType["authors"][number]>
-): AbstractType {
+): T {
   if (!(idx in current.authors)) {
     return current;
   } else {
@@ -120,11 +124,66 @@ function updateAuthor(
   }
 }
 
-export default function Submit() {
-  const [abstracts, setAbstracts] = useState<AbstractType[]>([]);
+type FullAbstract = Abstract & {
+  authors: Author[]
+}
+type AbstractsResponse = APIResponse<{
+  abstracts: FullAbstract[]
+}>
+
+function fullAbstractToAbstractType(abstract: FullAbstract): AbstractType & { id: number } {
+  return {
+    ...abstract,
+    authors: abstract.authors.map(({ firstName, lastName, email, region, institution }) => ({ firstName, lastName, email, region, institution })),
+    speaker: abstract.authors.findIndex(author => author.isSpeaker),
+    correspondAuthor: abstract.authors.findIndex(author => author.isCorrespondAuthor)
+  }
+}
+
+function abstractTypeToFullAbstract(abstract: AbstractType & { id: number }): Omit<Abstract & {
+  authors: Omit<Author, "id" | "abstractId">[]
+}, "userId"> {
+  const { title, content, authors, speaker, correspondAuthor, id } = abstract;
+  return {
+    id,
+    title, content,
+    authors: authors.map((author, idx) => ({ ...author, isSpeaker: idx === speaker, isCorrespondAuthor: idx === correspondAuthor }))
+  }
+}
+
+export default function Panel() {
+  const email = useUser({ redirectTo: "/activities/login", redirectOnLoggedIn: false })
+  const [abstracts, setAbstracts] = useState<(AbstractType & { id: number })[]>([]);
   const [selected, setSelected] = useState(-1);
+  const [lastSaved, setLastSaved] = useState(new Date().getTime());
+  const [errorMessage, setErrorMessage] = useState<string | undefined>(undefined);
+  const router = useRouter();
+  // Get from remote each time saved data.
+  useEffect(() => {
+    fetch("/api/abstracts").then(res => res.json())
+      .then((res: AbstractsResponse) => {
+        if (res.ok) {
+          setErrorMessage(undefined)
+          setAbstracts(res.data.abstracts.map(fullAbstractToAbstractType))
+        } else {
+          setErrorMessage(res.message)
+        }
+      })
+  }, [lastSaved])
   return (
     <Box>
+      {
+        errorMessage !== undefined ? <Box>
+          <Alert security="error">{errorMessage}</Alert>
+          <Button onClick={() => setLastSaved(new Date().getTime())}>Refresh</Button>
+        </Box> : null
+      }
+      <Box sx={{ display: "flex", flexDirection: "row", justifyContent: "space-around" }}>
+        <Typography variant="h6">Welcome, {email}</Typography>
+        <Button onClick={() => {
+          fetch("/api/auth/logout").then(() => router.push("/"))
+        }}>Logout</Button>
+      </Box>
       <Button
         onClick={() => {
           setSelected(abstracts.length);
@@ -143,7 +202,7 @@ export default function Submit() {
         </TableHead>
         <TableBody>
           {abstracts.map((abstract, idx) => {
-            const { title, speaker, authors } = abstract;
+            const { title, authors, speaker } = abstract;
             return (
               <TableRow key={idx}>
                 <TableCell>{title}</TableCell>
@@ -177,35 +236,59 @@ export default function Submit() {
         </TableBody>
       </Table>
       <Modal open={selected !== -1}>
-        <AbstractEditor
-          currentAbstract={abstracts[selected] ?? createEmptyAbstract()}
-          submitHandler={(edited) => {
-            if (selected === -1) {
-              setAbstracts([...abstracts, edited]);
-            } else {
-              setAbstracts([
-                ...abstracts.slice(0, selected),
-                edited,
-                ...abstracts.slice(selected + 1),
-              ]);
-            }
-            setSelected(-1);
-          }}
-          cancelHandler={() => setSelected(-1)}
-        ></AbstractEditor>
+        <Box>
+          <AbstractEditor
+            currentAbstract={abstracts[selected] ?? createEmptyAbstract()}
+            submitHandler={(edited) => {
+              if (selected === abstracts.length || edited.id === -1) {
+                const abstractToUpdate = abstractTypeToFullAbstract(edited);
+                fetch("/api/abstract", {
+                  method: "POST", body: JSON.stringify(abstractToUpdate),
+                  headers: new Headers({
+                    "Content-Type": "application/json"
+                  })
+                }).then(res => res.json())
+                  .then((res: APIResponse<FullAbstract>) => {
+                    if (!res.ok) {
+                      setErrorMessage(res.message)
+                    } else {
+                      setLastSaved(new Date().getTime())
+                    }
+                  })
+              } else {
+                const abstractToUpdate = abstractTypeToFullAbstract(edited);
+                fetch(`/api/abstract/${edited.id}`, {
+                  method: "PUT", body: JSON.stringify(abstractToUpdate), headers: new Headers({
+                    "Content-Type": "application/json"
+                  })
+                }).then(res => res.json())
+                  .then((res: APIResponse<FullAbstract>) => {
+                    if (!res.ok) {
+                      setErrorMessage(res.message)
+                    } else {
+                      setLastSaved(new Date().getTime())
+                    }
+                  })
+              }
+              setSelected(-1);
+            }}
+            cancelHandler={() => setSelected(-1)}
+          ></AbstractEditor>
+        </Box>
       </Modal>
     </Box>
   );
 }
 
 function AbstractEditor(props: {
-  currentAbstract: AbstractType | null;
-  submitHandler: (edited: AbstractType) => void;
+  currentAbstract: (AbstractType & { id: number }) | null;
+  submitHandler: (edited: (AbstractType & { id: number })) => void;
   cancelHandler: () => void;
 }) {
   const [edited, setEdited] = useState(
-    props.currentAbstract ?? createEmptyAbstract()
+    props.currentAbstract ?? { ...createEmptyAbstract(), id: -1 }
   );
+  const [errorMessage, setErrorMessage] = useState<string | undefined>(undefined);
   const authors = edited.authors.map((author, idx) => ({
     ...author,
     isSpeaker: idx === edited.speaker,
@@ -226,9 +309,10 @@ function AbstractEditor(props: {
         gap: 2,
       }}
     >
-        <Typography variant="h4">Submit a new abstract</Typography>
+      <Typography variant="h4">Submit a new abstract</Typography>
+      {errorMessage !== undefined ? <Alert security="error">Some attributes are invalid: {errorMessage}</Alert> : null}
       <Typography variant="h6">Basic Infomation</Typography>
-      <Box sx={{display: "flex", flexDirection: "row", gap: 2}}>
+      <Box sx={{ display: "flex", flexDirection: "row", gap: 2 }}>
         <TextField
           value={edited.title}
           onChange={(e) =>
@@ -348,7 +432,14 @@ function AbstractEditor(props: {
         firstName: "", lastName: "", email: "", region: "", institution: ""
       }))}>Add author</Button>
       <ButtonGroup>
-        <Button onClick={() => props.submitHandler(edited)}>Save</Button>
+        <Button onClick={() => {
+          const result = abstractSchema.safeParse(edited);
+          if (result.success) {
+            props.submitHandler(edited)
+          } else {
+            setErrorMessage(result.error.message)
+          }
+        }}>Save</Button>
         <Button onClick={() => props.cancelHandler()}>Cancel</Button>
       </ButtonGroup>
     </Container>

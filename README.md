@@ -36,3 +36,17 @@ You can check out [the Next.js GitHub repository](https://github.com/vercel/next
 The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+
+## Environments
+
+- DATABASE_URL: Prisma database url
+- NODE_ENV: Node.js running mode
+- SECRET_COOKIE_PASSWORD: Iron session cookie password
+- APP_SECRET: Application global secret.
+
+```powershell
+$env:DATABASE_URL="mysql://r6wdf5181hnm9u2dt229:pscale_pw_5WJhQpYsFypjDK669zVTWQKi5yg42f5hzx5SEjSDSHQ@aws.connect.psdb.cloud/iccoc_prod?sslaccept=strict"
+$env:NODE_ENV="development"
+$env:SECRET_COOKIE_PASSWORD="ironsesspasswordironsesspassword"
+$env:APP_SECRET="hellonexticcoc"
+```
