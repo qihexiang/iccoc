@@ -1,8 +1,8 @@
 import { errorLog } from '@/lib/errors';
 import prisma from '@/lib/prisma';
 import { sessionOptions } from '@/lib/session';
-import { withIronSessionApiRoute } from 'iron-session/next'
-import { NextApiRequest, NextApiResponse } from 'next'
+import { withIronSessionApiRoute } from 'iron-session/next';
+import { NextApiRequest, NextApiResponse } from 'next';
 
 async function abstractsRoute(req: NextApiRequest, res: NextApiResponse) {
     if (req.session.user === undefined) {

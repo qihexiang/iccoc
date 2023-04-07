@@ -2,8 +2,8 @@ import { userPasswordHmac } from '@/lib/crypto';
 import { errorLog } from '@/lib/errors';
 import prisma from '@/lib/prisma';
 import { sessionOptions } from '@/lib/session';
-import { withIronSessionApiRoute } from 'iron-session/next'
-import { NextApiRequest, NextApiResponse } from 'next'
+import { withIronSessionApiRoute } from 'iron-session/next';
+import { NextApiRequest, NextApiResponse } from 'next';
 
 async function registryRoute(req: NextApiRequest, res: NextApiResponse) {
     const { email, password } = await req.body;
