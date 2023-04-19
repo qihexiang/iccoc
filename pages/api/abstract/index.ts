@@ -1,7 +1,6 @@
 import { errorLog } from '@/lib/errors';
 import prisma from '@/lib/prisma';
 import { sessionOptions } from '@/lib/session';
-import { abstractSchema } from '@/pages/activities/panel';
 import { withIronSessionApiRoute } from 'iron-session/next';
 import { NextApiRequest, NextApiResponse } from 'next';
 

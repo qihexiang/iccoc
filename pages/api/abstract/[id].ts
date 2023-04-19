@@ -1,10 +1,8 @@
 import { errorLog } from '@/lib/errors';
 import prisma from '@/lib/prisma';
 import { sessionOptions } from '@/lib/session';
-import { abstractSchema } from '@/pages/activities/panel';
-import { withIronSessionApiRoute } from 'iron-session/next'
-import { includes } from 'lodash';
-import { NextApiRequest, NextApiResponse } from 'next'
+import { withIronSessionApiRoute } from 'iron-session/next';
+import { NextApiRequest, NextApiResponse } from 'next';
 
 async function abstractRoute(req: NextApiRequest, res: NextApiResponse) {
     const { id } = req.query;

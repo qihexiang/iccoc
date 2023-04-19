@@ -1,9 +1,8 @@
-import { Alert, Box, Button, ButtonGroup, FormControl, FormHelperText, Input, InputLabel, Paper, TextField, Typography } from "@mui/material";
-import { LoginStatusStorage } from "@/pages/_app";
-import { useContext, useEffect, useState } from "react";
-import { useRouter } from "next/router";
-import { useUser } from "@/lib/useUser";
 import { APIResponse } from "@/lib/APIResponse";
+import { useUser } from "@/lib/useUser";
+import { Alert, Box, Button, ButtonGroup, TextField, Typography } from "@mui/material";
+import { useRouter } from "next/router";
+import { useState } from "react";
 
 type LoginResponse = APIResponse<{
     user: { email: string }
@@ -36,9 +35,10 @@ export default function LoginPage() {
                         .then((res: LoginResponse) => {
                             if (!res.ok) {
                                 setErrorMessage(res.message)
-                            }
-                            // 清楚密码输入框，触发重定向
-                            setPassword("")
+                                setPassword("")
+                            } else {
+                                router.push("/activities")
+                            }                            
                         })
                 } else {
                     setUsername("")

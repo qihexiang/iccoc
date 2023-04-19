@@ -1,8 +1,8 @@
-import { Box, Button, ButtonGroup, FormControl, InputLabel, TextField, Typography } from "@mui/material";
+import { APIResponse } from "@/lib/APIResponse";
+import { Box, Button, ButtonGroup, TextField, Typography } from "@mui/material";
+import { passwordStrength } from "check-password-strength";
 import router from "next/router";
 import { useState } from "react";
-import { passwordStrength } from "check-password-strength"
-import { APIResponse } from "@/lib/APIResponse";
 import { z } from "zod";
 
 const registrySchema = z.object({
@@ -40,6 +40,7 @@ export default function UserRegistry() {
                 }).then(res => res.json())
                     .then((res: APIResponse<{ user: { email: string } }>) => {
                         if (res.ok) {
+                            alert("Account registry successfully, please login.")
                             router.push("/activities/login")
                         } else {
                             alert(res.message)

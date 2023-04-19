@@ -47,6 +47,7 @@ Check out our [Next.js deployment documentation](https://nextjs.org/docs/deploym
 ```powershell
 $env:DATABASE_URL="mysql://iccoc:dsaj39_348@localhost:13306/iccoc2023"
 $env:NODE_ENV="development"
-$env:SECRET_COOKIE_PASSWORD="ironsesspasswordironsesspassword"
+$env:SECRET_COOKIE_PASSWORD="fdjalkfjalje32490_ejr__r32idc0nb"
 $env:APP_SECRET="hellonexticcoc"
+$env:SUDO_SECRET="djaf;lejwi3243423"
 ```
