@@ -2,8 +2,7 @@ name: next-build
 
 on:
   push:
-    tags: 
-      - v[0-9]+.*
+    branches: [main]
 
 jobs:
   build:
@@ -17,7 +16,7 @@ jobs:
       - run: pnpm install
       - run: pnpm prisma generate
       - run: pnpm build
-      - run: apt-get install bzip2 tar -y
+      - run: sudo apt-get install bzip2 tar -y
       - run: tar jcfv iccoc.tar.bz2 node_modules/ .next/ package.json next.config.mjs
       - name: Create Release
         id: create_release
