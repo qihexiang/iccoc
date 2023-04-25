@@ -17,7 +17,7 @@ jobs:
       - run: pnpm install
       - run: pnpm prisma generate
       - run: pnpm build
-      - run: yum install bzip2 tar -y
+      - run: apt-get install bzip2 tar -y
       - run: tar jcfv iccoc.tar.bz2 node_modules/ .next/ package.json next.config.mjs
       - name: Create Release
         id: create_release
