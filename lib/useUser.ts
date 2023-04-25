@@ -1,7 +1,6 @@
-import { redirect } from "next/dist/server/api-utils";
-import { useRouter } from "next/router";
-import { useEffect, useState } from "react"
 import { APIResponse } from "lib/APIResponse";
+import { useRouter } from "next/router";
+import { useEffect, useState } from "react";
 
 type LoginResponse = APIResponse<{ user: { email: string } }>
 
