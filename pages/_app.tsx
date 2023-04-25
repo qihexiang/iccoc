@@ -136,7 +136,7 @@ export default function App({ Component, pageProps }: AppProps) {
         ICOC2016, International Symposium of Computational Organometallic
         Catalysis
       </Typography>
-      <Typography variant="body2" component={"a"} href="https://beian.miit.gov.cn" sx={{textAlign: "center", display: "block"}}>京ICP备18022349号</Typography>
+      <Typography variant="body2" component={"a"} href="https://beian.miit.gov.cn" sx={{textAlign: "center", display: "block"}}>京ICP备18022349-3号</Typography>
     </Container>
   );
 }
