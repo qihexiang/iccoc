@@ -6,36 +6,52 @@ generator client {
 }
 
 datasource db {
-  provider     = "mysql"
-  url          = env("DATABASE_URL")
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model Admin {
+  id       Int    @id @default(autoincrement())
+  account  String @unique @db.VarChar(255)
+  password String @db.VarChar(255)
 }
 
 model User {
   id        Int        @id @default(autoincrement())
   email     String     @unique @db.VarChar(255)
-  isAdmin   Boolean
-  password  String     @db.Char(64)
+  password  String     @db.VarChar(255)
   abstracts Abstract[]
 }
 
 model Abstract {
-  id      Int      @id @default(autoincrement())
-  userId  Int
-  user    User     @relation(fields: [userId], references: [id])
-  title   String   @db.Text()
-  content String   @db.Text()
-  authors Author[]
+  id          Int          @id @default(autoincrement())
+  userId      Int
+  user        User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  title       String       @db.Text()
+  content     String       @db.Text()
+  attachments Attachment[]
+  authors     Authors[]
 }
 
-model Author {
-  id                 Int      @id @default(autoincrement())
-  abstractId         Int
-  abstract           Abstract @relation(fields: [abstractId], references: [id])
-  firstName          String   @db.VarChar(255)
-  lastName           String   @db.VarChar(255)
-  email              String   @db.VarChar(255)
-  region             String   @db.Text()
-  institution        String   @db.Text()
-  isSpeaker          Boolean
-  isCorrespondAuthor Boolean
+model Authors {
+  id                  Int      @id @default(autoincrement())
+  abstractId          Int
+  abstract            Abstract @relation(fields: [abstractId], references: [id], onDelete: Cascade)
+  authorName          String   @db.VarChar(255)
+  email               String   @db.VarChar(255)
+  region              String   @db.VarChar(255)
+  staff               String   @db.VarChar(255)
+  speaker             Boolean
+  correspondingAuthor Boolean
+}
+
+model Attachment {
+  id         Int      @id @default(autoincrement())
+  abstractId Int
+  abstract   Abstract @relation(fields: [abstractId], references: [id], onDelete: Cascade)
+  filename   String   @db.VarChar(255)
+  size       Int
+  fsname     String   @unique @db.VarChar(255)
+
+  @@unique([abstractId, filename])
 }

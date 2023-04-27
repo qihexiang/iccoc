@@ -31,7 +31,7 @@ export default function UserRegistry() {
         <TextField value={registryInfo.confirmPassword} onChange={(e) => setRegistryInfo({ ...registryInfo, confirmPassword: e.target.value })} placeholder="Confirm your password" error={passwordNotMatch} helperText={passwordNotMatch ? "Doesn't match" : ""} type="password" />
         <ButtonGroup variant="contained">
             <Button disabled={registryInfo.password === "" || registryInfo.confirmPassword === "" || passwordNotMatch || (!passwordNotTooWeak)} color="success" onClick={() => {
-                fetch("/api/auth/registry", {
+                fetch("/api/user/registry", {
                     method: "POST", body: JSON.stringify({
                         email: registryInfo.username, password: registryInfo.password
                     }), headers: new Headers({

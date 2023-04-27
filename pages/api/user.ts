@@ -2,7 +2,7 @@ import { sessionOptions } from '@/lib/session';
 import { withIronSessionApiRoute } from 'iron-session/next';
 import { NextApiRequest, NextApiResponse } from 'next';
 
-async function abstractsRoute(req: NextApiRequest, res: NextApiResponse) {
+async function usersRoute(req: NextApiRequest, res: NextApiResponse) {
     if (req.session.user !== undefined) {
         res.status(200).json({
             ok: true,
@@ -18,4 +18,4 @@ async function abstractsRoute(req: NextApiRequest, res: NextApiResponse) {
     }
 }
 
-export default withIronSessionApiRoute(abstractsRoute, sessionOptions)
+export default withIronSessionApiRoute(usersRoute, sessionOptions)

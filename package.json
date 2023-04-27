@@ -21,17 +21,20 @@
     "@mui/x-data-grid": "^6.0.4",
     "@next/font": "13.1.6",
     "@next/mdx": "^13.1.6",
-    "@prisma/client": "^4.12.0",
+    "@prisma/client": "^4.13.0",
     "@types/node": "18.14.0",
     "@types/react": "18.0.28",
     "@types/react-dom": "18.0.11",
     "add": "^2.0.6",
-    "base32-encode": "^2.0.0",
+    "axios": "^1.3.6",
+    "bcrypt": "^5.1.0",
     "check-password-strength": "^2.0.7",
-    "eslint": "8.34.0",
     "eslint-config-next": "13.1.6",
+    "formidable": "^2.1.1",
     "iron-session": "^6.3.1",
     "lodash": "^4.17.21",
+    "mime": "^3.0.0",
+    "nanoid": "^4.0.2",
     "next": "13.1.6",
     "qrcode.react": "^3.1.0",
     "react": "18.2.0",
@@ -44,9 +47,11 @@
     "zod": "^3.21.4"
   },
   "devDependencies": {
+    "@types/bcrypt": "^5.0.0",
+    "@types/formidable": "^2.0.5",
     "@types/lodash": "^4.14.191",
-    "@types/totp-generator": "^0.0.5",
-    "prisma": "^4.12.0",
+    "@types/mime": "^3.0.1",
+    "prisma": "^4.13.0",
     "webpack": "^5.75.0"
   }
 }
