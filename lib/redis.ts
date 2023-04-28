@@ -4,8 +4,8 @@ const redis = createClient();
 const conn = redis.connect();
 
 export async function getCount(nanoid: string) {
-    await conn;
-    await redis.hSet("count", nanoid, new Date().getTime());
-    const count = await redis.hLen("count");
-    return count
+  await conn;
+  await redis.hSet("count", nanoid, new Date().getTime());
+  const count = await redis.hLen("count");
+  return count;
 }

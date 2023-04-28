@@ -1,15 +1,15 @@
 import api from "@/lib/apiRequest";
 import { useUser } from "@/lib/useUser";
 import {
-    Button,
-    ButtonGroup,
-    Card,
-    CardActions,
-    CardContent,
-    Checkbox,
-    FormControlLabel,
-    TextField,
-    Typography,
+  Button,
+  ButtonGroup,
+  Card,
+  CardActions,
+  CardContent,
+  Checkbox,
+  FormControlLabel,
+  TextField,
+  Typography,
 } from "@mui/material";
 import { Box } from "@mui/system";
 import { Abstract, Attachment, Authors } from "@prisma/client";
@@ -167,7 +167,9 @@ function AbstractEditor(props: {
   };
   const { afterSave } = props;
   const uploadRef = useRef<HTMLInputElement>(null);
-  const [uploadProgress, setUploadProgress] = useState<string | undefined>(undefined)
+  const [uploadProgress, setUploadProgress] = useState<string | undefined>(
+    undefined
+  );
   return (
     <Card>
       <CardContent sx={{ display: "flex", flexDirection: "column", gap: 1 }}>
@@ -213,53 +215,85 @@ function AbstractEditor(props: {
                 }
               ></AuthorEditor>
             </Box>
-            <Box sx={{display: "flex", flexDirection: "column", gap: 1}}>
+            <Box sx={{ display: "flex", flexDirection: "column", gap: 1 }}>
               <Typography variant="subtitle1">Attchments</Typography>
               {abstract.attachments.map((item, key) => (
-                <Box key={key} sx={{display: "flex", gap: 1}}>
+                <Box key={key} sx={{ display: "flex", gap: 1 }}>
                   <Typography variant="body1">
                     {item.filename} {(item.size / (1024 * 1024)).toFixed(2)} MB
                   </Typography>
-                  <Button variant="contained" color="error" onClick={() => {
-                    api.delete(`/user/abstracts/${abstract.id!}/attachment/${item.filename}`).then(res => {
-                        if(res.status === 200) {
-                            updateAbstract("attachments", res.data)
-                        } else {
-                            alert(res.data.message ?? "Unknown error happens.")
-                        }
-                    })
-                  }}>Delete</Button>
+                  <Button
+                    variant="contained"
+                    color="error"
+                    onClick={() => {
+                      api
+                        .delete(
+                          `/user/abstracts/${abstract.id!}/attachment/${
+                            item.filename
+                          }`
+                        )
+                        .then((res) => {
+                          if (res.status === 200) {
+                            updateAbstract("attachments", res.data);
+                          } else {
+                            alert(res.data.message ?? "Unknown error happens.");
+                          }
+                        });
+                    }}
+                  >
+                    Delete
+                  </Button>
                 </Box>
               ))}
-              <Button disabled={uploadProgress !== undefined} variant="contained" component="label">
+              <Button
+                disabled={uploadProgress !== undefined}
+                variant="contained"
+                component="label"
+              >
                 {uploadProgress !== undefined ? uploadProgress : "Upload"}
-                <input ref={uploadRef} onChange={(e) => {
-                    if(abstract.attachments.length >= 5) {
-                        alert("Too many files.")
-                    } if (!Boolean(uploadRef.current?.files)) {
-                        alert("No file selected.")
-                    } else {
-                        const form = new FormData();
-                        form.append("attachment", uploadRef.current!.files![0])
-                        api.post(`/user/abstracts/${abstract.id!}/attachment/`, form, {
-                            onUploadProgress(e) {
-                                if(e.total !== undefined) {
-                                    setUploadProgress(`${(e.loaded/e.total * 100).toFixed(2)}%`)                                    
-                                } else {
-                                    setUploadProgress(`${(e.loaded / (1024 * 1024)).toFixed(2)} MB`)
-                                }
-                            },
-                        }).then(res => {
-                            setUploadProgress(undefined)
-                            if(res.status === 200) {
-                                updateAbstract("attachments", res.data)
-                            } else {
-                                alert(res.data.message)
-                            }
-                        })
+                <input
+                  ref={uploadRef}
+                  onChange={(e) => {
+                    if (abstract.attachments.length >= 5) {
+                      alert("Too many files.");
                     }
-                    e.target.files = null
-                }} hidden type="file" />
+                    if (!Boolean(uploadRef.current?.files)) {
+                      alert("No file selected.");
+                    } else {
+                      const form = new FormData();
+                      form.append("attachment", uploadRef.current!.files![0]);
+                      api
+                        .post(
+                          `/user/abstracts/${abstract.id!}/attachment/`,
+                          form,
+                          {
+                            onUploadProgress(e) {
+                              if (e.total !== undefined) {
+                                setUploadProgress(
+                                  `${((e.loaded / e.total) * 100).toFixed(2)}%`
+                                );
+                              } else {
+                                setUploadProgress(
+                                  `${(e.loaded / (1024 * 1024)).toFixed(2)} MB`
+                                );
+                              }
+                            },
+                          }
+                        )
+                        .then((res) => {
+                          setUploadProgress(undefined);
+                          if (res.status === 200) {
+                            updateAbstract("attachments", res.data);
+                          } else {
+                            alert(res.data.message);
+                          }
+                        });
+                    }
+                    e.target.files = null;
+                  }}
+                  hidden
+                  type="file"
+                />
               </Button>
             </Box>
           </>
@@ -304,7 +338,7 @@ function AbstractEditor(props: {
                       title: props.abstract?.title ?? "",
                       content: props.abstract?.content ?? "",
                       authors: props.abstract?.authors ?? [],
-                      attachments: props.abstract?.attachments ?? []
+                      attachments: props.abstract?.attachments ?? [],
                     });
                     afterSave();
                   } else {

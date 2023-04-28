@@ -1,5 +1,12 @@
 import api from "@/lib/apiRequest";
-import { Box, Button, ButtonGroup, CircularProgress, TextField, Typography } from "@mui/material";
+import {
+  Box,
+  Button,
+  ButtonGroup,
+  CircularProgress,
+  TextField,
+  Typography,
+} from "@mui/material";
 import { passwordStrength } from "check-password-strength";
 import router from "next/router";
 import { useState } from "react";

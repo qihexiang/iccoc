@@ -15,7 +15,12 @@ import {
   TableCell,
   TableHead,
   TableRow,
-  Typography, ClickAwayListener, Grow, MenuItem, MenuList, Paper
+  Typography,
+  ClickAwayListener,
+  Grow,
+  MenuItem,
+  MenuList,
+  Paper,
 } from "@mui/material";
 import type { AppProps } from "next/app";
 import { useRouter } from "next/router";
@@ -33,9 +38,7 @@ const mainRoutes = [
   ["Accommodation", "/accommodation"],
 ];
 
-const previousEvents = [
-  ["2016", "/2016"]
-]
+const previousEvents = [["2016", "/2016"]];
 
 export default function App({ Component, pageProps }: AppProps) {
   const router = useRouter();
@@ -45,13 +48,13 @@ export default function App({ Component, pageProps }: AppProps) {
       (router.pathname.startsWith("/activities") && pathname === "/activities")
   );
   const [count, setCount] = useState(0);
-  const dropBtnRef = useRef<HTMLButtonElement>(null)
+  const dropBtnRef = useRef<HTMLButtonElement>(null);
   const [dropOpen, setDropOpen] = useState(false);
   useEffect(() => {
-    api.get("/counter").then(res => {
-      setCount(res.data.count)
-    })
-  }, [])
+    api.get("/counter").then((res) => {
+      setCount(res.data.count);
+    });
+  }, []);
   return (
     <Container component="div" className="App">
       <Box
@@ -63,13 +66,22 @@ export default function App({ Component, pageProps }: AppProps) {
           aspectRatio: "4/1",
         }}
       ></Box>
-      <Box component={"div"} sx={{ marginTop: 1, marginBottom: 1, display: "flex", gap: 1 }}>
+      <Box
+        component={"div"}
+        sx={{ marginTop: 1, marginBottom: 1, display: "flex", gap: 1 }}
+      >
         {mainRoutes.map(([routeName, routePath], idx) => (
-          <Button variant={idx === routeIdx ? "contained" : "text"} key={idx} onClick={() => router.push(routePath)}>
+          <Button
+            variant={idx === routeIdx ? "contained" : "text"}
+            key={idx}
+            onClick={() => router.push(routePath)}
+          >
             {routeName}
           </Button>
         ))}
-        <Button ref={dropBtnRef} onClick={() => setDropOpen(!dropOpen)}>Pervious Events</Button>
+        <Button ref={dropBtnRef} onClick={() => setDropOpen(!dropOpen)}>
+          Pervious Events
+        </Button>
         <Popper
           open={dropOpen}
           anchorEl={dropBtnRef.current}
@@ -82,17 +94,23 @@ export default function App({ Component, pageProps }: AppProps) {
               {...TransitionProps}
               style={{
                 transformOrigin:
-                  placement === 'bottom-start' ? 'left top' : 'left bottom',
+                  placement === "bottom-start" ? "left top" : "left bottom",
               }}
             >
               <Paper>
                 <ClickAwayListener onClickAway={() => setDropOpen(false)}>
-                  <MenuList
-                    autoFocusItem={dropOpen}
-                  >
-                    {previousEvents.map(([label, path], idx) =>
-                      <MenuItem key={idx} onClick={() => { setDropOpen(false); router.push(path) }}>{label}</MenuItem>)
-                    }
+                  <MenuList autoFocusItem={dropOpen}>
+                    {previousEvents.map(([label, path], idx) => (
+                      <MenuItem
+                        key={idx}
+                        onClick={() => {
+                          setDropOpen(false);
+                          router.push(path);
+                        }}
+                      >
+                        {label}
+                      </MenuItem>
+                    ))}
                   </MenuList>
                 </ClickAwayListener>
               </Paper>

@@ -5,23 +5,22 @@ import { nanoid } from "nanoid";
 import { NextApiRequest, NextApiResponse } from "next";
 
 async function counterRoute(req: NextApiRequest, res: NextApiResponse) {
-    if (req.session.count === undefined) {
-        req.session.count = nanoid();
-        await req.session.save();
-    }
+  if (req.session.count === undefined) {
+    req.session.count = nanoid();
+    await req.session.save();
+  }
 
-    const count = await getCount(req.session.count)
-    console.log(count)
+  const count = await getCount(req.session.count);
 
-    if (req.method === "GET") {
-        return res.json({
-            count
-        })
-    };
+  if (req.method === "GET") {
+    return res.json({
+      count,
+    });
+  }
 
-    return res.status(405).setHeader("Allow-Headers", ["GET"]).json({
-        message: "Invalid request method."
-    })
+  return res.status(405).setHeader("Allow-Headers", ["GET"]).json({
+    message: "Invalid request method.",
+  });
 }
 
-export default withIronSessionApiRoute(counterRoute, sessionOptions)
+export default withIronSessionApiRoute(counterRoute, sessionOptions);

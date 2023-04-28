@@ -1,17 +1,17 @@
-import BUCT from "./index/BUCT.jpg"
-import ForbiddenCity from "./index/forbiddencity.jpg"
-import SummerPalace from "./index/summerpalace.jpg"
-import GreatWall from "./index/greatwall.jpg"
-import {ImageList, ImageListItem, ImageListItemBar} from "@mui/material"
-import Image from "next/image"
-import Head from "next/head"
+import BUCT from "./index/BUCT.jpg";
+import ForbiddenCity from "./index/forbiddencity.jpg";
+import SummerPalace from "./index/summerpalace.jpg";
+import GreatWall from "./index/greatwall.jpg";
+import { ImageList, ImageListItem, ImageListItemBar } from "@mui/material";
+import Image from "next/image";
+import Head from "next/head";
 
 export const meta = {
-    title: "Welcome"
-}
+  title: "Welcome",
+};
 
 <Head>
-    <title>{`${meta.title} - ICOC2023`}</title>
+  <title>{`${meta.title} - ICOC2023`}</title>
 </Head>
 
 # {meta.title}
@@ -25,16 +25,19 @@ It is our great pleasure to invite you to the International Conference of Comput
 
 - Abstract Submission Deadline: Sept. 30th, 2023
 - Registration Deadline: Sept. 30th, 2023
-- Conference Date: Oct. 27th-30th, 2023 
+- Conference Date: Oct. 27th-30th, 2023
 
 <ImageList cols={3}>
-    {
-        [
-            {...GreatWall, title: "The Great Wall"},
-            {...SummerPalace, title: "Summer Palace"},
-            {...ForbiddenCity, title: "Forbidden City"},
-        ].map((item, idx) => <ImageListItem key={idx}><img src={item.src}></img><ImageListItemBar title={item.title}></ImageListItemBar></ImageListItem>)
-    }
+  {[
+    { ...GreatWall, title: "The Great Wall" },
+    { ...SummerPalace, title: "Summer Palace" },
+    { ...ForbiddenCity, title: "Forbidden City" },
+  ].map((item, idx) => (
+    <ImageListItem key={idx}>
+      <img src={item.src}></img>
+      <ImageListItemBar title={item.title}></ImageListItemBar>
+    </ImageListItem>
+  ))}
 </ImageList>
 
 Organizers:

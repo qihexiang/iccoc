@@ -45,7 +45,7 @@ Check out our [Next.js deployment documentation](https://nextjs.org/docs/deploym
 - SECRET_COOKIE_PASSWORD: Iron session cookie password
 - APP_SECRET: Application global secret.
 
-```powershell
+````powershell
 $env:DATABASE_URL="mysql://iccoc:dsaj39_348@localhost:13306/iccoc2023"
 $env:NODE_ENV="development"
 $env:SECRET_COOKIE_PASSWORD="fdjalkfjalje32490_ejr__r32idc0nb"
@@ -64,7 +64,7 @@ npm run dev
 yarn dev
 # or
 pnpm dev
-```
+````
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
