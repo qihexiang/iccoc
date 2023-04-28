@@ -20,6 +20,8 @@ import {
 import type { AppProps } from "next/app";
 import { useRouter } from "next/router";
 import ICOC2016 from "./public/ICOC2016.jpg";
+import { useEffect, useState } from "react";
+import api from "@/lib/apiRequest";
 
 const routes = [
   ["Home", "/"],
@@ -40,6 +42,12 @@ export default function App({ Component, pageProps }: AppProps) {
       pathname === router.pathname ||
       (router.pathname.startsWith("/activities") && pathname === "/activities")
   );
+  const [count, setCount] = useState(0);
+  useEffect(() => {
+    api.get("/counter").then(res => {
+      setCount(res.data.count)
+    })
+  }, [])
   return (
     <Container component="div" className="App">
       <Box
@@ -51,18 +59,12 @@ export default function App({ Component, pageProps }: AppProps) {
           aspectRatio: "4/1",
         }}
       ></Box>
-      <Box style={{ marginBottom: 8 }}>
-        <Tabs
-          value={routeIdx === -1 ? false : routeIdx}
-          onChange={(_, value) => router.push(routes[value][1])}
-          variant="scrollable"
-          scrollButtons
-          allowScrollButtonsMobile
-        >
-          {routes.map(([routeName], idx) => (
-            <Tab key={idx} label={routeName}></Tab>
-          ))}
-        </Tabs>
+      <Box component={"div"} style={{ marginTop: 8 }}>
+        {routes.map(([routeName, routePath], idx) => (
+          <Button variant={idx === routeIdx ? "contained" : "text"} key={idx} onClick={() => router.push(routePath)}>
+            {routeName}
+          </Button>
+        ))}
       </Box>
       <MDXProvider
         components={{
@@ -112,13 +114,6 @@ export default function App({ Component, pageProps }: AppProps) {
       >
         <Component {...pageProps} />
       </MDXProvider>
-      <Box component={"div"} style={{ marginTop: 8 }}>
-        {routes.map(([routeName, routePath], idx) => (
-          <Button key={idx} onClick={() => router.push(routePath)}>
-            {routeName}
-          </Button>
-        ))}
-      </Box>
       <Typography
         component={"div"}
         variant="body2"
@@ -126,6 +121,9 @@ export default function App({ Component, pageProps }: AppProps) {
       >
         ICOC2016, International Symposium of Computational Organometallic
         Catalysis
+      </Typography>
+      <Typography sx={{ textAlign: "center" }} variant="body2">
+        Recently visited: {count}
       </Typography>
       <Typography
         variant="body2"

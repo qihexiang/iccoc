@@ -18,7 +18,6 @@ async function loginRoute(req: NextApiRequest, res: NextApiResponse) {
       });
     } else {
       res.status(403).json({
-        ok: false,
         message: "Invalid username(email) or password",
       });
     }

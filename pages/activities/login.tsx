@@ -28,7 +28,7 @@ export default function LoginPage() {
                             if(res.status === 200) {
                                 router.push("/activities/me");
                             } else {
-                                setErrorMessage(res.data)
+                                setErrorMessage(res.data.message)
                                 setPassword("")
                             }
                         })

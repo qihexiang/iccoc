@@ -5,8 +5,24 @@ services:
     image: mariadb:latest
     ports:
       - 13306:3306
+    volumes:
+      - ./db:/var/lib/mysql:rw
     environment:
       - MYSQL_RANDOM_ROOT_PASSWORD=1
       - MYSQL_DATABASE=iccoc2023
       - MYSQL_USER=iccoc
       - MYSQL_PASSWORD=dsaj39_348
+    restart: always
+
+  counter:
+    image: redis:latest
+    ports:
+      - 6379:6379
+    command: redis-server --maxmemory-policy allkeys-lru --maxmemory 150M --save 900 1
+    volumes:
+      - ./redis:/data:rw
+    restart: always
+    deploy:
+      resources:
+        limits:
+          memory: 200M
