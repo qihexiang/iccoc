@@ -25,7 +25,6 @@ import {
 import type { AppProps } from "next/app";
 import { useRouter } from "next/router";
 import { useEffect, useRef, useState } from "react";
-import ICOC2016 from "./public/ICOC2016.jpg";
 
 const mainRoutes = [
   ["Home", "/"],
@@ -60,7 +59,7 @@ export default function App({ Component, pageProps }: AppProps) {
       <Box
         component={"div"}
         style={{
-          backgroundImage: `url(${ICOC2016.src})`,
+          backgroundImage: `url(/ICOC2016.jpg)`,
           backgroundPosition: "center center",
           backgroundSize: "cover",
           aspectRatio: "4/1",
@@ -171,7 +170,7 @@ export default function App({ Component, pageProps }: AppProps) {
         variant="body2"
         sx={{ textAlign: "center" }}
       >
-        ICOC2016, International Symposium of Computational Organometallic
+        ICCOC2023, International Conference of Computational Organometallic
         Catalysis
       </Typography>
       <Typography sx={{ textAlign: "center" }} variant="body2">
