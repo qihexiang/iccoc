@@ -8,7 +8,6 @@ import { NextApiRequest, NextApiResponse } from "next";
 async function authorRoute(req: NextApiRequest, res: NextApiResponse) {
   if (req.session.user === undefined) {
     return res.status(403).json({
-      ok: false,
       message: "Please login.",
     });
   }

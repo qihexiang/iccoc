@@ -13,7 +13,6 @@ import { withIronSessionApiRoute } from "iron-session/next";
 async function attachmentRoute(req: NextApiRequest, res: NextApiResponse) {
   if (req.session.user === undefined) {
     return res.status(403).json({
-      ok: false,
       message: "Please login.",
     });
   }
