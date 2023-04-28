@@ -1,28 +1,29 @@
-import axios from "axios";
-import { APIResponse } from "lib/APIResponse";
-import { redirect } from "next/dist/server/api-utils";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
-
-type LoginResponse = APIResponse<{ user: { email: string } }>
+import api from "./apiRequest";
+enum Status {
+    Pending, LoggedIn, NonLogged
+}
 
 export function useUser(options: { redirectTo: string, redirectOnLoggedIn: boolean }) {
-    const [email, setEmail] = useState("");
+    const [[email, status], setEmail] = useState(["", Status.Pending]);
     const router = useRouter();
+    if(status !== Status.Pending) {
+        if ((status === Status.LoggedIn) === options.redirectOnLoggedIn) {
+            router.push(options.redirectTo)
+        }
+    }
     useEffect(() => {
-        axios.get("/api/user", { withCredentials: true })
+        api.get("/user")
             .then(res => {
-                console.log((res.status === 200 || res.status === 304) === options.redirectOnLoggedIn, options.redirectTo)
-                // 仅当返回值结果和跳转规则匹配时进行跳转
-                if ((res.status === 200 || res.status === 304) === options.redirectOnLoggedIn) {
-                    console.log("Router pushed")
-                    router.push(options.redirectTo)
+                if ((res.status === 200 || res.status === 304)) {
+                    setEmail([res.data.user.email, Status.LoggedIn])
+                } else {
+                    setEmail(["", Status.NonLogged])
                 }
             })
             .catch(() => {
-                if (!options.redirectOnLoggedIn) {
-                    router.push(options.redirectTo)
-                }
+                setEmail(["", Status.NonLogged])
             })
     }, [])
     return email

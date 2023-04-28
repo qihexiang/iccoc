@@ -1,13 +1,8 @@
-import { APIResponse } from "@/lib/APIResponse";
+import api from "@/lib/apiRequest";
 import { useUser } from "@/lib/useUser";
 import { Alert, Box, Button, ButtonGroup, TextField, Typography } from "@mui/material";
-import axios from "axios";
 import { useRouter } from "next/router";
 import { useState } from "react";
-
-type LoginResponse = APIResponse<{
-    user: { email: string }
-}>
 
 export default function LoginPage() {
     useUser({ redirectTo: "/activities/me", redirectOnLoggedIn: true });
@@ -23,12 +18,12 @@ export default function LoginPage() {
             errorMessage !== undefined ?
                 <Alert severity="error">{errorMessage}</Alert> : null
         }
-        <TextField value={email} onChange={(e) => setEmail(e.target.value)} placeholder="E-mail as your username" />
-        <TextField value={password} onChange={(e) => setPassword(e.target.value)} type="password" placeholder="Password" />
+        <TextField label="Email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="E-mail as your username" />
+        <TextField label="Password" value={password} onChange={(e) => setPassword(e.target.value)} type="password" placeholder="Password" />
         <ButtonGroup variant="contained">
             <Button color="success" onClick={() => {
                 if (email !== "" && password !== "") {
-                    axios.post("/api/user/login", { email, password }, {withCredentials: true})
+                    api.post("/user/login", { email, password }, {withCredentials: true})
                         .then(res => {
                             if(res.status === 200) {
                                 router.push("/activities/me");
