@@ -9,7 +9,7 @@ import { NextApiRequest, NextApiResponse } from 'next';
 async function abstractRoute(req: NextApiRequest, res: NextApiResponse) {
     if (req.session.user === undefined) {
         return res.status(403).json({
-            ok: false, message: "Please login."
+            message: "Please login."
         })
     }
     const { email } = req.session.user;
@@ -42,7 +42,7 @@ async function abstractRoute(req: NextApiRequest, res: NextApiResponse) {
             return res.status(200).json(deleted)
         }
         return res.status(405).setHeader("Allow", ["GET", "PUT", "DELETE"]).json({
-            ok: false, message: "Invalid request method."
+            message: "Invalid request method."
         })
     } catch (err) {
         if (err instanceof HttpError) {
@@ -53,7 +53,6 @@ async function abstractRoute(req: NextApiRequest, res: NextApiResponse) {
 
         errorLog(err)
         return res.status(500).json({
-            ok: false,
             message: "Internal server error, please check if all information correct and submit a few minutes later. If this still happens, please contact qihexiang@outlook.com"
         })
     }

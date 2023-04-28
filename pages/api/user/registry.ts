@@ -13,17 +13,13 @@ async function registryRoute(req: NextApiRequest, res: NextApiResponse) {
         };
         await req.session.save()
         res.status(200).json({
-            ok: true,
-            data: {
-                user: {
-                    email
-                }
+            user: {
+                email
             }
         })
     } catch (err) {
         errorLog(err)
         res.status(500).json({
-            ok: false,
             message: "Failed to create account. Please check your email address."
         })
     }

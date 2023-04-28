@@ -8,7 +8,7 @@ import { NextApiRequest, NextApiResponse } from 'next';
 async function abstractRoute(req: NextApiRequest, res: NextApiResponse) {
     if (req.session.user === undefined) {
         return res.status(403).json({
-            ok: false, message: "Please login."
+            message: "Please login."
         })
     }
     const { email } = req.session.user;
@@ -16,7 +16,7 @@ async function abstractRoute(req: NextApiRequest, res: NextApiResponse) {
         if (req.method === "GET") {
             const pageSize = req.query["pageSize"] !== undefined ? Number(req.query["pageSize"]) : 10
             const pageIndex = req.query["pageIndex"] !== undefined ? Number(req.query["pageIndex"] as string) : 0
-            const data = await userGetAbstracts(email,  pageIndex, pageSize);
+            const data = await userGetAbstracts(email, pageIndex, pageSize);
             return res.status(200).json(data)
         }
         if (req.method === "POST") {

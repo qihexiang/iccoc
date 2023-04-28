@@ -5,9 +5,7 @@ import { NextApiRequest, NextApiResponse } from 'next'
 function logoutRoute(req: NextApiRequest, res: NextApiResponse) {
   req.session.destroy()
   res.json({
-    ok: true, data: {
-        message: "Logged out."
-    }
+    message: "Logged out."
   })
 }
 

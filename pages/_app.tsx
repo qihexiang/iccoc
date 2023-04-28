@@ -1,3 +1,4 @@
+import api from "@/lib/apiRequest";
 import "@/styles/globals.css";
 import "@fontsource/roboto/300.css";
 import "@fontsource/roboto/400.css";
@@ -8,22 +9,20 @@ import {
   Box,
   Button,
   Container,
-  Tab,
+  Popper,
   Table,
   TableBody,
   TableCell,
   TableHead,
   TableRow,
-  Tabs,
-  Typography,
+  Typography, ClickAwayListener, Grow, MenuItem, MenuList, Paper
 } from "@mui/material";
 import type { AppProps } from "next/app";
 import { useRouter } from "next/router";
+import { useEffect, useRef, useState } from "react";
 import ICOC2016 from "./public/ICOC2016.jpg";
-import { useEffect, useState } from "react";
-import api from "@/lib/apiRequest";
 
-const routes = [
+const mainRoutes = [
   ["Home", "/"],
   ["Program", "/program"],
   ["General Info", "/general_info"],
@@ -32,17 +31,22 @@ const routes = [
   ["Registration", "/registration"],
   ["Visa Info", "/visa"],
   ["Accommodation", "/accommodation"],
-  ["2016", "/2016"],
 ];
+
+const previousEvents = [
+  ["2016", "/2016"]
+]
 
 export default function App({ Component, pageProps }: AppProps) {
   const router = useRouter();
-  const routeIdx = routes.findIndex(
+  const routeIdx = mainRoutes.findIndex(
     ([_, pathname]) =>
       pathname === router.pathname ||
       (router.pathname.startsWith("/activities") && pathname === "/activities")
   );
   const [count, setCount] = useState(0);
+  const dropBtnRef = useRef<HTMLButtonElement>(null)
+  const [dropOpen, setDropOpen] = useState(false);
   useEffect(() => {
     api.get("/counter").then(res => {
       setCount(res.data.count)
@@ -59,12 +63,42 @@ export default function App({ Component, pageProps }: AppProps) {
           aspectRatio: "4/1",
         }}
       ></Box>
-      <Box component={"div"} style={{ marginTop: 8 }}>
-        {routes.map(([routeName, routePath], idx) => (
+      <Box component={"div"} sx={{ marginTop: 1, marginBottom: 1, display: "flex", gap: 1 }}>
+        {mainRoutes.map(([routeName, routePath], idx) => (
           <Button variant={idx === routeIdx ? "contained" : "text"} key={idx} onClick={() => router.push(routePath)}>
             {routeName}
           </Button>
         ))}
+        <Button ref={dropBtnRef} onClick={() => setDropOpen(!dropOpen)}>Pervious Events</Button>
+        <Popper
+          open={dropOpen}
+          anchorEl={dropBtnRef.current}
+          placement="bottom-start"
+          transition
+          disablePortal
+        >
+          {({ TransitionProps, placement }) => (
+            <Grow
+              {...TransitionProps}
+              style={{
+                transformOrigin:
+                  placement === 'bottom-start' ? 'left top' : 'left bottom',
+              }}
+            >
+              <Paper>
+                <ClickAwayListener onClickAway={() => setDropOpen(false)}>
+                  <MenuList
+                    autoFocusItem={dropOpen}
+                  >
+                    {previousEvents.map(([label, path], idx) =>
+                      <MenuItem key={idx} onClick={() => { setDropOpen(false); router.push(path) }}>{label}</MenuItem>)
+                    }
+                  </MenuList>
+                </ClickAwayListener>
+              </Paper>
+            </Grow>
+          )}
+        </Popper>
       </Box>
       <MDXProvider
         components={{
