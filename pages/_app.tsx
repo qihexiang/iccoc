@@ -32,25 +32,17 @@ const routes = [
   ["Registration", "/registration"],
   ["Visa Info", "/visa"],
   ["Accommodation", "/accommodation"],
+  ["2016", "/2016"],
 ];
-
-type LoginStatus = {
-  username: string,
-  authToken: string,
-  accessToken: string
-}
-
-export const LoginStatusStorage = createContext<{ state: LoginStatus | null, login: (state: LoginStatus | null) => void }>({
-  state: null, login: () => { }
-});
 
 export default function App({ Component, pageProps }: AppProps) {
   const router = useRouter();
   const routeIdx = findIndex(
     routes,
-    ([_, pathname]) => pathname === router.pathname || (router.pathname.startsWith("/activities") && pathname === "/activities")
+    ([_, pathname]) =>
+      pathname === router.pathname ||
+      (router.pathname.startsWith("/activities") && pathname === "/activities")
   );
-  const [state, login] = useState<LoginStatus | null>(null)
   return (
     <Container component="div" className="App">
       <Box
@@ -106,7 +98,11 @@ export default function App({ Component, pageProps }: AppProps) {
           th: ({ children }) => <TableCell>{children}</TableCell>,
           td: ({ children }) => <TableCell>{children}</TableCell>,
           pre: ({ children }) => (
-            <Typography variant="body2" component={"pre"} style={{ overflow: "scroll" }}>
+            <Typography
+              variant="body2"
+              component={"pre"}
+              style={{ overflow: "scroll" }}
+            >
               {children}
             </Typography>
           ),
@@ -114,12 +110,10 @@ export default function App({ Component, pageProps }: AppProps) {
             <Typography variant="body2" component={"code"}>
               {children}
             </Typography>
-          )
+          ),
         }}
       >
-        <LoginStatusStorage.Provider value={{ state, login }}>
-          <Component {...pageProps} />
-        </LoginStatusStorage.Provider>
+        <Component {...pageProps} />
       </MDXProvider>
       <Box component={"div"} style={{ marginTop: 8 }}>
         {routes.map(([routeName, routePath], idx) => (
@@ -136,7 +130,14 @@ export default function App({ Component, pageProps }: AppProps) {
         ICOC2016, International Symposium of Computational Organometallic
         Catalysis
       </Typography>
-      <Typography variant="body2" component={"a"} href="https://beian.miit.gov.cn" sx={{textAlign: "center", display: "block"}}>京ICP备18022349-3号</Typography>
+      <Typography
+        variant="body2"
+        component={"a"}
+        href="https://beian.miit.gov.cn"
+        sx={{ textAlign: "center", display: "block" }}
+      >
+        京ICP备18022349-3号
+      </Typography>
     </Container>
   );
 }
