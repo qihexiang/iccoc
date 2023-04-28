@@ -74,7 +74,7 @@ export async function userGetAbstracts(email: string, pageIndex: number, pageSiz
     const user = await prisma.user.findUnique({
         where: { email }, select: {
             abstracts: {
-                take: pageSize, skip: pageIndex, include: {
+                take: pageSize, skip: pageIndex * pageSize, include: {
                     authors: true
                 }
             }

@@ -1,4 +1,6 @@
+import axios from "axios";
 import { APIResponse } from "lib/APIResponse";
+import { redirect } from "next/dist/server/api-utils";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 
@@ -8,13 +10,12 @@ export function useUser(options: { redirectTo: string, redirectOnLoggedIn: boole
     const [email, setEmail] = useState("");
     const router = useRouter();
     useEffect(() => {
-        fetch("/api/user").then(res => res.json())
-            .then((res: LoginResponse) => {
-                if (res.ok) {
-                    setEmail(res.data.user.email)
-                }
+        axios.get("/api/user", { withCredentials: true })
+            .then(res => {
+                console.log((res.status === 200 || res.status === 304) === options.redirectOnLoggedIn, options.redirectTo)
                 // 仅当返回值结果和跳转规则匹配时进行跳转
-                if (res.ok === options.redirectOnLoggedIn) {
+                if ((res.status === 200 || res.status === 304) === options.redirectOnLoggedIn) {
+                    console.log("Router pushed")
                     router.push(options.redirectTo)
                 }
             })
@@ -23,6 +24,6 @@ export function useUser(options: { redirectTo: string, redirectOnLoggedIn: boole
                     router.push(options.redirectTo)
                 }
             })
-    })
+    }, [])
     return email
 }

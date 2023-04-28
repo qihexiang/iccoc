@@ -16,7 +16,7 @@ async function abstractRoute(req: NextApiRequest, res: NextApiResponse) {
         if (req.method === "GET") {
             const pageSize = req.query["pageSize"] !== undefined ? Number(req.query["pageSize"]) : 10
             const pageIndex = req.query["pageIndex"] !== undefined ? Number(req.query["pageIndex"] as string) : 0
-            const data = await userGetAbstracts(email, pageSize, pageIndex);
+            const data = await userGetAbstracts(email,  pageIndex, pageSize);
             return res.status(200).json(data)
         }
         if (req.method === "POST") {

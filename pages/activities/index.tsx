@@ -3,7 +3,7 @@ import { Box, Card, CardContent, Modal, Typography } from "@mui/material";
 
 export default function ActivitesIndex() {
     useUser({ redirectTo: "/activities/login", redirectOnLoggedIn: false });
-    useUser({ redirectTo: "/activities/panel", redirectOnLoggedIn: true });
+    useUser({ redirectTo: "/activities/me", redirectOnLoggedIn: true });
     return <Modal open={true}>
         <Box sx={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", height: "100%", width: "100%" }}>
             <Card>

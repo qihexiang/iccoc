@@ -37,15 +37,14 @@ export default function UserRegistry() {
                     }), headers: new Headers({
                         "Content-Type": "application/json"
                     })
-                }).then(res => res.json())
-                    .then((res: APIResponse<{ user: { email: string } }>) => {
-                        if (res.ok) {
-                            alert("Account registry successfully, please login.")
-                            router.push("/activities/login")
-                        } else {
-                            alert(res.message)
-                        }
-                    })
+                }).then(async res => {
+                    if (res.ok) {
+                        alert("Account registry successfully, please login.")
+                        router.push("/activities/login")
+                    } else {
+                        alert("Failed to registry, please retry later.")
+                    }
+                })
             }}>Registry</Button>
             <Button color="error" onClick={() => {
                 setRegistryInfo(defaultValue)

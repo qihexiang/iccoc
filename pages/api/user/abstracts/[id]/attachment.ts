@@ -7,8 +7,10 @@ import HttpError from "@/lib/HttpError";
 import { userUploadAttachments } from "@/lib/user";
 import { nanoid } from "nanoid";
 import { errorLog } from "@/lib/errors";
+import { sessionOptions } from "@/lib/session";
+import { withIronSessionApiRoute } from "iron-session/next";
 
-export default async function attachmentRoute(req: NextApiRequest, res: NextApiResponse) {
+async function attachmentRoute(req: NextApiRequest, res: NextApiResponse) {
     if (req.session.user === undefined) {
         return res.status(403).json({
             ok: false, message: "Please login."
@@ -66,3 +68,5 @@ export default async function attachmentRoute(req: NextApiRequest, res: NextApiR
         message: "Invalid request method."
     })
 }
+
+export default withIronSessionApiRoute(attachmentRoute, sessionOptions)

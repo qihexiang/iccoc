@@ -1,6 +1,7 @@
 import { APIResponse } from "@/lib/APIResponse";
 import { useUser } from "@/lib/useUser";
 import { Alert, Box, Button, ButtonGroup, TextField, Typography } from "@mui/material";
+import axios from "axios";
 import { useRouter } from "next/router";
 import { useState } from "react";
 
@@ -9,9 +10,9 @@ type LoginResponse = APIResponse<{
 }>
 
 export default function LoginPage() {
-    useUser({ redirectTo: "/activities/panel", redirectOnLoggedIn: true });
+    useUser({ redirectTo: "/activities/me", redirectOnLoggedIn: true });
     const router = useRouter()
-    const [username, setUsername] = useState("");
+    const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [errorMessage, setErrorMessage] = useState<string | undefined>(undefined);
     return <Box style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 8 }}>
@@ -22,32 +23,28 @@ export default function LoginPage() {
             errorMessage !== undefined ?
                 <Alert severity="error">{errorMessage}</Alert> : null
         }
-        <TextField value={username} onChange={(e) => setUsername(e.target.value)} placeholder="E-mail as your username" />
+        <TextField value={email} onChange={(e) => setEmail(e.target.value)} placeholder="E-mail as your username" />
         <TextField value={password} onChange={(e) => setPassword(e.target.value)} type="password" placeholder="Password" />
         <ButtonGroup variant="contained">
             <Button color="success" onClick={() => {
-                if (username !== "" && password !== "") {
-                    fetch("/api/auth/login", {
-                        body: JSON.stringify({ username, password }), method: "POST", headers: new Headers({
-                            "Content-Type": "application/json"
-                        })
-                    }).then(res => res.json())
-                        .then((res: LoginResponse) => {
-                            if (!res.ok) {
-                                setErrorMessage(res.message)
-                                setPassword("")
+                if (email !== "" && password !== "") {
+                    axios.post("/api/user/login", { email, password }, {withCredentials: true})
+                        .then(res => {
+                            if(res.status === 200) {
+                                router.push("/activities/me");
                             } else {
-                                router.push("/activities")
-                            }                            
+                                setErrorMessage(res.data)
+                                setPassword("")
+                            }
                         })
                 } else {
-                    setUsername("")
+                    setEmail("")
                     setPassword("")
                     setErrorMessage("Please input username and password")
                 }
             }}>Login</Button>
             <Button color="error" onClick={() => {
-                setUsername("")
+                setEmail("")
                 setPassword("")
             }}>Reset</Button>
         </ButtonGroup>

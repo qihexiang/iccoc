@@ -1,9 +1,11 @@
 import HttpError from "@/lib/HttpError";
 import { errorLog } from "@/lib/errors";
+import { sessionOptions } from "@/lib/session";
 import { userAddAuthor } from "@/lib/user";
+import { withIronSessionApiRoute } from "iron-session/next";
 import { NextApiRequest, NextApiResponse } from "next";
 
-export default async function authorRoute(req: NextApiRequest, res: NextApiResponse) {
+async function authorRoute(req: NextApiRequest, res: NextApiResponse) {
     if (req.session.user === undefined) {
         return res.status(403).json({
             ok: false, message: "Please login."
@@ -42,3 +44,5 @@ export default async function authorRoute(req: NextApiRequest, res: NextApiRespo
         message: "Invalid request method."
     })
 }
+
+export default withIronSessionApiRoute(authorRoute, sessionOptions)
