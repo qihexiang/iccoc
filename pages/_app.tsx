@@ -17,10 +17,8 @@ import {
   Tabs,
   Typography,
 } from "@mui/material";
-import { findIndex } from "lodash";
 import type { AppProps } from "next/app";
 import { useRouter } from "next/router";
-import { createContext, useState } from "react";
 import ICOC2016 from "./public/ICOC2016.jpg";
 
 const routes = [
@@ -37,8 +35,7 @@ const routes = [
 
 export default function App({ Component, pageProps }: AppProps) {
   const router = useRouter();
-  const routeIdx = findIndex(
-    routes,
+  const routeIdx = routes.findIndex(
     ([_, pathname]) =>
       pathname === router.pathname ||
       (router.pathname.startsWith("/activities") && pathname === "/activities")
