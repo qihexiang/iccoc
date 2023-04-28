@@ -1,4 +1,5 @@
 import api from "@/lib/apiRequest";
+import Head from "next/head";
 import { useUser } from "@/lib/useUser";
 import {
   Button,
@@ -37,33 +38,38 @@ export default function MeView() {
     });
   }, [refreshSignal]);
   return (
-    <Box>
-      <Box sx={{ display: "flex", gap: 2 }}>
-        <Typography variant="h6">{email}</Typography>
-        <Button
-          variant="contained"
-          color="error"
-          onClick={() => {
-            api.post("/user/logout").finally(() => router.push("/"));
-          }}
-        >
-          Logout
-        </Button>
-        <Button variant="contained" color="primary" onClick={refresh}>
-          refresh
-        </Button>
+    <>
+      <Head>
+        <title>Personal center - ICCOC2023</title>
+      </Head>
+      <Box>
+        <Box sx={{ display: "flex", gap: 2 }}>
+          <Typography variant="h6">{email}</Typography>
+          <Button
+            variant="contained"
+            color="error"
+            onClick={() => {
+              api.post("/user/logout").finally(() => router.push("/"));
+            }}
+          >
+            Logout
+          </Button>
+          <Button variant="contained" color="primary" onClick={refresh}>
+            refresh
+          </Button>
+        </Box>
+        <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
+          {abstracts.map((item, key) => (
+            <AbstractItem
+              abstract={item}
+              key={key}
+              onUpdate={refresh}
+            ></AbstractItem>
+          ))}
+          <AbstractItem abstract={null} onUpdate={refresh}></AbstractItem>
+        </Box>
       </Box>
-      <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
-        {abstracts.map((item, key) => (
-          <AbstractItem
-            abstract={item}
-            key={key}
-            onUpdate={refresh}
-          ></AbstractItem>
-        ))}
-        <AbstractItem abstract={null} onUpdate={refresh}></AbstractItem>
-      </Box>
-    </Box>
+    </>
   );
 }
 

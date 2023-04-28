@@ -1,4 +1,5 @@
 import api from "@/lib/apiRequest";
+import Head from "next/head";
 import { useUser } from "@/lib/useUser";
 import {
   Alert,
@@ -20,78 +21,83 @@ export default function LoginPage() {
     undefined
   );
   return (
-    <Box
-      style={{
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        gap: 8,
-      }}
-    >
-      <Box>
-        <Typography variant="h6">Login</Typography>
-      </Box>
-      {errorMessage !== undefined ? (
-        <Alert severity="error">{errorMessage}</Alert>
-      ) : null}
-      <TextField
-        label="Email"
-        value={email}
-        onChange={(e) => setEmail(e.target.value)}
-        placeholder="E-mail as your username"
-      />
-      <TextField
-        label="Password"
-        value={password}
-        onChange={(e) => setPassword(e.target.value)}
-        type="password"
-        placeholder="Password"
-      />
-      <ButtonGroup variant="contained">
-        <Button
-          color="success"
-          onClick={() => {
-            if (email !== "" && password !== "") {
-              api
-                .post(
-                  "/user/login",
-                  { email, password },
-                  { withCredentials: true }
-                )
-                .then((res) => {
-                  if (res.status === 200) {
-                    router.push("/activities/me");
-                  } else {
-                    setErrorMessage(res.data.message);
-                    setPassword("");
-                  }
-                });
-            } else {
+    <>
+      <Head>
+        <title>Login - ICCOC2023</title>
+      </Head>
+      <Box
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          gap: 8,
+        }}
+      >
+        <Box>
+          <Typography variant="h6">Login</Typography>
+        </Box>
+        {errorMessage !== undefined ? (
+          <Alert severity="error">{errorMessage}</Alert>
+        ) : null}
+        <TextField
+          label="Email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          placeholder="E-mail as your username"
+        />
+        <TextField
+          label="Password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          type="password"
+          placeholder="Password"
+        />
+        <ButtonGroup variant="contained">
+          <Button
+            color="success"
+            onClick={() => {
+              if (email !== "" && password !== "") {
+                api
+                  .post(
+                    "/user/login",
+                    { email, password },
+                    { withCredentials: true }
+                  )
+                  .then((res) => {
+                    if (res.status === 200) {
+                      router.push("/activities/me");
+                    } else {
+                      setErrorMessage(res.data.message);
+                      setPassword("");
+                    }
+                  });
+              } else {
+                setEmail("");
+                setPassword("");
+                setErrorMessage("Please input username and password");
+              }
+            }}
+          >
+            Login
+          </Button>
+          <Button
+            color="error"
+            onClick={() => {
               setEmail("");
               setPassword("");
-              setErrorMessage("Please input username and password");
-            }
-          }}
-        >
-          Login
-        </Button>
+            }}
+          >
+            Reset
+          </Button>
+        </ButtonGroup>
         <Button
-          color="error"
-          onClick={() => {
-            setEmail("");
-            setPassword("");
-          }}
+          variant="contained"
+          color="info"
+          onClick={() => router.push("/activities/registry")}
         >
-          Reset
+          Registry
         </Button>
-      </ButtonGroup>
-      <Button
-        variant="contained"
-        color="info"
-        onClick={() => router.push("/activities/registry")}
-      >
-        Registry
-      </Button>
-    </Box>
+      </Box>
+    </>
   );
 }
