@@ -41,7 +41,7 @@ jobs:
       - run: pnpm prisma generate
       - run: pnpm build
       - run: sudo apt-get install bzip2 tar -y
-      - run: tar jcf iccoc.tar.bz2 node_modules/ .next/ prisma/ docker-compose.yml package.json next.config.mjs
+      - run: tar jcf iccoc.tar.bz2 node_modules/ .next/ prisma/ public/ docker-compose.yml package.json next.config.mjs
       - name: Upload Release Asset
         id: upload-release-asset
         uses: actions/upload-release-asset@v1
