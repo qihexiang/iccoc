@@ -1,5 +1,4 @@
 import api from "@/lib/apiRequest";
-import Head from "next/head";
 import { useUser } from "@/lib/useUser";
 import {
   Button,
@@ -14,6 +13,8 @@ import {
 } from "@mui/material";
 import { Box } from "@mui/system";
 import { Abstract, Attachment, Authors } from "@prisma/client";
+import { passwordStrength } from "check-password-strength";
+import Head from "next/head";
 import { useRouter } from "next/router";
 import { useEffect, useRef, useState } from "react";
 
@@ -22,7 +23,6 @@ export default function MeView() {
     redirectTo: "/activities/login",
     redirectOnLoggedIn: false,
   });
-  const router = useRouter();
   const [abstracts, setAbstracts] = useState<
     (Abstract & { authors: Authors[]; attachments: Attachment[] })[]
   >([]);
@@ -43,21 +43,10 @@ export default function MeView() {
         <title>Personal center - ICCOC2023</title>
       </Head>
       <Box>
-        <Box sx={{ display: "flex", gap: 2 }}>
-          <Typography variant="h6">{email}</Typography>
-          <Button
-            variant="contained"
-            color="error"
-            onClick={() => {
-              api.post("/user/logout").finally(() => router.push("/"));
-            }}
-          >
-            Logout
-          </Button>
-          <Button variant="contained" color="primary" onClick={refresh}>
-            refresh
-          </Button>
-        </Box>
+        <PersonalCenterHeader
+          email={email}
+          refresh={refresh}
+        ></PersonalCenterHeader>
         <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
           {abstracts.map((item, key) => (
             <AbstractItem
@@ -73,10 +62,63 @@ export default function MeView() {
   );
 }
 
+function PersonalCenterHeader(props: { email: string; refresh: () => void }) {
+  const router = useRouter();
+  const { email, refresh } = props;
+  const [newPassword, setNewPassword] = useState("");
+  const passwordNotTooWeak = newPassword === "" || passwordStrength(newPassword).id !== 0;
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const passwordNotMatch = confirmPassword !== newPassword;
+  return (
+    <Box sx={{ display: "flex", gap: 2, flexWrap: "wrap" }}>
+      <Typography variant="h6">{email}</Typography>
+      <Button variant="contained" color="primary" onClick={refresh}>
+        Refresh
+      </Button>
+      {/* <Box>
+        <TextField
+          label={"Password"}
+          value={newPassword}
+          onChange={(e) =>
+            setNewPassword(e.target.value)
+          }
+          placeholder="Set a password"
+          type="password"
+          error={!passwordNotTooWeak}
+          helperText={passwordNotTooWeak ? "" : "Too weak"}
+        />
+        <TextField
+          label={"Confirm password"}
+          value={confirmPassword}
+          onChange={(e) =>
+            setConfirmPassword(e.target.value)
+          }
+          placeholder="Confirm your password"
+          error={passwordNotMatch}
+          helperText={passwordNotMatch ? "Doesn't match" : ""}
+          type="password"
+        />
+        <Button variant="contained" color="warning">
+          Reset password
+        </Button>
+      </Box> */}
+      <Button
+        variant="contained"
+        color="error"
+        onClick={() => {
+          api.post("/user/logout").finally(() => router.push("/"));
+        }}
+      >
+        Logout
+      </Button>
+    </Box>
+  );
+}
+
 function AbstractItem(props: {
   abstract:
-    | (Abstract & { authors: Authors[]; attachments: Attachment[] })
-    | null;
+  | (Abstract & { authors: Authors[]; attachments: Attachment[] })
+  | null;
   onUpdate: () => void;
 }) {
   const [edit, setEdit] = useState(false);
@@ -154,8 +196,8 @@ function AbstractDisplay(props: {
 
 function AbstractEditor(props: {
   abstract:
-    | (Abstract & { authors: Authors[]; attachments: Attachment[] })
-    | null;
+  | (Abstract & { authors: Authors[]; attachments: Attachment[] })
+  | null;
   afterSave: () => void;
 }) {
   const [abstract, setAbstract] = useState({
@@ -234,8 +276,7 @@ function AbstractEditor(props: {
                     onClick={() => {
                       api
                         .delete(
-                          `/user/abstracts/${abstract.id!}/attachment/${
-                            item.filename
+                          `/user/abstracts/${abstract.id!}/attachment/${item.filename
                           }`
                         )
                         .then((res) => {

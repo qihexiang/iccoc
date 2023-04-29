@@ -21,7 +21,7 @@ export default function UserRegistry() {
   const [registryInfo, setRegistryInfo] = useState(defaultValue);
   const [waiting, setWaiting] = useState(false);
   const passwordNotTooWeak =
-    registryInfo.password !== "" &&
+    registryInfo.password === "" ||
     passwordStrength(registryInfo.password).id !== 0;
   const passwordNotMatch =
     registryInfo.password !== "" &&
