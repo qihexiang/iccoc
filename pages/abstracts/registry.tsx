@@ -100,7 +100,7 @@ export default function UserRegistry() {
                 .then((res) => {
                   if (res.status === 200) {
                     alert("Account registry successfully, please login.");
-                    router.push("/activities/login");
+                    router.push("/abstracts/login");
                   } else {
                     alert("Failed to registry, please retry later.");
                     setRegistryInfo(defaultValue);
@@ -126,7 +126,7 @@ export default function UserRegistry() {
         <Button
           variant="contained"
           color="info"
-          onClick={() => router.push("/activities/login")}
+          onClick={() => router.push("/abstracts/login")}
         >
           Go to login
         </Button>

@@ -13,7 +13,7 @@ import { useRouter } from "next/router";
 import { useState } from "react";
 
 export default function LoginPage() {
-  useUser({ redirectTo: "/activities/me", redirectOnLoggedIn: true });
+  useUser({ redirectTo: "/abstracts/me", redirectOnLoggedIn: true });
   const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -65,7 +65,7 @@ export default function LoginPage() {
                   )
                   .then((res) => {
                     if (res.status === 200) {
-                      router.push("/activities/me");
+                      router.push("/abstracts/me");
                     } else {
                       setErrorMessage(res.data.message);
                       setPassword("");
@@ -93,7 +93,7 @@ export default function LoginPage() {
         <Button
           variant="contained"
           color="info"
-          onClick={() => router.push("/activities/registry")}
+          onClick={() => router.push("/abstracts/registry")}
         >
           Registry
         </Button>

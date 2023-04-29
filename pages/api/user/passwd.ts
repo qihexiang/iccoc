@@ -1,9 +1,11 @@
 import HttpError from "@/lib/HttpError";
 import { errorLog } from "@/lib/errors";
+import { sessionOptions } from "@/lib/session";
 import { passwdUser } from "@/lib/user";
+import { withIronSessionApiRoute } from "iron-session/next";
 import { NextApiRequest, NextApiResponse } from "next";
 
-export default async function passwdRoute(
+async function passwdRoute(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
@@ -33,3 +35,5 @@ export default async function passwdRoute(
     });
   }
 }
+
+export default withIronSessionApiRoute(passwdRoute, sessionOptions)

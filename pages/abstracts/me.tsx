@@ -13,14 +13,13 @@ import {
 } from "@mui/material";
 import { Box } from "@mui/system";
 import { Abstract, Attachment, Authors } from "@prisma/client";
-import { passwordStrength } from "check-password-strength";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import { useEffect, useRef, useState } from "react";
 
 export default function MeView() {
   const email = useUser({
-    redirectTo: "/activities/login",
+    redirectTo: "/abstracts/login",
     redirectOnLoggedIn: false,
   });
   const [abstracts, setAbstracts] = useState<
@@ -65,43 +64,13 @@ export default function MeView() {
 function PersonalCenterHeader(props: { email: string; refresh: () => void }) {
   const router = useRouter();
   const { email, refresh } = props;
-  const [newPassword, setNewPassword] = useState("");
-  const passwordNotTooWeak = newPassword === "" || passwordStrength(newPassword).id !== 0;
-  const [confirmPassword, setConfirmPassword] = useState("");
-  const passwordNotMatch = confirmPassword !== newPassword;
   return (
     <Box sx={{ display: "flex", gap: 2, flexWrap: "wrap" }}>
       <Typography variant="h6">{email}</Typography>
       <Button variant="contained" color="primary" onClick={refresh}>
         Refresh
       </Button>
-      {/* <Box>
-        <TextField
-          label={"Password"}
-          value={newPassword}
-          onChange={(e) =>
-            setNewPassword(e.target.value)
-          }
-          placeholder="Set a password"
-          type="password"
-          error={!passwordNotTooWeak}
-          helperText={passwordNotTooWeak ? "" : "Too weak"}
-        />
-        <TextField
-          label={"Confirm password"}
-          value={confirmPassword}
-          onChange={(e) =>
-            setConfirmPassword(e.target.value)
-          }
-          placeholder="Confirm your password"
-          error={passwordNotMatch}
-          helperText={passwordNotMatch ? "Doesn't match" : ""}
-          type="password"
-        />
-        <Button variant="contained" color="warning">
-          Reset password
-        </Button>
-      </Box> */}
+
       <Button
         variant="contained"
         color="error"
@@ -110,6 +79,9 @@ function PersonalCenterHeader(props: { email: string; refresh: () => void }) {
         }}
       >
         Logout
+      </Button>
+      <Button variant="contained" color="warning" onClick={() => router.push("/abstracts/passwd")}>
+        Reset password
       </Button>
     </Box>
   );
@@ -126,7 +98,10 @@ function AbstractItem(props: {
     return (
       <AbstractEditor
         abstract={null}
-        afterSave={() => setEdit(true)}
+        afterSave={() => {
+          setEdit(true)
+          props.onUpdate()
+        }}
       ></AbstractEditor>
     );
   }
