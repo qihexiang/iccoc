@@ -69,58 +69,56 @@ export default function App({ Component, pageProps }: AppProps) {
             aspectRatio: "4/1",
           }}
         ></Box>
-        <Box sx={{ display: "flex", alignItems: "center", justifyContent: "center", overflowX: "scroll" }}>
-          <Box
-            sx={{ marginTop: 1, marginBottom: 1, display: "flex", flexWrap: "wrap", justifyContent: "center", alignItems: "center" }}
-          >
-            {mainRoutes.map(([routeName, routePath], idx) => (
-              <Button
-                key={idx}
-                onClick={() => router.push(routePath)}
-                color={routeIdx === idx ? "secondary" : "primary"}
-              >
-                {routeName}
-              </Button>
-            ))}
-            <Button ref={dropBtnRef} onClick={() => setDropOpen(!dropOpen)}>
-              Pervious Events
-            </Button>
-            <Popper
-              open={dropOpen}
-              anchorEl={dropBtnRef.current}
-              placement="bottom-start"
-              transition
-              disablePortal
+        <Box
+          sx={{ marginTop: 1, marginBottom: 1, display: "flex", flexWrap: "wrap", justifyContent: "center", alignItems: "center" }}
+        >
+          {mainRoutes.map(([routeName, routePath], idx) => (
+            <Button
+              key={idx}
+              onClick={() => router.push(routePath)}
+              color={routeIdx === idx ? "secondary" : "primary"}
             >
-              {({ TransitionProps, placement }) => (
-                <Grow
-                  {...TransitionProps}
-                  style={{
-                    transformOrigin:
-                      placement === "bottom-start" ? "left top" : "left bottom",
-                  }}
-                >
-                  <Paper>
-                    <ClickAwayListener onClickAway={() => setDropOpen(false)}>
-                      <MenuList autoFocusItem={dropOpen}>
-                        {previousEvents.map(([label, path], idx) => (
-                          <MenuItem
-                            key={idx}
-                            onClick={() => {
-                              setDropOpen(false);
-                              router.push(`/previous/${path}`);
-                            }}
-                          >
-                            {label}
-                          </MenuItem>
-                        ))}
-                      </MenuList>
-                    </ClickAwayListener>
-                  </Paper>
-                </Grow>
-              )}
-            </Popper>
-          </Box>
+              {routeName}
+            </Button>
+          ))}
+          <Button ref={dropBtnRef} onClick={() => setDropOpen(!dropOpen)}>
+            Pervious Events
+          </Button>
+          <Popper
+            open={dropOpen}
+            anchorEl={dropBtnRef.current}
+            placement="bottom-start"
+            transition
+            disablePortal
+          >
+            {({ TransitionProps, placement }) => (
+              <Grow
+                {...TransitionProps}
+                style={{
+                  transformOrigin:
+                    placement === "bottom-start" ? "left top" : "left bottom",
+                }}
+              >
+                <Paper>
+                  <ClickAwayListener onClickAway={() => setDropOpen(false)}>
+                    <MenuList autoFocusItem={dropOpen}>
+                      {previousEvents.map(([label, path], idx) => (
+                        <MenuItem
+                          key={idx}
+                          onClick={() => {
+                            setDropOpen(false);
+                            router.push(`/previous/${path}`);
+                          }}
+                        >
+                          {label}
+                        </MenuItem>
+                      ))}
+                    </MenuList>
+                  </ClickAwayListener>
+                </Paper>
+              </Grow>
+            )}
+          </Popper>
         </Box>
       </>}
       <MDXProvider
