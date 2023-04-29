@@ -10,6 +10,12 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum EntityStatus {
+  Saved
+  Submitted
+  Accepted
+}
+
 model Admin {
   id       Int    @id @default(autoincrement())
   account  String @unique @db.VarChar(255)
@@ -17,23 +23,45 @@ model Admin {
 }
 
 model User {
-  id        Int        @id @default(autoincrement())
-  email     String     @unique @db.VarChar(255)
-  password  String     @db.VarChar(255)
-  abstracts Abstract[]
+  id         Int          @id @default(autoincrement())
+  email      String       @unique @db.VarChar(255)
+  password   String       @db.VarChar(255)
+  abstracts  Abstract[]
+  arriveInfo ArriveInfo[]
+}
+
+enum AbstractType {
+  Talk
+  Post
 }
 
 model Abstract {
   id          Int          @id @default(autoincrement())
   userId      Int
   user        User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  status      EntityStatus
+  type        AbstractType
   title       String       @db.Text()
   content     String       @db.Text()
   attachments Attachment[]
-  authors     Authors[]
+  author      Author[]
 }
 
-model Authors {
+model ArriveInfo {
+  id            Int      @id @default(autoincrement())
+  status        EntityStatus
+  userId        Int
+  user          User     @relation(fields: [userId], references: [id])
+  dontPickUp    Boolean
+  contactName   String   @db.VarChar(255)
+  telephone     String   @db.VarChar(255)
+  email         String   @db.VarChar(255)
+  groupNumber   Int
+  arriveStation String   @db.VarChar(255)
+  arriveAt      DateTime @db.DateTime()
+}
+
+model Author {
   id                  Int      @id @default(autoincrement())
   abstractId          Int
   abstract            Abstract @relation(fields: [abstractId], references: [id], onDelete: Cascade)
