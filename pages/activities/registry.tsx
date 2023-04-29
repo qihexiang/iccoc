@@ -11,12 +11,6 @@ import {
 import { passwordStrength } from "check-password-strength";
 import router from "next/router";
 import { useState } from "react";
-import { z } from "zod";
-
-const registrySchema = z.object({
-  email: z.string().email(),
-  password: z.string(),
-});
 
 export default function UserRegistry() {
   const defaultValue = {
