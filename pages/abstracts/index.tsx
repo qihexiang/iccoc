@@ -8,8 +8,10 @@ export default function ActivitesIndex() {
       <Head>
         <title>ICCOC2023</title>
       </Head>
-      <Typography sx={{textAlign: "center"}} variant="h5">To be updated</Typography>
-      <Box sx={{height: 320}}></Box>
+      <Typography sx={{ textAlign: "center" }} variant="h5">
+        To be updated
+      </Typography>
+      <Box sx={{ height: 320 }}></Box>
     </>
   );
 }

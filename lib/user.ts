@@ -7,6 +7,7 @@ import {
   AuthorUpdateSchema,
   AuthorsCreateSchema,
 } from "./abstract";
+import { EntityStatus } from "@prisma/client";
 
 /**
  * 创建用户
@@ -139,6 +140,7 @@ export async function userCreateAbstract(email: string, data: unknown) {
     const created = await prisma.abstract.create({
       data: {
         ...abstract,
+        status: EntityStatus.Saved,
         user: { connect: { email } },
       },
       include: {

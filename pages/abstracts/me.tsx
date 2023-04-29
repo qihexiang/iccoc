@@ -12,7 +12,7 @@ import {
   Typography,
 } from "@mui/material";
 import { Box } from "@mui/system";
-import { Abstract, Attachment, Authors } from "@prisma/client";
+import { Abstract, Attachment, Author } from "@prisma/client";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import { useEffect, useRef, useState } from "react";
@@ -23,7 +23,7 @@ export default function MeView() {
     redirectOnLoggedIn: false,
   });
   const [abstracts, setAbstracts] = useState<
-    (Abstract & { authors: Authors[]; attachments: Attachment[] })[]
+    (Abstract & { authors: Author[]; attachments: Attachment[] })[]
   >([]);
   const [refreshSignal, setRefresh] = useState(Symbol());
   const refresh = () => setRefresh(Symbol());
@@ -80,7 +80,11 @@ function PersonalCenterHeader(props: { email: string; refresh: () => void }) {
       >
         Logout
       </Button>
-      <Button variant="contained" color="warning" onClick={() => router.push("/abstracts/passwd")}>
+      <Button
+        variant="contained"
+        color="warning"
+        onClick={() => router.push("/abstracts/passwd")}
+      >
         Reset password
       </Button>
     </Box>
@@ -89,8 +93,8 @@ function PersonalCenterHeader(props: { email: string; refresh: () => void }) {
 
 function AbstractItem(props: {
   abstract:
-  | (Abstract & { authors: Authors[]; attachments: Attachment[] })
-  | null;
+    | (Abstract & { authors: Author[]; attachments: Attachment[] })
+    | null;
   onUpdate: () => void;
 }) {
   const [edit, setEdit] = useState(false);
@@ -99,8 +103,8 @@ function AbstractItem(props: {
       <AbstractEditor
         abstract={null}
         afterSave={() => {
-          setEdit(true)
-          props.onUpdate()
+          setEdit(true);
+          props.onUpdate();
         }}
       ></AbstractEditor>
     );
@@ -127,7 +131,7 @@ function AbstractItem(props: {
 }
 
 function AbstractDisplay(props: {
-  abstract: Abstract & { authors: Authors[]; attachments: Attachment[] };
+  abstract: Abstract & { authors: Author[]; attachments: Attachment[] };
   switchToEditor: () => void;
   onUpdate: () => void;
 }) {
@@ -171,8 +175,8 @@ function AbstractDisplay(props: {
 
 function AbstractEditor(props: {
   abstract:
-  | (Abstract & { authors: Authors[]; attachments: Attachment[] })
-  | null;
+    | (Abstract & { authors: Author[]; attachments: Attachment[] })
+    | null;
   afterSave: () => void;
 }) {
   const [abstract, setAbstract] = useState({
@@ -225,7 +229,7 @@ function AbstractEditor(props: {
                   key={key}
                   author={author}
                   abstractId={abstract.id!}
-                  afterSave={(authors: Authors[]) =>
+                  afterSave={(authors: Author[]) =>
                     updateAbstract("authors", authors)
                   }
                 ></AuthorEditor>
@@ -233,7 +237,7 @@ function AbstractEditor(props: {
               <AuthorEditor
                 author={null}
                 abstractId={abstract.id}
-                afterSave={(authors: Authors[]) =>
+                afterSave={(authors: Author[]) =>
                   updateAbstract("authors", authors)
                 }
               ></AuthorEditor>
@@ -251,7 +255,8 @@ function AbstractEditor(props: {
                     onClick={() => {
                       api
                         .delete(
-                          `/user/abstracts/${abstract.id!}/attachment/${item.filename
+                          `/user/abstracts/${abstract.id!}/attachment/${
+                            item.filename
                           }`
                         )
                         .then((res) => {
@@ -378,9 +383,9 @@ function AbstractEditor(props: {
 }
 
 function AuthorEditor(props: {
-  author: Authors | null;
+  author: Author | null;
   abstractId: number;
-  afterSave: (saved: Authors[]) => void;
+  afterSave: (saved: Author[]) => void;
 }) {
   const [author, setAuthor] = useState({
     id: props.author?.id,

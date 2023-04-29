@@ -5,10 +5,7 @@ import { passwdUser } from "@/lib/user";
 import { withIronSessionApiRoute } from "iron-session/next";
 import { NextApiRequest, NextApiResponse } from "next";
 
-async function passwdRoute(
-  req: NextApiRequest,
-  res: NextApiResponse
-) {
+async function passwdRoute(req: NextApiRequest, res: NextApiResponse) {
   if (req.session.user === undefined) {
     return res.status(403).json({
       message: "Please login.",
@@ -36,4 +33,4 @@ async function passwdRoute(
   }
 }
 
-export default withIronSessionApiRoute(passwdRoute, sessionOptions)
+export default withIronSessionApiRoute(passwdRoute, sessionOptions);

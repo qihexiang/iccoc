@@ -44,21 +44,21 @@ model Abstract {
   title       String       @db.Text()
   content     String       @db.Text()
   attachments Attachment[]
-  author      Author[]
+  authors      Author[]
 }
 
 model ArriveInfo {
-  id            Int      @id @default(autoincrement())
+  id            Int          @id @default(autoincrement())
   status        EntityStatus
   userId        Int
-  user          User     @relation(fields: [userId], references: [id])
+  user          User         @relation(fields: [userId], references: [id])
   dontPickUp    Boolean
-  contactName   String   @db.VarChar(255)
-  telephone     String   @db.VarChar(255)
-  email         String   @db.VarChar(255)
+  contactName   String       @db.VarChar(255)
+  telephone     String       @db.VarChar(255)
+  email         String       @db.VarChar(255)
   groupNumber   Int
-  arriveStation String   @db.VarChar(255)
-  arriveAt      DateTime @db.DateTime()
+  arriveStation String       @db.VarChar(255)
+  arriveAt      DateTime     @db.DateTime()
 }
 
 model Author {

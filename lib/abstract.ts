@@ -1,6 +1,8 @@
+import { AbstractType } from "@prisma/client";
 import z from "zod";
 
 export const AbstractCreateSchema = z.object({
+  type: z.enum([AbstractType.Post, AbstractType.Talk]),
   title: z.string().min(5).max(255),
   content: z.string().min(5),
 });

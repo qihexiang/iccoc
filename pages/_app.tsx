@@ -59,78 +59,93 @@ export default function App({ Component, pageProps }: AppProps) {
   }, []);
   return (
     <Container component="div" className="App">
-      {pathname.startsWith("/previous") ? null : <>
-        <Box
-          component={"div"}
-          style={{
-            backgroundImage: `url(/ICOC2016.jpg)`,
-            backgroundPosition: "center center",
-            backgroundSize: "cover",
-            aspectRatio: "4/1",
-          }}
-        ></Box>
-        <Box
-          sx={{ marginTop: 1, marginBottom: 1, display: "flex", flexWrap: "wrap", justifyContent: "center", alignItems: "center" }}
-        >
-          {mainRoutes.map(([routeName, routePath], idx) => (
-            <Button
-              key={idx}
-              onClick={() => router.push(routePath)}
-              color={routeIdx === idx ? "secondary" : "primary"}
-            >
-              {routeName}
-            </Button>
-          ))}
-          <Button ref={dropBtnRef} onClick={() => setDropOpen(!dropOpen)}>
-            Pervious Events
-          </Button>
-          <Popper
-            open={dropOpen}
-            anchorEl={dropBtnRef.current}
-            placement="bottom-start"
-            transition
-            disablePortal
+      {pathname.startsWith("/previous") ? null : (
+        <>
+          <Box
+            component={"div"}
+            style={{
+              backgroundImage: `url(/ICOC2016.jpg)`,
+              backgroundPosition: "center center",
+              backgroundSize: "cover",
+              aspectRatio: "4/1",
+            }}
+          ></Box>
+          <Box
+            sx={{
+              marginTop: 1,
+              marginBottom: 1,
+              display: "flex",
+              flexWrap: "wrap",
+              justifyContent: "center",
+              alignItems: "center",
+            }}
           >
-            {({ TransitionProps, placement }) => (
-              <Grow
-                {...TransitionProps}
-                style={{
-                  transformOrigin:
-                    placement === "bottom-start" ? "left top" : "left bottom",
-                }}
+            {mainRoutes.map(([routeName, routePath], idx) => (
+              <Button
+                key={idx}
+                onClick={() => router.push(routePath)}
+                color={routeIdx === idx ? "secondary" : "primary"}
               >
-                <Paper>
-                  <ClickAwayListener onClickAway={() => setDropOpen(false)}>
-                    <MenuList autoFocusItem={dropOpen}>
-                      {previousEvents.map(([label, path], idx) => (
-                        <MenuItem
-                          key={idx}
-                          onClick={() => {
-                            setDropOpen(false);
-                            router.push(`/previous/${path}`);
-                          }}
-                        >
-                          {label}
-                        </MenuItem>
-                      ))}
-                    </MenuList>
-                  </ClickAwayListener>
-                </Paper>
-              </Grow>
-            )}
-          </Popper>
-        </Box>
-      </>}
+                {routeName}
+              </Button>
+            ))}
+            <Button ref={dropBtnRef} onClick={() => setDropOpen(!dropOpen)}>
+              Pervious Events
+            </Button>
+            <Popper
+              open={dropOpen}
+              anchorEl={dropBtnRef.current}
+              placement="bottom-start"
+              transition
+              disablePortal
+            >
+              {({ TransitionProps, placement }) => (
+                <Grow
+                  {...TransitionProps}
+                  style={{
+                    transformOrigin:
+                      placement === "bottom-start" ? "left top" : "left bottom",
+                  }}
+                >
+                  <Paper>
+                    <ClickAwayListener onClickAway={() => setDropOpen(false)}>
+                      <MenuList autoFocusItem={dropOpen}>
+                        {previousEvents.map(([label, path], idx) => (
+                          <MenuItem
+                            key={idx}
+                            onClick={() => {
+                              setDropOpen(false);
+                              router.push(`/previous/${path}`);
+                            }}
+                          >
+                            {label}
+                          </MenuItem>
+                        ))}
+                      </MenuList>
+                    </ClickAwayListener>
+                  </Paper>
+                </Grow>
+              )}
+            </Popper>
+          </Box>
+        </>
+      )}
       <MDXProvider
         components={{
           h1: ({ children }) => (
-            <Typography variant="h4" sx={{ marginTop: 2 }}>{children}</Typography>
+            <Typography variant="h4" sx={{ marginTop: 2 }}>
+              {children}
+            </Typography>
           ),
           h2: ({ children }) => (
-            <Typography variant="h5" sx={{ marginTop: 2 }}>{children}</Typography>
+            <Typography variant="h5" sx={{ marginTop: 2 }}>
+              {children}
+            </Typography>
           ),
           h3: ({ children }) => (
-            <Typography variant="subtitle2" sx={{ marginTop: 2 }}>{children}</Typography>
+            <Typography variant="subtitle2" sx={{ marginTop: 2 }}>
+              {children}
+            </Typography>
           ),
           p: ({ children }) => (
             <Typography variant="body1">{children}</Typography>
@@ -166,8 +181,16 @@ export default function App({ Component, pageProps }: AppProps) {
             </Typography>
           ),
           img: (props) => (
-            <div style={{ display: "flex", alignItems: "center", justifyContent: "center" }}><img {...props} style={{ maxWidth: "100%" }}></img></div>
-          )
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
+              <img {...props} style={{ maxWidth: "100%" }}></img>
+            </div>
+          ),
         }}
       >
         <Component {...pageProps} />
