@@ -8,23 +8,22 @@ import { MDXProvider } from "@mdx-js/react";
 import {
   Box,
   Button,
+  ClickAwayListener,
   Container,
+  Grow,
+  MenuItem,
+  MenuList,
+  Paper,
   Popper,
   Table,
   TableBody,
   TableCell,
   TableHead,
   TableRow,
-  Typography,
-  ClickAwayListener,
-  Grow,
-  MenuItem,
-  MenuList,
-  Paper,
-  ButtonGroup,
+  Typography
 } from "@mui/material";
+import ICCOC2023 from "./index/ICCOC2023.jpg"
 import type { AppProps } from "next/app";
-import Image from "next/image";
 import { useRouter } from "next/router";
 import { useEffect, useRef, useState } from "react";
 
@@ -64,10 +63,10 @@ export default function App({ Component, pageProps }: AppProps) {
           <Box
             component={"div"}
             style={{
-              backgroundImage: `url(/ICOC2016.jpg)`,
+              backgroundImage: `url(${ICCOC2023.src})`,
               backgroundPosition: "center center",
               backgroundSize: "cover",
-              aspectRatio: "4/1",
+              aspectRatio: `${ICCOC2023.width}/${ICCOC2023.height}`,
             }}
           ></Box>
           <Box
