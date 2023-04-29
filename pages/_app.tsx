@@ -21,6 +21,7 @@ import {
   MenuItem,
   MenuList,
   Paper,
+  ButtonGroup,
 } from "@mui/material";
 import type { AppProps } from "next/app";
 import { useRouter } from "next/router";
@@ -65,15 +66,16 @@ export default function App({ Component, pageProps }: AppProps) {
           aspectRatio: "4/1",
         }}
       ></Box>
-      <Box
-        component={"div"}
-        sx={{ marginTop: 1, marginBottom: 1, display: "flex", gap: 1 }}
+      <ButtonGroup
+        variant="outlined"
+        color="primary"
+        sx={{ marginTop: 1, marginBottom: 1 }}
       >
         {mainRoutes.map(([routeName, routePath], idx) => (
           <Button
-            variant={idx === routeIdx ? "contained" : "text"}
             key={idx}
             onClick={() => router.push(routePath)}
+            color={routeIdx === idx ? "secondary" : "primary"}
           >
             {routeName}
           </Button>
@@ -116,7 +118,7 @@ export default function App({ Component, pageProps }: AppProps) {
             </Grow>
           )}
         </Popper>
-      </Box>
+      </ButtonGroup>
       <MDXProvider
         components={{
           h1: ({ children }) => (
