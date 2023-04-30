@@ -109,21 +109,39 @@ export async function userGetAbstracts(
 }
 
 export async function userSubmitAbstract(email: string, abstractId: number) {
-  const current = await prisma.abstract.findFirst({ where: { id: abstractId, user: { email } }, select: { status: true } })
+  const current = await prisma.abstract.findFirst({
+    where: { id: abstractId, user: { email } },
+    select: { status: true },
+  });
   if (current?.status === EntityStatus.Saved) {
-    const updated = await prisma.abstract.update({ where: { id: abstractId }, data: { status: EntityStatus.Submitted } });
-    return updated
+    const updated = await prisma.abstract.update({
+      where: { id: abstractId },
+      data: { status: EntityStatus.Submitted },
+    });
+    return updated;
   }
-  throw new HttpError(403, "Can't submit this abstract. Please refresh and try again later.")
+  throw new HttpError(
+    403,
+    "Can't submit this abstract. Please refresh and try again later."
+  );
 }
 
 export async function userUnsubmitAbstract(email: string, abstractId: number) {
-  const current = await prisma.abstract.findFirst({ where: { id: abstractId, user: { email } }, select: { status: true } })
+  const current = await prisma.abstract.findFirst({
+    where: { id: abstractId, user: { email } },
+    select: { status: true },
+  });
   if (current?.status === EntityStatus.Submitted) {
-    const updated = await prisma.abstract.update({ where: { id: abstractId }, data: { status: EntityStatus.Saved } });
-    return updated
+    const updated = await prisma.abstract.update({
+      where: { id: abstractId },
+      data: { status: EntityStatus.Saved },
+    });
+    return updated;
   }
-  throw new HttpError(403, "Can't un-submit this abstract. Please refresh and try again later.")
+  throw new HttpError(
+    403,
+    "Can't un-submit this abstract. Please refresh and try again later."
+  );
 }
 
 /**
@@ -189,15 +207,23 @@ export async function userUpdateAbstract(
   if (schemaChecked.success) {
     const patch = schemaChecked.data;
     const target = await prisma.abstract.findFirst({
-      where: { id: abstractId, user: { email }, status: EntityStatus.Submitted }
+      where: {
+        id: abstractId,
+        user: { email },
+        status: EntityStatus.Submitted,
+      },
     });
     if (target?.status === EntityStatus.Saved) {
       const updated = await prisma.abstract.update({
-        where: { id: abstractId }, data: patch
+        where: { id: abstractId },
+        data: patch,
       });
-      return updated
+      return updated;
     }
-    throw new HttpError(403, "Not permitted to modify this abstract, you may need to un-submit it.")
+    throw new HttpError(
+      403,
+      "Not permitted to modify this abstract, you may need to un-submit it."
+    );
   }
   throw new HttpError(400, "Bad input data type.");
 }
@@ -211,15 +237,18 @@ export async function userUpdateAbstract(
  */
 export async function userDeleteAbstract(email: string, abstractId: number) {
   const target = await prisma.abstract.findFirst({
-    where: { id: abstractId, user: { email }, status: EntityStatus.Submitted }
+    where: { id: abstractId, user: { email }, status: EntityStatus.Submitted },
   });
   if (target?.status === EntityStatus.Saved) {
     const deleted = await prisma.abstract.delete({
-      where: { id: abstractId }
-    })
-    return deleted
+      where: { id: abstractId },
+    });
+    return deleted;
   }
-  throw new HttpError(403, "Not permitted to modify this abstract, you may need to un-submit it.")
+  throw new HttpError(
+    403,
+    "Not permitted to modify this abstract, you may need to un-submit it."
+  );
 }
 
 /**
@@ -279,22 +308,26 @@ export async function userUploadAttachments(
   size: number
 ) {
   const target = await prisma.abstract.findFirst({
-    where: { id: abstractId, user: { email }, status: EntityStatus.Submitted }
+    where: { id: abstractId, user: { email }, status: EntityStatus.Submitted },
   });
   if (target?.status === EntityStatus.Saved) {
     try {
       const updated = await prisma.abstract.update({
         where: {
-          id: abstractId
-        }, data: {
+          id: abstractId,
+        },
+        data: {
           attachments: {
             create: {
-              filename, fsname, size
-            }
-          }
-        }, select: { attachments: true }
-      })
-      return updated.attachments
+              filename,
+              fsname,
+              size,
+            },
+          },
+        },
+        select: { attachments: true },
+      });
+      return updated.attachments;
     } catch (err) {
       throw new HttpError(
         403,
@@ -302,7 +335,10 @@ export async function userUploadAttachments(
       );
     }
   }
-  throw new HttpError(403, "Not permitted to modify this abstract, you may need to un-submit it.")
+  throw new HttpError(
+    403,
+    "Not permitted to modify this abstract, you may need to un-submit it."
+  );
 }
 
 /**
@@ -319,29 +355,38 @@ export async function userDeleteAttachements(
   filename: string
 ) {
   const target = await prisma.abstract.findFirst({
-    where: { id: abstractId, user: { email }, status: EntityStatus.Submitted }
+    where: { id: abstractId, user: { email }, status: EntityStatus.Submitted },
   });
   if (target?.status === EntityStatus.Saved) {
     try {
       const updated = await prisma.abstract.update({
-        where: { id: abstractId }, data: {
+        where: { id: abstractId },
+        data: {
           attachments: {
             delete: {
               abstractId_filename: {
-                abstractId, filename
-              }
-            }
-          }
-        }, select: {
-          attachments: true
-        }
-      })
-      return updated.attachments
+                abstractId,
+                filename,
+              },
+            },
+          },
+        },
+        select: {
+          attachments: true,
+        },
+      });
+      return updated.attachments;
     } catch (err) {
-      throw new HttpError(403, "Unable to delete file. Target file may not existed.")
+      throw new HttpError(
+        403,
+        "Unable to delete file. Target file may not existed."
+      );
     }
   }
-  throw new HttpError(403, "Not permitted to modify this abstract, you may need to un-submit it.")
+  throw new HttpError(
+    403,
+    "Not permitted to modify this abstract, you may need to un-submit it."
+  );
 }
 
 export async function userAddAuthor(
@@ -354,25 +399,30 @@ export async function userAddAuthor(
     throw new HttpError(400, "Invalid user input, check and retry later.");
   }
   const target = await prisma.abstract.findFirst({
-    where: { id: abstractId, user: { email }, status: EntityStatus.Submitted }
+    where: { id: abstractId, user: { email }, status: EntityStatus.Submitted },
   });
   if (target?.status === EntityStatus.Saved) {
     try {
       const updated = await prisma.abstract.update({
-        where: { id: abstractId }, data: {
+        where: { id: abstractId },
+        data: {
           authors: {
-            create: dataChecked.data
-          }
-        }, select: {
-          authors: true
-        }
-      })
-      return updated.authors
+            create: dataChecked.data,
+          },
+        },
+        select: {
+          authors: true,
+        },
+      });
+      return updated.authors;
     } catch (err) {
       throw new HttpError(403, "Permission denied, refresh and retry later.");
     }
   }
-  throw new HttpError(403, "Not permitted to modify this abstract, you may need to un-submit it.")
+  throw new HttpError(
+    403,
+    "Not permitted to modify this abstract, you may need to un-submit it."
+  );
 }
 
 export async function userUpdateAuthor(
@@ -383,32 +433,42 @@ export async function userUpdateAuthor(
 ) {
   const dataChecked = AuthorUpdateSchema.safeParse(data);
   if (!dataChecked.success) {
-    throw new HttpError(400, "Invalid user input, check and retry later.")
+    throw new HttpError(400, "Invalid user input, check and retry later.");
   }
   const target = await prisma.abstract.findFirst({
-    where: { id: abstractId, user: { email }, status: EntityStatus.Submitted }
+    where: { id: abstractId, user: { email }, status: EntityStatus.Submitted },
   });
   if (target?.status === EntityStatus.Saved) {
     try {
       const updated = await prisma.abstract.update({
-        where: { id: abstractId }, data: {
+        where: { id: abstractId },
+        data: {
           authors: {
             update: {
               where: {
-                id: authorId
-              }, data: dataChecked.data
-            }
-          }
-        }, select: {
-          authors: true
-        }
-      })
-      return updated.authors
+                id: authorId,
+              },
+              data: dataChecked.data,
+            },
+          },
+        },
+        select: {
+          authors: true,
+        },
+      });
+      return updated.authors;
     } catch (err) {
-      throw new HttpError(403, "Permission denied, please refresh and retry later.", err)
+      throw new HttpError(
+        403,
+        "Permission denied, please refresh and retry later.",
+        err
+      );
     }
   }
-  throw new HttpError(403, "Not permitted to modify this abstract, you may need to un-submit it.")
+  throw new HttpError(
+    403,
+    "Not permitted to modify this abstract, you may need to un-submit it."
+  );
 }
 
 export async function userRemoveAuthor(
@@ -417,25 +477,34 @@ export async function userRemoveAuthor(
   authorId: number
 ) {
   const target = await prisma.abstract.findFirst({
-    where: { id: abstractId, user: { email }, status: EntityStatus.Submitted }
+    where: { id: abstractId, user: { email }, status: EntityStatus.Submitted },
   });
   if (target?.status === EntityStatus.Saved) {
     try {
       const updated = await prisma.abstract.update({
-        where: { id: abstractId }, data: {
+        where: { id: abstractId },
+        data: {
           authors: {
             delete: {
-              id: authorId
-            }
-          }
-        }, select: {
-          authors: true
-        }
-      })
-      return updated.authors
+              id: authorId,
+            },
+          },
+        },
+        select: {
+          authors: true,
+        },
+      });
+      return updated.authors;
     } catch (err) {
-      throw new HttpError(403, "Permission denied, please refresh and retry later.", err)
+      throw new HttpError(
+        403,
+        "Permission denied, please refresh and retry later.",
+        err
+      );
     }
   }
-  throw new HttpError(403, "Not permitted to modify this abstract, you may need to un-submit it.")
+  throw new HttpError(
+    403,
+    "Not permitted to modify this abstract, you may need to un-submit it."
+  );
 }
