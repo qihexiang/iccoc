@@ -8,7 +8,11 @@ COPY .git /root/iccoc.git
 
 RUN git clone /root/iccoc.git /root/iccoc 
 
+COPY out/iccoc.tar.bz2 /root/
+
 WORKDIR /root/iccoc
+
+RUN tar xf /root/iccoc.tar.bz2 &2>/dev/null
 
 RUN pnpm config set sharp_binary_host "https://npmmirror.com/mirrors/sharp" && \
     pnpm config set sharp_libvips_binary_host "https://npmmirror.com/mirrors/sharp-libvips"
