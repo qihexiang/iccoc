@@ -13,9 +13,9 @@ This project is based on:
 
 ## Pre-requirements
 
-- Node.js >
-- MariaDB/MySQL database
-- Redis
+- Node.js >= 18
+- MariaDB >= 10 or MySQL >= 8
+- Redis >= 7
 
 Both MariaDB and Redis can be start by the `docker-compose.yml`.
 
