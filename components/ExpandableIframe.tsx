@@ -1,5 +1,5 @@
-import { Button, Card, CardActionArea, CardContent, Typography } from "@mui/material";
 import { Close } from "@mui/icons-material";
+import { Button, Card, CardContent, Typography } from "@mui/material";
 import { Box } from "@mui/system";
 import { useState } from "react";
 

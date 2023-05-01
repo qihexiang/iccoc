@@ -4,14 +4,14 @@ services:
   database:
     image: mariadb:latest
     ports:
-      - 13306:3306
+      - ${DATABASE_HOST}:${DATABASE_PORT}:3306
     volumes:
       - ./db:/var/lib/mysql:rw
     environment:
       - MYSQL_RANDOM_ROOT_PASSWORD=1
-      - MYSQL_DATABASE=iccoc2023
-      - MYSQL_USER=iccoc
-      - MYSQL_PASSWORD=dsaj39_348
+      - MYSQL_DATABASE=${DATABASE_NAME}
+      - MYSQL_USER=${DATABASE_USERNAME}
+      - MYSQL_PASSWORD=${DATABASE_PASSWORD}
     restart: always
 
   counter:
