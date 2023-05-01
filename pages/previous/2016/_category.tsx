@@ -37,6 +37,7 @@ export default function Category2016(props: {
               flexDirection: props.vertical ? "column" : "row",
               gap: 1,
               alignItems: "flex-start",
+              flexWrap: "wrap",
               marginTop: 1,
               marginBottom: 1,
             }}
