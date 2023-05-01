@@ -55,7 +55,6 @@
     "@types/lodash": "^4.14.191",
     "@types/mime": "^3.0.1",
     "prettier": "^2.8.8",
-    "prisma": "^4.13.0",
-    "webpack": "^5.75.0"
+    "prisma": "^4.13.0"
   }
 }
