@@ -60,7 +60,7 @@ Example:
 }
 ```
 
-### `data`
+### data
 
 `data` directory in workdir is the place where to put user-uploaded attachments. You must create it before the application start.
 
@@ -99,3 +99,5 @@ touch out/iccoc.tar.bz2
 # regular build:
 pnpm package:docker
 ```
+
+> Set higher `nofile` limit in `containers.conf` when using podman instead of docker for building.
