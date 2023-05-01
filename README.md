@@ -1,107 +1,101 @@
-<<<<<<< HEAD
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# ICCOC Web
 
-## Getting Started
+Here will introduce how to start developing on this project. 
 
-First, run the development server:
+This project is based on: 
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
+- [Next.js](https://nextjs.org/)  
+- [Prisma](https://www.prisma.io/)
+- [MariaDB](https://mariadb.com/)
+- [Redis](https://redis.io/)
+- [Docker (Optional)](https://www.docker.com/)
+- And other knowledge about W3 developing and deployment, you may need [Google](https://google.com).
+
+## Pre-requirements
+
+- Node.js >
+- MariaDB/MySQL database
+- Redis
+
+Both MariaDB and Redis can be start by the `docker-compose.yml`.
+
+## Configs
+
+Most configs were settled in the dotenv(`.env`) file. Variables below are required for start the project:
+
+- DATABASE_USERNAME: The username for connect to the database
+- DATABASE_PASSWORD: The password for the database user
+- DATABASE_HOST: Database's IP address (or hostname, but if it's a hostname, you need to change `docker-compose.yml`'s `services.database.ports` to make it work.)
+- DATABASE_PORT: Database's listening port
+- DATABASE_NAME: The name of the database
+- DATABASE_URL: Database URL, you can get it by `"mysql://${DATABASE_USERNAME}:${DATABASE_PASSWORD}@${DATABASE_HOST}:${DATABASE_PORT}/${DATABASE_NAME}"`
+- NODE_ENV: Node.js environment, can be set to `production` or `development`
+- SECRET_COOKIE_PASSWORD: Password for encrypt the cookies, at least 32 characters
+- APP_SECRET: Password for encrypt other data in this application
+
+> Do never use same variables in development and production  environment! Do never upload `.env` file to a public repository!
+
+## Datas not in Database
+
+### jsonData
+
+`jsonData` is a folder in the workdir. Now you need to provide such files in it:
+
+#### `speakers.json`
+
+This JSON contains two properties: `speakers` and `toBeUpdated`. This file controls what to display on the `/speakers`.
+
+Example:
+
+```jsonc
+// Don't left comments in the prodcution environment JSON file.
+{
+  "speakers": [
+    // [firstname, lastname, additional information]
+    ["Paul W.", "Ayers", "(Mcmaster University, Canada)"],
+    ["Zexing", "Cao", "(Xiamen University, China)"],
+  ],
+  // true or false   
+  "toBeUpdated": true
+}
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### `data`
 
-You can start editing the page by modifying `pages/index.tsx`. The page auto-updates as you edit the file.
+`data` directory in workdir is the place where to put user-uploaded attachments. You must create it before the application start.
 
-[API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.ts`.
+## MDX and TSX
 
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
+`.mdx` files in `pages` directory provide a way to write pages with Markdown syntax, but if you'd like to provide a more complex function, you need to write code in `.tsx` files. Most static pages were provided in 
+`.mdx` format while intereactive pages (like pages in `/abstracts/` paths).
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+## Databases with docker-compose
 
-## Learn More
+It's recommended to create and run your databases with docker to make it more safe and controlable.
 
-To learn more about Next.js, take a look at the following resources:
+Redis will keep it's data in `redis` folder, MariaDB will keep it's data in `db` folder.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## dev and build
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
-
-## Environments
-
-- DATABASE_URL: Prisma database url
-- NODE_ENV: Node.js running mode
-- SECRET_COOKIE_PASSWORD: Iron session cookie password
-- APP_SECRET: Application global secret.
-
-````powershell
-$env:DATABASE_URL="mysql://iccoc:dsaj39_348@localhost:13306/iccoc2023"
-$env:NODE_ENV="development"
-$env:SECRET_COOKIE_PASSWORD="fdjalkfjalje32490_ejr__r32idc0nb"
-$env:APP_SECRET="hellonexticcoc"
-$env:SUDO_SECRET="djaf;lejwi3243423"
-=======
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
-
-## Getting Started
-
-First, run the development server:
+It's recommended to use pnpm to develop in this project.
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
+# install pnpm
+npm install pnpm -g
+# Install dependencies
+pnpm install
+# Generate Prisma codes.
+pnpm prisma generate
+# Sync Prisma code with database.
+pnpm prisma db push
+# Start develop
 pnpm dev
-````
-
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
-
-You can start editing the page by modifying `pages/index.tsx`. The page auto-updates as you edit the file.
-
-[API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.ts`.
-
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
-
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
-
-## Environments
-
-- DATABASE_URL: Prisma database url
-- NODE_ENV: Node.js running mode
-- SECRET_COOKIE_PASSWORD: Iron session cookie password
-- APP_SECRET: Application global secret.
-
-```powershell
-$env:DATABASE_URL="mysql://iccoc:dsaj39_348@localhost:13306/iccoc2023"
-$env:NODE_ENV="development"
-$env:SECRET_COOKIE_PASSWORD="fdjalkfjalje32490_ejr__r32i"
-$env:APP_SECRET="hellonexticcoc"
->>>>>>> dev
+# Build an production version
+pnpm build
+# Build in docker for a Linux version(You may need to change the base image in Dockerfile to get a right build.)
+# if it's first time build in docker:
+mkdir out
+touch out/iccoc.tar.bz2
+# regular build:
+pnpm package:docker
 ```
