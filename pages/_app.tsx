@@ -49,74 +49,77 @@ function Head() {
   );
   const dropBtnRef = useRef<HTMLButtonElement>(null);
   const [dropOpen, setDropOpen] = useState(false);
-  return <>
-    <Box
-      component={"div"}
-      style={{
-        backgroundImage: `url(${ICCOC2023.src})`,
-        backgroundPosition: "center center",
-        backgroundSize: "cover",
-        aspectRatio: `${ICCOC2023.width}/${ICCOC2023.height}`,
-      }}
-    ></Box>
-    <Box
-      sx={{
-        marginTop: 1,
-        marginBottom: 1,
-        display: "flex",
-        flexWrap: "wrap",
-        justifyContent: "center",
-        alignItems: "center",
-      }}
-    >
-      {mainRoutes.map(([routeName, routePath], idx) => (
-        <Button
-          key={idx}
-          onClick={() => router.push(routePath)}
-          color={routeIdx === idx ? "secondary" : "primary"}
-        >
-          {routeName}
-        </Button>
-      ))}
-      <Button ref={dropBtnRef} onClick={() => setDropOpen(!dropOpen)}>
-        Pervious Events
-      </Button>
-      <Popper
-        open={dropOpen}
-        anchorEl={dropBtnRef.current}
-        placement="bottom-start"
-        transition
-        disablePortal
+  return (
+    <>
+      <Box
+        component={"div"}
+        style={{
+          backgroundImage: `url(${ICCOC2023.src})`,
+          backgroundPosition: "center center",
+          backgroundSize: "cover",
+          aspectRatio: `${ICCOC2023.width}/${ICCOC2023.height}`,
+        }}
+      ></Box>
+      <Box
+        sx={{
+          marginTop: 1,
+          marginBottom: 1,
+          display: "flex",
+          flexWrap: "wrap",
+          justifyContent: "center",
+          alignItems: "center",
+        }}
       >
-        {({ TransitionProps, placement }) => (
-          <Grow
-            {...TransitionProps}
-            style={{
-              transformOrigin:
-                placement === "bottom-start" ? "left top" : "left bottom",
-            }}
+        {mainRoutes.map(([routeName, routePath], idx) => (
+          <Button
+            key={idx}
+            onClick={() => router.push(routePath)}
+            color={routeIdx === idx ? "secondary" : "primary"}
           >
-            <Paper>
-              <ClickAwayListener onClickAway={() => setDropOpen(false)}>
-                <MenuList autoFocusItem={dropOpen}>
-                  {previousEvents.map(([label, path], idx) => (
-                    <MenuItem
-                      key={idx}
-                      onClick={() => {
-                        setDropOpen(false);
-                        router.push(`/previous/${path}`);
-                      }}
-                    >
-                      {label}
-                    </MenuItem>
-                  ))}
-                </MenuList>
-              </ClickAwayListener>
-            </Paper>
-          </Grow>
-        )}
-      </Popper>
-    </Box></>
+            {routeName}
+          </Button>
+        ))}
+        <Button ref={dropBtnRef} onClick={() => setDropOpen(!dropOpen)}>
+          Pervious Events
+        </Button>
+        <Popper
+          open={dropOpen}
+          anchorEl={dropBtnRef.current}
+          placement="bottom-start"
+          transition
+          disablePortal
+        >
+          {({ TransitionProps, placement }) => (
+            <Grow
+              {...TransitionProps}
+              style={{
+                transformOrigin:
+                  placement === "bottom-start" ? "left top" : "left bottom",
+              }}
+            >
+              <Paper>
+                <ClickAwayListener onClickAway={() => setDropOpen(false)}>
+                  <MenuList autoFocusItem={dropOpen}>
+                    {previousEvents.map(([label, path], idx) => (
+                      <MenuItem
+                        key={idx}
+                        onClick={() => {
+                          setDropOpen(false);
+                          router.push(`/previous/${path}`);
+                        }}
+                      >
+                        {label}
+                      </MenuItem>
+                    ))}
+                  </MenuList>
+                </ClickAwayListener>
+              </Paper>
+            </Grow>
+          )}
+        </Popper>
+      </Box>
+    </>
+  );
 }
 
 export function Foot() {
@@ -126,113 +129,125 @@ export function Foot() {
       setCount(res.data.count);
     });
   }, []);
-  return <>
-    <Typography
-      component={"div"}
-      variant="body2"
-      sx={{ textAlign: "center", marginTop: 2 }}
-    >
-      ICCOC2023, International Conference of Computational Organometallic
-      Catalysis
-    </Typography>
-    <Typography sx={{ textAlign: "center" }} variant="body2">
-      Recently visited: {count}
-    </Typography>
-    <Typography
-      variant="body2"
-      component={"a"}
-      href="https://beian.miit.gov.cn"
-      sx={{ textAlign: "center", display: "block" }}
-    >
-      京ICP备18022349-3号
-    </Typography>
-  </>
+  return (
+    <>
+      <Typography
+        component={"div"}
+        variant="body2"
+        sx={{ textAlign: "center", marginTop: 2 }}
+      >
+        ICCOC2023, International Conference of Computational Organometallic
+        Catalysis
+      </Typography>
+      <Typography sx={{ textAlign: "center" }} variant="body2">
+        Recently visited: {count}
+      </Typography>
+      <Typography
+        variant="body2"
+        component={"a"}
+        href="https://beian.miit.gov.cn"
+        sx={{ textAlign: "center", display: "block" }}
+      >
+        京ICP备18022349-3号
+      </Typography>
+    </>
+  );
 }
 
-function MDXMapper({ children }: { children: JSX.Element | JSX.Element[] | null }) {
-  return <MDXProvider
-    components={{
-      h1: ({ children }) => (
-        <Typography variant="h4" sx={{ marginTop: 2 }}>
-          {children}
-        </Typography>
-      ),
-      h2: ({ children }) => (
-        <Typography variant="h5" sx={{ marginTop: 2 }}>
-          {children}
-        </Typography>
-      ),
-      h3: ({ children }) => (
-        <Typography variant="subtitle2" sx={{ marginTop: 2 }}>
-          {children}
-        </Typography>
-      ),
-      p: ({ children }) => (
-        <Typography variant="body1">{children}</Typography>
-      ),
-      span: ({ children }) => (
-        <Typography component="span" variant="body1">
-          {children}
-        </Typography>
-      ),
-      li: ({ children }) => (
-        <Typography component="li" variant="body1">
-          {children}
-        </Typography>
-      ),
-      table: ({ children }) => <Table>{children}</Table>,
-      thead: ({ children }) => <TableHead>{children}</TableHead>,
-      tbody: ({ children }) => <TableBody>{children}</TableBody>,
-      tr: ({ children }) => <TableRow>{children}</TableRow>,
-      th: ({ children }) => <TableCell>{children}</TableCell>,
-      td: ({ children }) => <TableCell>{children}</TableCell>,
-      pre: ({ children }) => (
-        <Typography
-          variant="body2"
-          component={"pre"}
-          style={{ overflow: "scroll" }}
-        >
-          {children}
-        </Typography>
-      ),
-      code: ({ children }) => (
-        <Typography variant="body2" component={"code"}>
-          {children}
-        </Typography>
-      ),
-      img: (props) => (
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-          }}
-        >
-          <img {...props} style={{ maxWidth: "100%" }}></img>
-        </div>
-      ),
-    }}
-  >
-    {children}
-  </MDXProvider>
+function MDXMapper({
+  children,
+}: {
+  children: JSX.Element | JSX.Element[] | null;
+}) {
+  return (
+    <MDXProvider
+      components={{
+        h1: ({ children }) => (
+          <Typography variant="h4" sx={{ marginTop: 2 }}>
+            {children}
+          </Typography>
+        ),
+        h2: ({ children }) => (
+          <Typography variant="h5" sx={{ marginTop: 2 }}>
+            {children}
+          </Typography>
+        ),
+        h3: ({ children }) => (
+          <Typography variant="subtitle2" sx={{ marginTop: 2 }}>
+            {children}
+          </Typography>
+        ),
+        p: ({ children }) => (
+          <Typography variant="body1">{children}</Typography>
+        ),
+        span: ({ children }) => (
+          <Typography component="span" variant="body1">
+            {children}
+          </Typography>
+        ),
+        li: ({ children }) => (
+          <Typography component="li" variant="body1">
+            {children}
+          </Typography>
+        ),
+        table: ({ children }) => <Table>{children}</Table>,
+        thead: ({ children }) => <TableHead>{children}</TableHead>,
+        tbody: ({ children }) => <TableBody>{children}</TableBody>,
+        tr: ({ children }) => <TableRow>{children}</TableRow>,
+        th: ({ children }) => <TableCell>{children}</TableCell>,
+        td: ({ children }) => <TableCell>{children}</TableCell>,
+        pre: ({ children }) => (
+          <Typography
+            variant="body2"
+            component={"pre"}
+            style={{ overflow: "scroll" }}
+          >
+            {children}
+          </Typography>
+        ),
+        code: ({ children }) => (
+          <Typography variant="body2" component={"code"}>
+            {children}
+          </Typography>
+        ),
+        img: (props) => (
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            <img {...props} style={{ maxWidth: "100%" }}></img>
+          </div>
+        ),
+      }}
+    >
+      {children}
+    </MDXProvider>
+  );
 }
 
 export default function App({ Component, pageProps }: AppProps) {
   const router = useRouter();
   return (
     <Container component="div" className="App">
-      {
-        router.pathname.startsWith("/previous") ? <>
+      {router.pathname.startsWith("/previous") ? (
+        <>
           <MDXMapper>
             <Component {...pageProps} />
           </MDXMapper>
           <Foot></Foot>
-        </> : <>
+        </>
+      ) : (
+        <>
           <Head></Head>
-          <MDXMapper><Component {...pageProps} /></MDXMapper>
+          <MDXMapper>
+            <Component {...pageProps} />
+          </MDXMapper>
           <Foot></Foot>
         </>
-      }
+      )}
     </Container>
   );
 }

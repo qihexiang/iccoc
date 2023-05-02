@@ -16,9 +16,19 @@ export default function ExpandableIframe(
       {expand ? (
         <Card>
           <CardContent>
-            <Box sx={{ display: "flex", justifyContent: "space-between", marginBottom: 1 }}>
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "space-between",
+                marginBottom: 1,
+              }}
+            >
               <Typography variant="h6">Google Map</Typography>
-              <Button color="error" variant="contained" onClick={() => setExpand(false)}>
+              <Button
+                color="error"
+                variant="contained"
+                onClick={() => setExpand(false)}
+              >
                 <Close></Close>
               </Button>
             </Box>
@@ -26,7 +36,11 @@ export default function ExpandableIframe(
           </CardContent>
         </Card>
       ) : (
-        <Button color="primary" variant="contained" onClick={() => setExpand(true)}>
+        <Button
+          color="primary"
+          variant="contained"
+          onClick={() => setExpand(true)}
+        >
           {buttonName}
         </Button>
       )}

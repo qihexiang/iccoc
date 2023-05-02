@@ -1,10 +1,10 @@
 # ICCOC Web
 
-Here will introduce how to start developing on this project. 
+Here will introduce how to start developing on this project.
 
-This project is based on: 
+This project is based on:
 
-- [Next.js](https://nextjs.org/)  
+- [Next.js](https://nextjs.org/)
 - [Prisma](https://www.prisma.io/)
 - [MariaDB](https://mariadb.com/)
 - [Redis](https://redis.io/)
@@ -33,7 +33,7 @@ Most configs were settled in the dotenv(`.env`) file. Variables below are requir
 - SECRET_COOKIE_PASSWORD: Password for encrypt the cookies, at least 32 characters
 - APP_SECRET: Password for encrypt other data in this application
 
-> Do never use same variables in development and production  environment! Do never upload `.env` file to a public repository!
+> Do never use same variables in development and production environment! Do never upload `.env` file to a public repository!
 
 ## Datas not in Database
 
@@ -53,9 +53,9 @@ Example:
   "speakers": [
     // [firstname, lastname, additional information]
     ["Paul W.", "Ayers", "(Mcmaster University, Canada)"],
-    ["Zexing", "Cao", "(Xiamen University, China)"],
+    ["Zexing", "Cao", "(Xiamen University, China)"]
   ],
-  // true or false   
+  // true or false
   "toBeUpdated": true
 }
 ```
@@ -66,7 +66,7 @@ Example:
 
 ## MDX and TSX
 
-`.mdx` files in `pages` directory provide a way to write pages with Markdown syntax, but if you'd like to provide a more complex function, you need to write code in `.tsx` files. Most static pages were provided in 
+`.mdx` files in `pages` directory provide a way to write pages with Markdown syntax, but if you'd like to provide a more complex function, you need to write code in `.tsx` files. Most static pages were provided in
 `.mdx` format while intereactive pages (like pages in `/abstracts/` paths).
 
 ## Databases with docker-compose
