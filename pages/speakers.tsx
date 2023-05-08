@@ -56,7 +56,11 @@ export const getServerSideProps: GetServerSideProps<
   const data = await readFile(
     join(cwd(), "jsonData", "speakers.json"),
     "utf-8"
-  ).then((data) => JSON.parse(data));
+  ).then((data) => JSON.parse(data)).catch(() => {
+    return {
+      speakers: [], toBeUpdated: true
+    }
+  });
   const validate = dataSchema.safeParse(data);
   if (validate.success) {
     return { props: validate.data };
