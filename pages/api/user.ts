@@ -4,11 +4,9 @@ import { NextApiRequest, NextApiResponse } from "next";
 
 async function usersRoute(req: NextApiRequest, res: NextApiResponse) {
   if (req.session.user !== undefined) {
-    res.status(200).json({
-      user: req.session.user,
-    });
+    res.status(200).json(req.session.user);
   } else {
-    res.status(403).json({ message: "Please login." });
+    res.status(403).send("Please loggin");
   }
 }
 
