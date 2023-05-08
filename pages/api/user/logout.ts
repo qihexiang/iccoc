@@ -1,12 +1,10 @@
 import { withIronSessionApiRoute } from "iron-session/next";
 import { sessionOptions } from "lib/session";
-import { NextApiRequest, NextApiResponse } from "next";
+import { NextApiHandler } from "next";
 
-function logoutRoute(req: NextApiRequest, res: NextApiResponse) {
+const LogoutRoute: NextApiHandler = (req, res) => {
   req.session.destroy();
-  res.json({
-    message: "Logged out.",
-  });
+  res.send("Logged out");
 }
 
-export default withIronSessionApiRoute(logoutRoute, sessionOptions);
+export default withIronSessionApiRoute(LogoutRoute, sessionOptions);

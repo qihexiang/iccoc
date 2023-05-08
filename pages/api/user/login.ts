@@ -1,32 +1,24 @@
-import { userPasswordHmac } from "@/lib/crypto";
-import { errorLog } from "@/lib/errors";
 import prisma from "@/lib/prisma";
 import { sessionOptions } from "@/lib/session";
-import { checkUser } from "@/lib/user";
+import bcrypt from "bcrypt";
 import { withIronSessionApiRoute } from "iron-session/next";
-import { NextApiRequest, NextApiResponse } from "next";
+import { NextApiHandler } from "next";
 
-async function loginRoute(req: NextApiRequest, res: NextApiResponse) {
-  try {
-    const { email, password } = await req.body;
-    const user = await checkUser(email, password);
-    if (user) {
-      req.session.user = { email };
-      await req.session.save();
-      res.json({
-        user,
-      });
-    } else {
-      res.status(403).json({
-        message: "Invalid username(email) or password",
-      });
-    }
-  } catch (err) {
-    errorLog(err);
-    res.status(400).json({
-      message: "Invalid user input, please retry.",
+const LoginRoute: NextApiHandler = async (req, res) => {
+  const { email, password } = await req.body;
+  const user = await prisma.user.findUnique({ where: { email }, select: { password: true } });
+
+  if (user !== null && await bcrypt.compare(password, user.password)) {
+    req.session.user = { email };
+    await req.session.save();
+    res.json({
+      user,
+    });
+  } else {
+    res.status(403).json({
+      message: "Invalid username(email) or password",
     });
   }
 }
 
-export default withIronSessionApiRoute(loginRoute, sessionOptions);
+export default withIronSessionApiRoute(LoginRoute, sessionOptions);

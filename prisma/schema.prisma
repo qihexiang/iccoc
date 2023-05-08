@@ -10,76 +10,73 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-enum EntityStatus {
-  Saved
-  Submitted
-  Accepted
-}
-
-model Admin {
-  id       Int    @id @default(autoincrement())
-  account  String @unique @db.VarChar(255)
-  password String @db.VarChar(255)
-}
-
 model User {
-  id         Int          @id @default(autoincrement())
-  email      String       @unique @db.VarChar(255)
-  password   String       @db.VarChar(255)
-  abstracts  Abstract[]
-  arriveInfo ArriveInfo[]
+  id            Int            @id @default(autoincrement())
+  email         String         @unique
+  password      String
+  name          String
+  institution   String
+  title         String
+  phoneNumber   String
+  collaborators Collaborator[]
+  projects      Project[]
+  travel        Travel?
+  hotelBooking  HotelBooking?
 }
 
-enum AbstractType {
-  Talk
-  Post
+model Collaborator {
+  id       Int       @id @default(autoincrement())
+  email    String
+  name     String
+  user     User      @relation(fields: [userId], references: [id])
+  userId   Int
+  projects Project[] @relation("ProjectCollaborators")
+  attend   Boolean
+
+  @@unique([userId, email])
 }
 
-model Abstract {
-  id          Int          @id @default(autoincrement())
-  userId      Int
-  user        User         @relation(fields: [userId], references: [id], onDelete: Cascade)
-  status      EntityStatus
-  type        AbstractType
-  title       String       @db.Text()
-  content     String       @db.Text()
-  attachments Attachment[]
-  authors      Author[]
-}
-
-model ArriveInfo {
-  id            Int          @id @default(autoincrement())
-  status        EntityStatus
+model Project {
+  id            Int            @id @default(autoincrement())
+  name          String
+  type          ProjectType
+  status        ProjectStatus
+  user          User           @relation(fields: [userId], references: [id])
   userId        Int
-  user          User         @relation(fields: [userId], references: [id])
-  dontPickUp    Boolean
-  contactName   String       @db.VarChar(255)
-  telephone     String       @db.VarChar(255)
-  email         String       @db.VarChar(255)
-  groupNumber   Int
-  arriveStation String       @db.VarChar(255)
-  arriveAt      DateTime     @db.DateTime()
+  filename      String
+  storagePath   String
+  collaborators Collaborator[] @relation("ProjectCollaborators")
 }
 
-model Author {
-  id                  Int      @id @default(autoincrement())
-  abstractId          Int
-  abstract            Abstract @relation(fields: [abstractId], references: [id], onDelete: Cascade)
-  authorName          String   @db.VarChar(255)
-  email               String   @db.VarChar(255)
-  region              String   @db.VarChar(255)
-  staff               String   @db.VarChar(255)
-  speaker             Boolean
-  correspondingAuthor Boolean
+enum ProjectType {
+  TALK
+  POSTER
 }
 
-model Attachment {
-  id         Int      @id @default(autoincrement())
-  abstractId Int
-  abstract   Abstract @relation(fields: [abstractId], references: [id], onDelete: Cascade)
-  filename   String   @db.VarChar(255)
-  size       Int
-  fsname     String   @unique @db.VarChar(255)
+enum ProjectStatus {
+  SAVED
+  SUBMITTED
+  ACCEPTED
+  REJECTED
+}
 
-  @@unique([abstractId, filename])
+model Travel {
+  id            Int       @id @default(autoincrement())
+  arrivalDate   DateTime?
+  arrivalNo     String?
+  departureDate DateTime?
+  departureNo   String?
+  user          User      @relation(fields: [userId], references: [id])
+  userId        Int       @unique
+}
+
+model HotelBooking {
+  id            Int      @id @default(autoincrement())
+  checkinDate   DateTime
+  checkoutDate  DateTime
+  standardRooms Int
+  kingRooms     Int
+  location      String
+  user          User     @relation(fields: [userId], references: [id])
+  userId        Int      @unique
 }
