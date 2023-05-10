@@ -10,7 +10,9 @@ const handler: NextApiHandler = async (req, res) => {
     const { email } = req.session.user;
 
     if (req.method === "GET") {
-        const collaborators = await prisma.collaborator.findMany();
+        const collaborators = await prisma.collaborator.findMany({
+            where: { user: { email } }
+        });
         return res.json(collaborators)
     }
 
