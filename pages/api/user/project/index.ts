@@ -39,23 +39,20 @@ const handler: NextApiHandler = async (req, res) => {
         const { projectType, projectName, projectAuthors } = fields;
         const abstractFile = files["uploaded"] as formidable.File;
 
-        const created = await prisma.$transaction(async prisma => {
-            const fileId = nanoid();
-            await copyFile(abstractFile.filepath, join(cwd(), "upload", fileId));
-            const created = await prisma.project.create({
-                data: {
-                    name: projectName as string,
-                    type: projectType as ProjectType,
-                    status: ProjectStatus.SAVED,
-                    filename: abstractFile.originalFilename ?? fileId,
-                    storagePath: fileId,
-                    user: {
-                        connect: { email }
-                    },
-                    collaborators: { connect: (projectAuthors as string[]).map(Number).map(id => ({ id })) }
-                }
-            })
-            return created
+        const fileId = nanoid();
+        await copyFile(abstractFile.filepath, join(cwd(), "upload", fileId));
+        const created = await prisma.project.create({
+            data: {
+                name: projectName as string,
+                type: projectType as ProjectType,
+                status: ProjectStatus.SAVED,
+                filename: abstractFile.originalFilename ?? fileId,
+                storagePath: fileId,
+                user: {
+                    connect: { email }
+                },
+                collaborators: { connect: (projectAuthors as string[]).map(Number).map(id => ({ id })) }
+            }
         })
 
         return res.json(created)
