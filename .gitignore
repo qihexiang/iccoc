@@ -40,3 +40,4 @@ jsonData
 db/
 redis/
 .env
+upload/
