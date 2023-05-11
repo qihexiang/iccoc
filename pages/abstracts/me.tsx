@@ -267,7 +267,8 @@ function ProjectEditor(props: {
   const [project, setProject] = useState(props.project);
   const uploadRef = useRef<HTMLInputElement>(null);
   const [waiting, setWaiting] = useState<string | undefined>(undefined);
-
+  const { collaborators } = useContext(UserProjectCtx);
+  
   if (project === null) {
     return (
       <ProjectCreator
@@ -289,8 +290,6 @@ function ProjectEditor(props: {
         type: project.type,
         presontor: project.presontor
       });
-
-    const { collaborators } = useContext(UserProjectCtx);
 
     return (
       <Card>

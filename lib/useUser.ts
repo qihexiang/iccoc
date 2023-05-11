@@ -1,8 +1,7 @@
+import { User } from "@prisma/client";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import api from "./apiRequest";
-import { User } from "@prisma/client";
-import { redirect } from "next/dist/server/api-utils";
 enum Status {
   Pending,
   LoggedIn,
@@ -26,6 +25,6 @@ export function useUser(options: {
         }
       });
     }
-  }, []);
+  }, [user, options.redirectOnLoggedIn, options.redirectTo, router]);
   return user;
 }
