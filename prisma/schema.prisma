@@ -10,6 +10,11 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum UserType {
+  FACULTY
+  STUDENT
+}
+
 model User {
   id            Int            @id @default(autoincrement())
   email         String         @unique
@@ -22,6 +27,7 @@ model User {
   projects      Project[]
   travel        Travel?
   hotelBooking  HotelBooking?
+  userType      UserType
 }
 
 model Collaborator {

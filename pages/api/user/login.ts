@@ -6,9 +6,12 @@ import { NextApiHandler } from "next";
 
 const LoginRoute: NextApiHandler = async (req, res) => {
   const { email, password } = await req.body;
-  const user = await prisma.user.findUnique({ where: { email }, select: { password: true } });
+  const user = await prisma.user.findUnique({
+    where: { email },
+    select: { password: true },
+  });
 
-  if (user !== null && await bcrypt.compare(password, user.password)) {
+  if (user !== null && (await bcrypt.compare(password, user.password))) {
     req.session.user = { email };
     await req.session.save();
     res.json({
@@ -19,6 +22,6 @@ const LoginRoute: NextApiHandler = async (req, res) => {
       message: "Invalid username(email) or password",
     });
   }
-}
+};
 
 export default withIronSessionApiRoute(LoginRoute, sessionOptions);

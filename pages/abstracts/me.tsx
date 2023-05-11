@@ -1,75 +1,140 @@
+import Expandable from "@/components/Expandable";
 import api from "@/lib/apiRequest";
 import { useUser } from "@/lib/useUser";
 import {
+  Box,
   Button,
   ButtonGroup,
   Card,
+  CardActionArea,
   CardActions,
   CardContent,
   Checkbox,
+  Chip,
+  FormControl,
   FormControlLabel,
+  InputLabel,
+  MenuItem,
+  Select,
   TextField,
   Typography,
 } from "@mui/material";
-import { Box } from "@mui/system";
-import { Abstract, Attachment, Author } from "@prisma/client";
+import {
+  Collaborator,
+  Project,
+  ProjectStatus,
+  ProjectType,
+} from "@prisma/client";
 import Head from "next/head";
 import { useRouter } from "next/router";
-import { useEffect, useRef, useState } from "react";
+import { createContext, useContext, useEffect, useRef, useState } from "react";
+
+type UserProjectData = {
+  projects: (Project & { collaborators: Collaborator[] })[];
+  collaborators: Collaborator[];
+};
+
+const UserProjectCtx = createContext<UserProjectData & {
+  refresh: (prop?: keyof UserProjectData) => void
+}>({
+  projects: [], collaborators: [], refresh: (prop) => { }
+})
 
 export default function MeView() {
-  const email = useUser({
+  const user = useUser({
     redirectTo: "/abstracts/login",
     redirectOnLoggedIn: false,
   });
-  const [abstracts, setAbstracts] = useState<
-    (Abstract & { authors: Author[]; attachments: Attachment[] })[]
-  >([]);
-  const [refreshSignal, setRefresh] = useState(Symbol());
-  const refresh = () => setRefresh(Symbol());
+  const [data, setData] = useState<{
+    projects: (Project & { collaborators: Collaborator[] })[];
+    collaborators: Collaborator[];
+  }>({
+    projects: [],
+    collaborators: [],
+  });
+
+  const refresh = (prop?: keyof UserProjectData) => {
+    if (prop === "collaborators") {
+      api.get(`/user/collaborator`)
+        .then(res => {
+          if (res.status < 400) {
+            setData({ ...data, collaborators: res.data })
+          } else {
+            alert("Failed to get data, please refresh and retry")
+          }
+        })
+    }
+    if (prop === "projects") {
+      api.get("/user/project").then(res => {
+        if (res.status < 400) {
+          setData({ ...data, projects: res.data })
+        } else {
+          alert("Failed to get data, please refresh and retry")
+        }
+      })
+    }
+    if (prop === undefined) {
+      Promise.all([api.get("/user/project"), api.get("/user/collaborator")]).then(
+        ([pRes, cRes]) => {
+          if (pRes.status < 400 && cRes.status < 400) {
+            setData({ projects: pRes.data, collaborators: cRes.data });
+          } else {
+            alert("Failed to fetch data, please refresh the page and retry.");
+          }
+        }
+      );
+    }
+  }
+
   useEffect(() => {
-    api.get("/user/abstracts/", { withCredentials: true }).then((res) => {
-      if (res.status === 200) {
-        setAbstracts(res.data);
-      } else {
-        alert("Failed to fetch data from the server, please refresh the page.");
-      }
-    });
-  }, [refreshSignal]);
+    refresh()
+  }, [])
+
   return (
     <>
       <Head>
         <title>Personal center - ICCOC2023</title>
       </Head>
-      <Box>
-        <PersonalCenterHeader
-          email={email}
-          refresh={refresh}
-        ></PersonalCenterHeader>
-        <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
-          {abstracts.map((item, key) => (
-            <AbstractItem
-              abstract={item}
-              key={key}
-              onUpdate={refresh}
-            ></AbstractItem>
+      <Box display={"flex"} flexDirection={"column"} gap={1}>
+        {user !== undefined ? (
+          <PersonalCenterHeader
+            email={user.email}
+            name={user.name}
+          ></PersonalCenterHeader>
+        ) : null}
+        <UserProjectCtx.Provider value={{
+          ...data, refresh
+        }}>
+          {data.projects.map((p, idx) => (
+            <ProjectItem
+              key={idx}
+              project={p}
+              afterSave={refresh}
+            ></ProjectItem>
           ))}
-          <AbstractItem abstract={null} onUpdate={refresh}></AbstractItem>
-        </Box>
+          <Typography variant="subtitle2">Add another abstract?</Typography>
+          <ProjectItem
+            project={null}
+            afterSave={refresh}
+          ></ProjectItem>
+        </UserProjectCtx.Provider >
       </Box>
     </>
   );
 }
 
-function PersonalCenterHeader(props: { email: string; refresh: () => void }) {
+function PersonalCenterHeader(props: {
+  email: string;
+  name: string;
+}) {
   const router = useRouter();
-  const { email, refresh } = props;
+  const { email, name } = props;
   return (
     <Box sx={{ display: "flex", gap: 2, flexWrap: "wrap" }}>
-      <Typography variant="h6">{email}</Typography>
-      <Button variant="contained" color="primary" onClick={refresh}>
-        Refresh
-      </Button>
+      <Box>
+        <Typography variant="h6">Welcome, {name}</Typography>
+        <Typography variant="overline">{email}</Typography>
+      </Box>
 
       <Button
         variant="contained"
@@ -91,466 +156,452 @@ function PersonalCenterHeader(props: { email: string; refresh: () => void }) {
   );
 }
 
-function AbstractItem(props: {
-  abstract:
-    | (Abstract & { authors: Author[]; attachments: Attachment[] })
-    | null;
-  onUpdate: () => void;
+function ProjectItem(props: {
+  project: (Project & { collaborators: Collaborator[] }) | null;
+  afterSave: () => void;
 }) {
-  const [edit, setEdit] = useState(false);
-  if (props.abstract === null) {
+  const { collaborators } = useContext(UserProjectCtx);
+  const { project, afterSave } = props;
+  const [editState, setEditState] = useState(false);
+  if (editState || project === null) {
     return (
-      <AbstractEditor
-        abstract={null}
+      <ProjectEditor
+        project={project}
+        collaborators={collaborators}
         afterSave={() => {
-          setEdit(true);
-          props.onUpdate();
+          setEditState(false);
+          afterSave();
         }}
-      ></AbstractEditor>
-    );
-  }
-  if (!edit) {
-    return (
-      <AbstractDisplay
-        abstract={props.abstract}
-        switchToEditor={() => setEdit(true)}
-        onUpdate={props.onUpdate}
-      ></AbstractDisplay>
+      ></ProjectEditor>
     );
   } else {
     return (
-      <AbstractEditor
-        abstract={props.abstract}
-        afterSave={() => {
-          setEdit(false);
-          props.onUpdate();
-        }}
-      ></AbstractEditor>
+      <Card>
+        <CardContent>
+          <Box display={"flex"} gap={1}><StatusIndicator status={project.status}></StatusIndicator>
+            <Typography variant="h6">{project.name}</Typography></Box>
+        </CardContent>
+        <CardActions>
+          {project.status === ProjectStatus.SAVED ? (
+            <ButtonGroup variant="contained">
+              <Button onClick={() => setEditState(true)} color="primary">
+                Edit
+              </Button>
+              <Button color="success" onClick={() => {
+                api.post(`/user/project/${project.id}/status`)
+                  .then(res => {
+                    if (res.status < 400) {
+                      alert("Submitted!")
+                      props.afterSave()
+                    } else {
+                      alert("Failed to submit. Please retry later.")
+                    }
+                  })
+              }}>Submit</Button>
+              <Button color="error" onClick={() => {
+                api.delete(`/user/project/${project.id}`)
+                  .then(res => {
+                    if (res.status < 400) {
+                      alert("Deleted")
+                      props.afterSave()
+                    } else {
+                      alert("Failed to delete. Please retry later.")
+                    }
+                  })
+              }}>Remove</Button>
+            </ButtonGroup>
+          ) : null}
+          {project.status === ProjectStatus.SUBMITTED ? (
+            <Button variant="contained" color="info" onClick={() => {
+              api.delete(`/user/project/${project.id}/status`)
+                .then(res => {
+                  if (res.status < 400) {
+                    alert("Withdrawed")
+                    props.afterSave()
+                  } else {
+                    alert("Failed to withdraw. Please retry later.")
+                  }
+                })
+            }}>Withdraw</Button>
+          ) : null}
+        </CardActions>
+      </Card>
     );
   }
 }
 
-function AbstractDisplay(props: {
-  abstract: Abstract & { authors: Author[]; attachments: Attachment[] };
-  switchToEditor: () => void;
-  onUpdate: () => void;
-}) {
-  const { title, content, authors } = props.abstract;
-  const { switchToEditor } = props;
-  return (
-    <Card>
-      <CardContent sx={{ display: "flex", flexDirection: "column", gap: 1 }}>
-        <Typography variant="h6">{title}</Typography>
-        <Typography variant="body2">
-          {authors.map((author) => author.authorName).join("/")}
-        </Typography>
-        <Typography variant="body1">{content}</Typography>
-      </CardContent>
-      <CardActions>
-        <ButtonGroup variant="contained">
-          <Button onClick={() => switchToEditor()}>Edit</Button>
-          <Button
-            onClick={() => {
-              api
-                .delete(`/user/abstracts/${props.abstract.id}`, {
-                  withCredentials: true,
-                })
-                .then((res) => {
-                  if (res.status === 200) {
-                    props.onUpdate();
-                  } else {
-                    alert("Failed to delete author, retry later please");
-                  }
-                });
-            }}
-            color="error"
-          >
-            Delete
-          </Button>
-        </ButtonGroup>
-      </CardActions>
-    </Card>
-  );
+function StatusIndicator(props: { status: ProjectStatus }) {
+  const { status } = props;
+  if (status === ProjectStatus.SAVED) {
+    return <Chip label="Saved" color="info"></Chip>;
+  }
+  if (status === ProjectStatus.SUBMITTED) {
+    return <Chip label="Submitted" color="primary"></Chip>;
+  }
+  if (status === ProjectStatus.ACCEPTED) {
+    return <Chip label="Accepted" color="success"></Chip>;
+  }
+  return <Chip label="Rejected" color="error"></Chip>;
 }
 
-function AbstractEditor(props: {
-  abstract:
-    | (Abstract & { authors: Author[]; attachments: Attachment[] })
-    | null;
+function ProjectEditor(props: {
+  project: (Project & { collaborators: Collaborator[] }) | null;
+  collaborators: Collaborator[];
   afterSave: () => void;
 }) {
-  const [abstract, setAbstract] = useState({
-    id: props.abstract?.id,
-    title: props.abstract?.title ?? "",
-    content: props.abstract?.content ?? "",
-    authors: props.abstract?.authors ?? [],
-    attachments: props.abstract?.attachments ?? [],
-  });
-  const updateAbstract = <T extends keyof typeof abstract>(
-    prop: T,
-    value: (typeof abstract)[T]
-  ) => {
-    setAbstract({ ...abstract, [prop]: value });
-  };
-  const { afterSave } = props;
+  const [project, setProject] = useState(props.project);
   const uploadRef = useRef<HTMLInputElement>(null);
-  const [uploadProgress, setUploadProgress] = useState<string | undefined>(
-    undefined
-  );
-  return (
-    <Card>
-      <CardContent sx={{ display: "flex", flexDirection: "column", gap: 1 }}>
-        <Typography variant="h6">
-          {abstract.id === undefined ? "New Abstract" : "Update"}
-        </Typography>
-        <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
-          <Typography variant="subtitle1">Title</Typography>
-          <TextField
-            label="Title"
-            value={abstract.title}
-            onChange={(e) => updateAbstract("title", e.target.value)}
-          ></TextField>
-          <Typography variant="subtitle1">Abstract</Typography>
-          <TextField
-            label="Content"
-            value={abstract.content}
-            multiline
-            rows={4}
-            onChange={(e) => updateAbstract("content", e.target.value)}
-          ></TextField>
-        </Box>
-        {abstract.id !== undefined ? (
-          <>
-            <Box sx={{ display: "flex", flexDirection: "column", gap: 1 }}>
-              <Typography variant="subtitle1">Authors</Typography>
-              {/* here abstract.id might be undefined, may be a bug of typescript */}
-              {abstract.authors.map((author, key) => (
-                <AuthorEditor
-                  key={key}
-                  author={author}
-                  abstractId={abstract.id!}
-                  afterSave={(authors: Author[]) =>
-                    updateAbstract("authors", authors)
-                  }
-                ></AuthorEditor>
-              ))}
-              <AuthorEditor
-                author={null}
-                abstractId={abstract.id}
-                afterSave={(authors: Author[]) =>
-                  updateAbstract("authors", authors)
+  const [waiting, setWaiting] = useState<string | undefined>(undefined);
+
+  if (project === null) {
+    return (
+      <ProjectCreator
+        afterSave={(project) => {
+          setProject(project);
+        }}
+      ></ProjectCreator>
+    );
+  } else {
+    const projectId = project.id;
+
+    const updateProject = (patch: Partial<typeof project>) => {
+      setProject({ ...project, ...patch });
+    };
+
+    const upload = () =>
+      api.put(`/user/project/${projectId}/basic`, {
+        name: project.name,
+        type: project.type,
+      });
+
+    return (
+      <Card>
+        <CardContent>
+          <Box display={"flex"} flexDirection={"column"} gap={2}>
+            <FormControl>
+              <InputLabel>Type</InputLabel>
+              <Select
+                label={"Type"}
+                value={project.type}
+                onChange={(e) =>
+                  updateProject({ type: e.target.value as ProjectType })
                 }
-              ></AuthorEditor>
-            </Box>
-            <Box sx={{ display: "flex", flexDirection: "column", gap: 1 }}>
-              <Typography variant="subtitle1">Attchments</Typography>
-              {abstract.attachments.map((item, key) => (
-                <Box key={key} sx={{ display: "flex", gap: 1 }}>
-                  <Typography variant="body1">
-                    {item.filename} {(item.size / (1024 * 1024)).toFixed(2)} MB
-                  </Typography>
-                  <Button
-                    variant="contained"
-                    color="error"
-                    onClick={() => {
-                      api
-                        .delete(
-                          `/user/abstracts/${abstract.id!}/attachment/${
-                            item.filename
-                          }`
-                        )
-                        .then((res) => {
-                          if (res.status === 200) {
-                            updateAbstract("attachments", res.data);
-                          } else {
-                            alert(res.data.message ?? "Unknown error happens.");
-                          }
-                        });
-                    }}
-                  >
-                    Delete
-                  </Button>
-                </Box>
-              ))}
-              <Button
-                disabled={uploadProgress !== undefined}
-                variant="contained"
-                component="label"
               >
-                {uploadProgress !== undefined ? uploadProgress : "Upload"}
-                <input
-                  ref={uploadRef}
-                  onChange={(e) => {
-                    if (abstract.attachments.length >= 5) {
-                      alert("Too many files.");
-                    }
-                    if (!Boolean(uploadRef.current?.files)) {
-                      alert("No file selected.");
-                    } else {
-                      const form = new FormData();
-                      form.append("attachment", uploadRef.current!.files![0]);
-                      api
-                        .post(
-                          `/user/abstracts/${abstract.id!}/attachment/`,
-                          form,
-                          {
-                            onUploadProgress(e) {
-                              if (e.total !== undefined) {
-                                setUploadProgress(
-                                  `${((e.loaded / e.total) * 100).toFixed(2)}%`
-                                );
-                              } else {
-                                setUploadProgress(
-                                  `${(e.loaded / (1024 * 1024)).toFixed(2)} MB`
-                                );
-                              }
-                            },
-                          }
-                        )
-                        .then((res) => {
-                          setUploadProgress(undefined);
-                          if (res.status === 200) {
-                            updateAbstract("attachments", res.data);
-                          } else {
-                            alert(res.data.message);
-                          }
-                        });
-                    }
-                    e.target.files = null;
-                  }}
-                  hidden
-                  type="file"
-                />
-              </Button>
-            </Box>
-          </>
-        ) : null}
-      </CardContent>
-      <CardActions>
-        {abstract.id === undefined ? (
+                <MenuItem value={ProjectType.POSTER}>Poster</MenuItem>
+                <MenuItem value={ProjectType.TALK}>Talk</MenuItem>
+              </Select>
+            </FormControl>
+            <TextField
+              fullWidth
+              label={"Title"}
+              value={project.name}
+              onChange={(e) => updateProject({ name: e.target.value })}
+            ></TextField>
+            <Button
+              disabled={waiting !== undefined}
+              variant="contained"
+              component="label"
+            >
+              {waiting === undefined ? `Replace ${project.filename}` : waiting}
+              <input
+                ref={uploadRef}
+                onChange={(e) => {
+                  const form = new FormData();
+                  if (e.target.files === null) {
+                    return;
+                  }
+                  form.append("updated", e.target.files[0]);
+                  api
+                    .put(`/user/project/${projectId}/attachment`, form, {
+                      onUploadProgress(e) {
+                        if (e.total !== undefined) {
+                          setWaiting(
+                            `${(e.loaded / e.total / 100).toFixed(2)}%`
+                          );
+                        } else {
+                          setWaiting(
+                            `${(e.loaded / 1024 / 1024).toFixed(2)}MB`
+                          );
+                        }
+                      },
+                    })
+                    .then((res) => {
+                      if (res.status < 400) {
+                        updateProject({ filename: e.target.files![0].name });
+                      } else {
+                        alert("Failed to update the file.");
+                      }
+                    })
+                    .finally(() => setWaiting(undefined));
+                }}
+                hidden
+                type="file"
+              />
+            </Button>
+            {project.collaborators.map((c, idx) => (
+              <CollaboratorEditor
+                key={idx}
+                projectId={project.id}
+                email={c.email}
+                afterSave={(updated) => setProject(updated)}
+              ></CollaboratorEditor>
+            ))}
+            <Typography variant="overline">Add another collaborator</Typography>
+            <CollaboratorEditor
+              projectId={project.id}
+              afterSave={(project) => {
+                setProject(project)
+              }}
+            ></CollaboratorEditor>
+          </Box>
+        </CardContent>
+        <CardActions>
           <Button
             variant="contained"
             color="success"
             onClick={() => {
-              api
-                .post("/user/abstracts", {
-                  title: abstract.title,
-                  content: abstract.content,
-                })
-                .then((res) => {
-                  if (res.status === 200) {
-                    setAbstract(res.data);
-                  } else {
-                    alert(res.data["message"]);
-                  }
-                });
-            }}
-          >
-            Next
-          </Button>
-        ) : (
-          <Button
-            variant="contained"
-            color="success"
-            onClick={() => {
-              api
-                .put(`/user/abstracts/${abstract.id!}`, {
-                  title: abstract.title,
-                  content: abstract.content,
-                })
-                .then((res) => {
-                  if (res.status === 200) {
-                    setAbstract({
-                      id: props.abstract?.id,
-                      title: props.abstract?.title ?? "",
-                      content: props.abstract?.content ?? "",
-                      authors: props.abstract?.authors ?? [],
-                      attachments: props.abstract?.attachments ?? [],
-                    });
-                    afterSave();
-                  } else {
-                    alert(res.data["message"]);
-                  }
-                });
+              upload().then((res) => {
+                if (res.status < 400) {
+                  setProject(null)
+                  props.afterSave();
+                } else {
+                  alert("Faild to update data.");
+                }
+              });
             }}
           >
             Save
           </Button>
-        )}
+        </CardActions>
+      </Card>
+    );
+  }
+}
+
+function ProjectCreator(props: {
+  afterSave: (
+    project: Project & { collaborators: Collaborator[] }
+  ) => void;
+}) {
+  const [basicInfo, setBasicInfo] = useState({
+    name: "",
+    type: ProjectType.TALK as ProjectType,
+  });
+
+  const [file, setFile] = useState<File>();
+
+  const uploadRef = useRef<HTMLInputElement>(null);
+
+  const updateBasicInfo = (patch: Partial<typeof basicInfo>) => {
+    setBasicInfo({ ...basicInfo, ...patch });
+  };
+
+  const uploadFn = () => {
+    if (basicInfo.name === "") {
+      alert("Must input title.");
+      throw null;
+    }
+    if (
+      file === undefined
+    ) {
+      alert("File not selected.");
+      throw null;
+    }
+    const form = new FormData();
+    form.append("name", basicInfo.name);
+    form.append("type", basicInfo.type);
+    form.append("upload", file);
+    return api.post("/user/project", form);
+  };
+
+  return (
+    <Card>
+      <CardContent>
+        <Box display={"flex"} flexDirection={"column"} gap={2}>
+          <FormControl>
+            <InputLabel>Type</InputLabel>
+            <Select
+              label={"Type"}
+              value={basicInfo.type}
+              onChange={(e) =>
+                updateBasicInfo({ type: e.target.value as ProjectType })
+              }
+            >
+              <MenuItem value={ProjectType.POSTER}>Poster</MenuItem>
+              <MenuItem value={ProjectType.TALK}>Talk</MenuItem>
+            </Select>
+          </FormControl>
+          <TextField
+            fullWidth
+            label={"Title"}
+            value={basicInfo.name}
+            onChange={(e) => updateBasicInfo({ name: e.target.value })}
+          ></TextField>
+          <Button
+            disabled={basicInfo.name === ""}
+            variant="contained"
+            component="label"
+          >
+            {file === undefined ? "Upload file" : `Replace ${file.name}`}
+            <input
+              onChange={(e) => { setFile(e.target.files?.item(0) ?? undefined) }}
+              hidden
+              type="file"
+            />
+          </Button>
+        </Box>
+      </CardContent>
+      <CardActions>
+        <Button
+          variant="contained"
+          color="success"
+          onClick={() => {
+            uploadFn().then((res) => {
+              if (res.status < 400) {
+                props.afterSave(res.data);
+              } else {
+                alert("Faild to update data.");
+              }
+            });
+          }}
+        >
+          Next
+        </Button>
       </CardActions>
     </Card>
   );
 }
 
-function AuthorEditor(props: {
-  author: Author | null;
-  abstractId: number;
-  afterSave: (saved: Author[]) => void;
+function CollaboratorEditor(props: {
+  email?: string;
+  projectId?: number;
+  afterSave: (updated: Project & { collaborators: Collaborator[] }) => void;
 }) {
-  const [author, setAuthor] = useState({
-    id: props.author?.id,
-    abstractId: props.abstractId,
-    email: props.author?.email ?? "",
-    authorName: props.author?.authorName ?? "",
-    region: props.author?.region ?? "",
-    staff: props.author?.staff ?? "",
-    speaker: props.author?.speaker ?? false,
-    correspondingAuthor: props.author?.correspondingAuthor ?? false,
-  });
+  const { collaborators, refresh } = useContext(UserProjectCtx);
+  const [collaborator, setCollaborator] = useState(
+    collaborators.find((c) => c.email === props.email) ?? {
+      email: "",
+      name: "",
+      attend: false,
+    }
+  );
 
-  const updateAuthorInfo = <T extends keyof typeof author>(
-    prop: T,
-    value: (typeof author)[T]
-  ) => {
-    setAuthor({
-      ...author,
-      [prop]: value,
+  const updateCollaborator = (patch: Partial<typeof collaborator>) => {
+    setCollaborator({ ...collaborator, ...patch });
+  };
+
+  useEffect(() => {
+    const matched = collaborators.find(
+      (c) => c.email === collaborator.email
+    );
+    if (matched !== undefined) {
+      setCollaborator(matched);
+    }
+  }, [collaborator.email, collaborators]);
+
+  useEffect(() => {
+    setCollaborator(collaborators.find((c) => c.email === props.email) ?? {
+      email: "",
+      name: "",
+      attend: false,
+    })
+  }, [props.email, collaborators])
+
+  const createNewCollaborator = () => {
+    const { email, name, attend } = collaborator;
+    return api.post(`/user/project/${props.projectId}/collaborator`, {
+      email,
+      name,
+      attend,
     });
   };
 
+  const updateExistedCollaborator = (cid: number) => {
+    const { email, name, attend } = collaborator;
+    return api.put(`/user/project/${props.projectId}/collaborator/${cid}`, {
+      email,
+      name,
+      attend,
+    });
+  };
+
+  const deleteExistedCollaborator = (cid: number) => {
+    return api.delete(`/user/project/${props.projectId}/collaborator/${cid}`);
+  };
+
   return (
-    <Box component={"form"} sx={{ display: "flex", gap: 1, flexWrap: "wrap" }}>
+    <Box display={"flex"} gap={1} flexWrap={"wrap"}>
       <TextField
-        label="name"
-        name="name"
-        value={author.authorName}
+        label={"Full name"}
+        value={collaborator.name}
         onChange={(e) => {
-          updateAuthorInfo("authorName", e.target.value);
+          updateCollaborator({ name: e.target.value })
         }}
       ></TextField>
       <TextField
-        label="email"
-        name="email"
-        value={author.email}
-        onChange={(e) => {
-          updateAuthorInfo("email", e.target.value);
-        }}
+        label={"Email address"}
+        value={collaborator.email}
+        onChange={(e) => updateCollaborator({ email: e.target.value })}
       ></TextField>
-      <TextField
-        label="region"
-        name="region"
-        value={author.region}
-        onChange={(e) => {
-          updateAuthorInfo("region", e.target.value);
-        }}
-      ></TextField>
-      <TextField
-        label="staff"
-        name="staff"
-        value={author.staff}
-        onChange={(e) => {
-          updateAuthorInfo("staff", e.target.value);
-        }}
-      ></TextField>
-      <Box>
-        <FormControlLabel
-          control={
-            <Checkbox
-              name="speaker"
-              checked={author.speaker}
-              onChange={(e) => {
-                updateAuthorInfo("speaker", e.target.checked);
-              }}
-            ></Checkbox>
-          }
-          label="is speaker"
-        ></FormControlLabel>
-        <FormControlLabel
-          control={
-            <Checkbox
-              name="corresponding"
-              checked={author.correspondingAuthor}
-              onChange={(e) => {
-                updateAuthorInfo("correspondingAuthor", e.target.checked);
-              }}
-            ></Checkbox>
-          }
-          label="corresponding author"
-        ></FormControlLabel>
-      </Box>
-      <ButtonGroup variant="contained">
-        <Button
-          color="success"
-          onClick={() => {
-            if (props.author === null) {
-              api
-                .post(
-                  `/user/abstracts/${props.abstractId}/author`,
-                  {
-                    authorName: author.authorName,
-                    email: author.email,
-                    region: author.region,
-                    staff: author.staff,
-                    correspondingAuthor: author.correspondingAuthor,
-                    speaker: author.speaker,
-                  },
-                  { withCredentials: true }
-                )
-                .then((res) => {
-                  if (res.status === 200) {
-                    props.afterSave(res.data);
-                    setAuthor({
-                      id: props.author?.id,
-                      abstractId: props.abstractId,
-                      email: props.author?.email ?? "",
-                      authorName: props.author?.authorName ?? "",
-                      region: props.author?.region ?? "",
-                      staff: props.author?.staff ?? "",
-                      speaker: props.author?.speaker ?? false,
-                      correspondingAuthor:
-                        props.author?.correspondingAuthor ?? false,
-                    });
-                  } else {
-                    alert("Failed to create author, retry later please");
-                  }
-                });
+      <FormControlLabel
+        label="Attend"
+        control={
+          <Checkbox
+            checked={collaborator.attend}
+            onChange={(e) => updateCollaborator({ attend: e.target.checked })}
+          ></Checkbox>
+        }
+      ></FormControlLabel>
+      <Button
+        variant="contained"
+        color="success"
+        onClick={async () => {
+          if (!("id" in collaborator)) {
+            const res = await createNewCollaborator();
+            if (res.status < 400) {
+              refresh("collaborators");
+              props.afterSave(res.data);
             } else {
-              api
-                .put(
-                  `/user/abstracts/${props.abstractId}/author/${author.id}`,
-                  {
-                    authorName: author.authorName,
-                    email: author.email,
-                    region: author.region,
-                    staff: author.staff,
-                    correspondingAuthor: author.correspondingAuthor,
-                    speaker: author.speaker,
-                  },
-                  { withCredentials: true }
-                )
-                .then((res) => {
-                  if (res.status === 200) {
-                    props.afterSave(res.data);
-                  } else {
-                    alert("Failed to save author, retry later please");
-                  }
-                });
+              alert(
+                "Failed to create collaborator. Please check and retry later."
+              );
             }
-          }}
-        >
-          {props.author === null ? "Add" : "Save"}
-        </Button>
+          } else {
+            const res = await updateExistedCollaborator(collaborator.id);
+            if (res.status < 400) {
+              refresh("collaborators")
+              props.afterSave(res.data);
+            } else {
+              alert(
+                "Failed to update collaborator. Please check and retry later."
+              );
+            }
+          }
+          setCollaborator({
+            email: "", name: "", attend: false
+          });
+        }}
+      >
+        Save
+      </Button>
+      {props.email !== undefined && "id" in collaborator ? (
         <Button
+          variant="contained"
           color="error"
-          disabled={props.author === null}
-          onClick={() => {
-            api
-              .delete(
-                `/user/abstracts/${props.abstractId}/author/${author.id}`,
-                { withCredentials: true }
-              )
-              .then((res) => {
-                if (res.status === 200) {
-                  props.afterSave(res.data);
-                } else {
-                  alert("Failed to delete author, retry later please");
-                }
-              });
+          onClick={async () => {
+            const res = await deleteExistedCollaborator(collaborator.id);
+            if (res.status < 400) {
+              props.afterSave(res.data);
+            } else {
+              alert(
+                "Failed to remove the collaborator. Please refresh the page and retry."
+              );
+            }
           }}
         >
           Delete
         </Button>
-      </ButtonGroup>
+      ) : null}
     </Box>
   );
 }

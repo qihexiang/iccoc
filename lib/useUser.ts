@@ -1,6 +1,8 @@
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import api from "./apiRequest";
+import { User } from "@prisma/client";
+import { redirect } from "next/dist/server/api-utils";
 enum Status {
   Pending,
   LoggedIn,
@@ -11,26 +13,19 @@ export function useUser(options: {
   redirectTo: string;
   redirectOnLoggedIn: boolean;
 }) {
-  const [[email, status], setEmail] = useState(["", Status.Pending]);
+  const [user, setUser] = useState<Omit<User, "password">>();
   const router = useRouter();
-  if (status !== Status.Pending) {
-    if ((status === Status.LoggedIn) === options.redirectOnLoggedIn) {
-      router.push(options.redirectTo);
-    }
-  }
   useEffect(() => {
-    api
-      .get("/user")
-      .then((res) => {
-        if (res.status === 200 || res.status === 304) {
-          setEmail([res.data.user.email, Status.LoggedIn]);
+    if (user === undefined) {
+      api.get("/user").then((res) => {
+        if (res.status < 400 && res.status >= 200) {
+          setUser(res.data);
+          if (options.redirectOnLoggedIn) router.push(options.redirectTo);
         } else {
-          setEmail(["", Status.NonLogged]);
+          if (!options.redirectOnLoggedIn) router.push(options.redirectTo);
         }
-      })
-      .catch(() => {
-        setEmail(["", Status.NonLogged]);
       });
+    }
   }, []);
-  return email;
+  return user;
 }

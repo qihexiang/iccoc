@@ -25,14 +25,16 @@ export default function Index2016() {
         <Box>
           <Category noCategory={false} vertical noHeader />
         </Box>
-        <Box sx={{
-          backgroundImage: `url(${ICOC2016Photo.src})`,
-          aspectRatio: `${ICOC2016Photo.width} / ${ICOC2016Photo.height}`,
-          maxWidth: "80vw",
-          width: 640,
-          backgroundPosition: "center center",
-          backgroundSize: "cover"
-        }}></Box>
+        <Box
+          sx={{
+            backgroundImage: `url(${ICOC2016Photo.src})`,
+            aspectRatio: `${ICOC2016Photo.width} / ${ICOC2016Photo.height}`,
+            maxWidth: "80vw",
+            width: 640,
+            backgroundPosition: "center center",
+            backgroundSize: "cover",
+          }}
+        ></Box>
       </Box>
     </>
   );

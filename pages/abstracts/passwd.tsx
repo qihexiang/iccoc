@@ -8,7 +8,7 @@ import { useRouter } from "next/router";
 import { useState } from "react";
 
 export default function PasswdView() {
-  const email = useUser({
+  const user = useUser({
     redirectTo: "/abstracts/login ",
     redirectOnLoggedIn: false,
   });
@@ -31,7 +31,7 @@ export default function PasswdView() {
           gap: 1,
         }}
       >
-        <Typography variant="h6">Reset password for {email}</Typography>
+        <Typography variant="h6">Reset password for {user?.email}</Typography>
         <TextField
           label={"Password"}
           value={newPassword}

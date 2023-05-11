@@ -16,35 +16,23 @@ const handler: NextApiHandler = async (req, res) => {
     where: {
       id,
       user: { email },
-      status: {
-        notIn: [ProjectStatus.ACCEPTED, ProjectStatus.REJECTED],
-      },
+      status: ProjectStatus.SAVED,
     },
   });
 
-  if (target === null) return res.status(403).send("Permission denied");
-
-  if (req.method === "POST") {
+  if (target !== null) {
+    const { name, type } = await req.body;
     const updated = await prisma.project.update({
       where: { id },
       data: {
-        status: ProjectStatus.SUBMITTED,
+        name,
+        type,
       },
     });
     return res.json(updated);
   }
 
-  if (req.method === "DELETE") {
-    const updated = await prisma.project.update({
-      where: { id },
-      data: {
-        status: ProjectStatus.SAVED,
-      },
-    });
-    return res.json(updated);
-  }
-
-  return res.status(405).send("Method not allowed.");
+  return res.status(403).send("Permission denied");
 };
 
 export default withIronSessionApiRoute(handler, sessionOptions);
