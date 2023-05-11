@@ -1,12 +1,11 @@
-import Expandable from "@/components/Expandable";
 import api from "@/lib/apiRequest";
 import { useUser } from "@/lib/useUser";
+import { Upload } from "@mui/icons-material";
 import {
   Box,
   Button,
   ButtonGroup,
   Card,
-  CardActionArea,
   CardActions,
   CardContent,
   Checkbox,
@@ -17,13 +16,15 @@ import {
   MenuItem,
   Select,
   TextField,
-  Typography,
+  Typography
 } from "@mui/material";
 import {
   Collaborator,
   Project,
   ProjectStatus,
   ProjectType,
+  User,
+  UserType,
 } from "@prisma/client";
 import Head from "next/head";
 import { useRouter } from "next/router";
@@ -45,6 +46,7 @@ export default function MeView() {
     redirectTo: "/abstracts/login",
     redirectOnLoggedIn: false,
   });
+
   const [data, setData] = useState<{
     projects: (Project & { collaborators: Collaborator[] })[];
     collaborators: Collaborator[];
@@ -90,6 +92,10 @@ export default function MeView() {
     refresh()
   }, [])
 
+  if (user === undefined) {
+    return null
+  }
+
   return (
     <>
       <Head>
@@ -109,12 +115,14 @@ export default function MeView() {
             <ProjectItem
               key={idx}
               project={p}
+              user={user}
               afterSave={refresh}
             ></ProjectItem>
           ))}
           <Typography variant="subtitle2">Add another abstract?</Typography>
           <ProjectItem
             project={null}
+            user={user}
             afterSave={refresh}
           ></ProjectItem>
         </UserProjectCtx.Provider >
@@ -158,16 +166,17 @@ function PersonalCenterHeader(props: {
 
 function ProjectItem(props: {
   project: (Project & { collaborators: Collaborator[] }) | null;
+  user: Omit<User, "password">,
   afterSave: () => void;
 }) {
-  const { collaborators } = useContext(UserProjectCtx);
   const { project, afterSave } = props;
   const [editState, setEditState] = useState(false);
+  const { collaborators } = useContext(UserProjectCtx);
   if (editState || project === null) {
     return (
       <ProjectEditor
         project={project}
-        collaborators={collaborators}
+        user={props.user}
         afterSave={() => {
           setEditState(false);
           afterSave();
@@ -175,11 +184,17 @@ function ProjectItem(props: {
       ></ProjectEditor>
     );
   } else {
+    const presontor = collaborators.find(c => c.id === project.presontor);
     return (
       <Card>
         <CardContent>
-          <Box display={"flex"} gap={1}><StatusIndicator status={project.status}></StatusIndicator>
-            <Typography variant="h6">{project.name}</Typography></Box>
+          <Box display={"flex"} gap={1}>
+            <StatusIndicator status={project.status}></StatusIndicator>
+            <Typography variant="h6">{project.name}</Typography>
+          </Box>
+          <Typography variant="subtitle1">{
+            presontor === undefined ? `${props.user.name} (${props.user.email})` : `${presontor.name} (${presontor.email})`
+          }</Typography>
         </CardContent>
         <CardActions>
           {project.status === ProjectStatus.SAVED ? (
@@ -246,7 +261,7 @@ function StatusIndicator(props: { status: ProjectStatus }) {
 
 function ProjectEditor(props: {
   project: (Project & { collaborators: Collaborator[] }) | null;
-  collaborators: Collaborator[];
+  user: Omit<User, "password">,
   afterSave: () => void;
 }) {
   const [project, setProject] = useState(props.project);
@@ -272,7 +287,10 @@ function ProjectEditor(props: {
       api.put(`/user/project/${projectId}/basic`, {
         name: project.name,
         type: project.type,
+        presontor: project.presontor
       });
+
+    const { collaborators } = useContext(UserProjectCtx);
 
     return (
       <Card>
@@ -302,7 +320,7 @@ function ProjectEditor(props: {
               variant="contained"
               component="label"
             >
-              {waiting === undefined ? `Replace ${project.filename}` : waiting}
+              <Upload></Upload>{waiting === undefined ? `upload file to replace ${project.filename}` : waiting}
               <input
                 ref={uploadRef}
                 onChange={(e) => {
@@ -338,6 +356,28 @@ function ProjectEditor(props: {
                 type="file"
               />
             </Button>
+            <Box display={"flex"} gap={1} flexWrap={"wrap"}>
+              <TextField
+                label={"Full name"}
+                value={props.user.name}
+                disabled
+              ></TextField>
+              <TextField
+                label={"Email address"}
+                value={props.user.email}
+                disabled
+              ></TextField>
+              <FormControlLabel
+                label="Attend"
+                control={
+                  <Checkbox
+                    checked={true}
+                    disabled
+                  ></Checkbox>
+                }
+              ></FormControlLabel>
+              <Button variant="contained" color="info">Modify</Button>
+            </Box>
             {project.collaborators.map((c, idx) => (
               <CollaboratorEditor
                 key={idx}
@@ -353,6 +393,21 @@ function ProjectEditor(props: {
                 setProject(project)
               }}
             ></CollaboratorEditor>
+            <FormControl>
+              <InputLabel>Presontor</InputLabel>
+              <Select label={"Presontor"} value={project.presontor ?? -1} onChange={(e) => {
+                if (e.target.value === -1 || !collaborators.map(c => c.id).includes(e.target.value as number)) {
+                  updateProject({ presontor: null })
+                } else {
+                  updateProject({ presontor: e.target.value as number })
+                }
+              }}>
+                <MenuItem value={-1}>{props.user.name} - {props.user.email}</MenuItem>
+                {
+                  project.collaborators.map((c, idx) => <MenuItem key={idx} value={c.id}>{c.name} - {c.email}</MenuItem>)
+                }
+              </Select>
+            </FormControl>
           </Box>
         </CardContent>
         <CardActions>
@@ -389,8 +444,6 @@ function ProjectCreator(props: {
   });
 
   const [file, setFile] = useState<File>();
-
-  const uploadRef = useRef<HTMLInputElement>(null);
 
   const updateBasicInfo = (patch: Partial<typeof basicInfo>) => {
     setBasicInfo({ ...basicInfo, ...patch });
@@ -442,7 +495,7 @@ function ProjectCreator(props: {
             variant="contained"
             component="label"
           >
-            {file === undefined ? "Upload file" : `Replace ${file.name}`}
+            <Upload></Upload>{file === undefined ? "Upload file" : `Replace ${file.name}`}
             <input
               onChange={(e) => { setFile(e.target.files?.item(0) ?? undefined) }}
               hidden

@@ -21,12 +21,13 @@ const handler: NextApiHandler = async (req, res) => {
   });
 
   if (target !== null) {
-    const { name, type } = await req.body;
+    const { name, type, presontor } = await req.body;
     const updated = await prisma.project.update({
       where: { id },
       data: {
         name,
         type,
+        presontor
       },
     });
     return res.json(updated);

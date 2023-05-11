@@ -52,6 +52,7 @@ model Project {
   filename      String
   storagePath   String
   collaborators Collaborator[] @relation("ProjectCollaborators")
+  presontor     Int?
 }
 
 enum ProjectType {

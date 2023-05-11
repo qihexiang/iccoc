@@ -22,7 +22,20 @@ async function usersRoute(req: NextApiRequest, res: NextApiResponse) {
       return res.status(404).send("User not existed");
     }
 
-    return res.json(user);
+    if (req.method === "GET") {
+
+      return res.json(user);
+    }
+
+    if (req.method === "PUT") {
+      const { name, institution, userType, title, phoneNumber } = await req.body;
+      const updated = await prisma.user.update({
+        where: { id: user.id }, data: {
+          name, institution, userType, title, phoneNumber
+        }
+      })
+      return res.json(updated)
+    }
   }
 
   return res.status(403).send("Please loggin");
