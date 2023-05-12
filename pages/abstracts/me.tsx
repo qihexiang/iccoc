@@ -265,7 +265,7 @@ function ProjectEditor(props: {
   afterSave: () => void;
 }) {
   const [project, setProject] = useState(props.project);
-  const uploadRef = useRef<HTMLInputElement>(null);
+  // const uploadRef = useRef<HTMLInputElement>(null);
   const [waiting, setWaiting] = useState<string | undefined>(undefined);
   const { collaborators } = useContext(UserProjectCtx);
   
@@ -321,7 +321,6 @@ function ProjectEditor(props: {
             >
               <Upload></Upload>{waiting === undefined ? `upload file to replace ${project.filename}` : waiting}
               <input
-                ref={uploadRef}
                 onChange={(e) => {
                   const form = new FormData();
                   if (e.target.files === null) {
