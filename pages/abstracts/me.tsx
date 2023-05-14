@@ -13,6 +13,7 @@ import {
   FormControl,
   FormControlLabel,
   InputLabel,
+  Link,
   MenuItem,
   Select,
   TextField,
@@ -29,6 +30,7 @@ import {
 import Head from "next/head";
 import { useRouter } from "next/router";
 import { createContext, useContext, useEffect, useRef, useState } from "react";
+import NextLink from "next/link"
 
 type UserProjectData = {
   projects: (Project & { collaborators: Collaborator[] })[];
@@ -268,7 +270,7 @@ function ProjectEditor(props: {
   // const uploadRef = useRef<HTMLInputElement>(null);
   const [waiting, setWaiting] = useState<string | undefined>(undefined);
   const { collaborators } = useContext(UserProjectCtx);
-  
+
   if (project === null) {
     return (
       <ProjectCreator
@@ -309,51 +311,53 @@ function ProjectEditor(props: {
               </Select>
             </FormControl>
             <TextField
-              fullWidth
               label={"Title"}
               value={project.name}
               onChange={(e) => updateProject({ name: e.target.value })}
             ></TextField>
-            <Button
-              disabled={waiting !== undefined}
-              variant="contained"
-              component="label"
-            >
-              <Upload></Upload>{waiting === undefined ? `upload file to replace ${project.filename}` : waiting}
-              <input
-                onChange={(e) => {
-                  const form = new FormData();
-                  if (e.target.files === null) {
-                    return;
-                  }
-                  form.append("updated", e.target.files[0]);
-                  api
-                    .put(`/user/project/${projectId}/attachment`, form, {
-                      onUploadProgress(e) {
-                        if (e.total !== undefined) {
-                          setWaiting(
-                            `${(e.loaded / e.total / 100).toFixed(2)}%`
-                          );
+            <Box display={"flex"} gap={1} flexWrap={"wrap"}>
+              <Link component={NextLink} href={`/api/user/project/${project.id}/attachment`}>{project.filename}</Link>
+              <Button
+                disabled={waiting !== undefined}
+                variant="contained"
+                component="label"
+              >
+                <Upload></Upload>{waiting === undefined ? `upload file to replace ${project.filename}` : waiting}
+                <input
+                  onChange={(e) => {
+                    const form = new FormData();
+                    if (e.target.files === null) {
+                      return;
+                    }
+                    form.append("updated", e.target.files[0]);
+                    api
+                      .put(`/user/project/${projectId}/attachment`, form, {
+                        onUploadProgress(e) {
+                          if (e.total !== undefined) {
+                            setWaiting(
+                              `${(e.loaded / e.total / 100).toFixed(2)}%`
+                            );
+                          } else {
+                            setWaiting(
+                              `${(e.loaded / 1024 / 1024).toFixed(2)}MB`
+                            );
+                          }
+                        },
+                      })
+                      .then((res) => {
+                        if (res.status < 400) {
+                          updateProject({ filename: e.target.files![0].name });
                         } else {
-                          setWaiting(
-                            `${(e.loaded / 1024 / 1024).toFixed(2)}MB`
-                          );
+                          alert("Failed to update the file.");
                         }
-                      },
-                    })
-                    .then((res) => {
-                      if (res.status < 400) {
-                        updateProject({ filename: e.target.files![0].name });
-                      } else {
-                        alert("Failed to update the file.");
-                      }
-                    })
-                    .finally(() => setWaiting(undefined));
-                }}
-                hidden
-                type="file"
-              />
-            </Button>
+                      })
+                      .finally(() => setWaiting(undefined));
+                  }}
+                  hidden
+                  type="file"
+                />
+              </Button>
+            </Box>
             <Box display={"flex"} gap={1} flexWrap={"wrap"}>
               <TextField
                 label={"Full name"}
