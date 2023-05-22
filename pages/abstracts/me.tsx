@@ -17,7 +17,7 @@ import {
   MenuItem,
   Select,
   TextField,
-  Typography
+  Typography,
 } from "@mui/material";
 import {
   Collaborator,
@@ -25,23 +25,26 @@ import {
   ProjectStatus,
   ProjectType,
   User,
-  UserType,
 } from "@prisma/client";
 import Head from "next/head";
+import NextLink from "next/link";
 import { useRouter } from "next/router";
-import { createContext, useContext, useEffect, useRef, useState } from "react";
-import NextLink from "next/link"
+import { createContext, useContext, useEffect, useState } from "react";
 
 type UserProjectData = {
   projects: (Project & { collaborators: Collaborator[] })[];
   collaborators: Collaborator[];
 };
 
-const UserProjectCtx = createContext<UserProjectData & {
-  refresh: (prop?: keyof UserProjectData) => void
-}>({
-  projects: [], collaborators: [], refresh: (prop) => { }
-})
+const UserProjectCtx = createContext<
+  UserProjectData & {
+    refresh: (prop?: keyof UserProjectData) => void;
+  }
+>({
+  projects: [],
+  collaborators: [],
+  refresh: (prop) => {},
+});
 
 export default function MeView() {
   const user = useUser({
@@ -59,43 +62,43 @@ export default function MeView() {
 
   const refresh = (prop?: keyof UserProjectData) => {
     if (prop === "collaborators") {
-      api.get(`/user/collaborator`)
-        .then(res => {
-          if (res.status < 400) {
-            setData({ ...data, collaborators: res.data })
-          } else {
-            alert("Failed to get data, please refresh and retry")
-          }
-        })
+      api.get(`/user/collaborator`).then((res) => {
+        if (res.status < 400) {
+          setData({ ...data, collaborators: res.data });
+        } else {
+          alert("Failed to get data, please refresh and retry");
+        }
+      });
     }
     if (prop === "projects") {
-      api.get("/user/project").then(res => {
+      api.get("/user/project").then((res) => {
         if (res.status < 400) {
-          setData({ ...data, projects: res.data })
+          setData({ ...data, projects: res.data });
         } else {
-          alert("Failed to get data, please refresh and retry")
+          alert("Failed to get data, please refresh and retry");
         }
-      })
+      });
     }
     if (prop === undefined) {
-      Promise.all([api.get("/user/project"), api.get("/user/collaborator")]).then(
-        ([pRes, cRes]) => {
-          if (pRes.status < 400 && cRes.status < 400) {
-            setData({ projects: pRes.data, collaborators: cRes.data });
-          } else {
-            alert("Failed to fetch data, please refresh the page and retry.");
-          }
+      Promise.all([
+        api.get("/user/project"),
+        api.get("/user/collaborator"),
+      ]).then(([pRes, cRes]) => {
+        if (pRes.status < 400 && cRes.status < 400) {
+          setData({ projects: pRes.data, collaborators: cRes.data });
+        } else {
+          alert("Failed to fetch data, please refresh the page and retry.");
         }
-      );
+      });
     }
-  }
+  };
 
   useEffect(() => {
-    refresh()
-  }, [])
+    refresh();
+  }, []);
 
   if (user === undefined) {
-    return null
+    return null;
   }
 
   return (
@@ -110,9 +113,12 @@ export default function MeView() {
             name={user.name}
           ></PersonalCenterHeader>
         ) : null}
-        <UserProjectCtx.Provider value={{
-          ...data, refresh
-        }}>
+        <UserProjectCtx.Provider
+          value={{
+            ...data,
+            refresh,
+          }}
+        >
           {data.projects.map((p, idx) => (
             <ProjectItem
               key={idx}
@@ -127,25 +133,42 @@ export default function MeView() {
             user={user}
             afterSave={refresh}
           ></ProjectItem>
-        </UserProjectCtx.Provider >
+        </UserProjectCtx.Provider>
       </Box>
     </>
   );
 }
 
-function PersonalCenterHeader(props: {
-  email: string;
-  name: string;
-}) {
+function PersonalCenterHeader(props: { email: string; name: string }) {
   const router = useRouter();
   const { email, name } = props;
   return (
-    <Box sx={{ display: "flex", gap: 2, flexWrap: "wrap" }}>
+    <Box sx={{ display: "flex", gap: 2, flexWrap: "wrap", alignItems: "center" }}>
       <Box>
         <Typography variant="h6">Welcome, {name}</Typography>
         <Typography variant="overline">{email}</Typography>
       </Box>
-
+      <Button
+        variant="contained"
+        color="info"
+        onClick={() => router.push("/abstracts/personal")}
+      >
+        Personal Information
+      </Button>
+      <Button
+        variant="contained"
+        color="info"
+        onClick={() => router.push("/abstracts/travel")}
+      >
+        Travel Information
+      </Button>
+      <Button
+        variant="contained"
+        color="info"
+        onClick={() => router.push("/abstracts/hotelbooking")}
+      >
+        Hotel Booking Support
+      </Button>{" "}
       <Button
         variant="contained"
         color="error"
@@ -155,20 +178,13 @@ function PersonalCenterHeader(props: {
       >
         Logout
       </Button>
-      <Button
-        variant="contained"
-        color="warning"
-        onClick={() => router.push("/abstracts/passwd")}
-      >
-        Reset password
-      </Button>
     </Box>
   );
 }
 
 function ProjectItem(props: {
   project: (Project & { collaborators: Collaborator[] }) | null;
-  user: Omit<User, "password">,
+  user: Omit<User, "password">;
   afterSave: () => void;
 }) {
   const { project, afterSave } = props;
@@ -186,7 +202,7 @@ function ProjectItem(props: {
       ></ProjectEditor>
     );
   } else {
-    const presontor = collaborators.find(c => c.id === project.presontor);
+    const presontor = collaborators.find((c) => c.id === project.presontor);
     return (
       <Card>
         <CardContent>
@@ -194,9 +210,11 @@ function ProjectItem(props: {
             <StatusIndicator status={project.status}></StatusIndicator>
             <Typography variant="h6">{project.name}</Typography>
           </Box>
-          <Typography variant="subtitle1">{
-            presontor === undefined ? `${props.user.name} (${props.user.email})` : `${presontor.name} (${presontor.email})`
-          }</Typography>
+          <Typography variant="subtitle1">
+            {presontor === undefined
+              ? `${props.user.name} (${props.user.email})`
+              : `${presontor.name} (${presontor.email})`}
+          </Typography>
         </CardContent>
         <CardActions>
           {project.status === ProjectStatus.SAVED ? (
@@ -204,42 +222,55 @@ function ProjectItem(props: {
               <Button onClick={() => setEditState(true)} color="primary">
                 Edit
               </Button>
-              <Button color="success" onClick={() => {
-                api.post(`/user/project/${project.id}/status`)
-                  .then(res => {
+              <Button
+                color="success"
+                onClick={() => {
+                  api.post(`/user/project/${project.id}/status`).then((res) => {
                     if (res.status < 400) {
-                      alert("Submitted!")
-                      props.afterSave()
+                      alert("Submitted!");
+                      props.afterSave();
                     } else {
-                      alert("Failed to submit. Please retry later.")
+                      alert("Failed to submit. Please retry later.");
                     }
-                  })
-              }}>Submit</Button>
-              <Button color="error" onClick={() => {
-                api.delete(`/user/project/${project.id}`)
-                  .then(res => {
+                  });
+                }}
+              >
+                Submit
+              </Button>
+              <Button
+                color="error"
+                onClick={() => {
+                  api.delete(`/user/project/${project.id}`).then((res) => {
                     if (res.status < 400) {
-                      alert("Deleted")
-                      props.afterSave()
+                      alert("Deleted");
+                      props.afterSave();
                     } else {
-                      alert("Failed to delete. Please retry later.")
+                      alert("Failed to delete. Please retry later.");
                     }
-                  })
-              }}>Remove</Button>
+                  });
+                }}
+              >
+                Remove
+              </Button>
             </ButtonGroup>
           ) : null}
           {project.status === ProjectStatus.SUBMITTED ? (
-            <Button variant="contained" color="info" onClick={() => {
-              api.delete(`/user/project/${project.id}/status`)
-                .then(res => {
+            <Button
+              variant="contained"
+              color="info"
+              onClick={() => {
+                api.delete(`/user/project/${project.id}/status`).then((res) => {
                   if (res.status < 400) {
-                    alert("Withdrawed")
-                    props.afterSave()
+                    alert("Withdrawed");
+                    props.afterSave();
                   } else {
-                    alert("Failed to withdraw. Please retry later.")
+                    alert("Failed to withdraw. Please retry later.");
                   }
-                })
-            }}>Withdraw</Button>
+                });
+              }}
+            >
+              Withdraw
+            </Button>
           ) : null}
         </CardActions>
       </Card>
@@ -263,9 +294,10 @@ function StatusIndicator(props: { status: ProjectStatus }) {
 
 function ProjectEditor(props: {
   project: (Project & { collaborators: Collaborator[] }) | null;
-  user: Omit<User, "password">,
+  user: Omit<User, "password">;
   afterSave: () => void;
 }) {
+  const router = useRouter();
   const [project, setProject] = useState(props.project);
   // const uploadRef = useRef<HTMLInputElement>(null);
   const [waiting, setWaiting] = useState<string | undefined>(undefined);
@@ -290,7 +322,7 @@ function ProjectEditor(props: {
       api.put(`/user/project/${projectId}/basic`, {
         name: project.name,
         type: project.type,
-        presontor: project.presontor
+        presontor: project.presontor,
       });
 
     return (
@@ -316,13 +348,21 @@ function ProjectEditor(props: {
               onChange={(e) => updateProject({ name: e.target.value })}
             ></TextField>
             <Box display={"flex"} gap={1} flexWrap={"wrap"}>
-              <Link component={NextLink} href={`/api/user/project/${project.id}/attachment`}>{project.filename}</Link>
+              <Link
+                component={NextLink}
+                href={`/api/user/project/${project.id}/attachment`}
+              >
+                {project.filename}
+              </Link>
               <Button
                 disabled={waiting !== undefined}
                 variant="contained"
                 component="label"
               >
-                <Upload></Upload>{waiting === undefined ? `upload file to replace ${project.filename}` : waiting}
+                <Upload></Upload>
+                {waiting === undefined
+                  ? `upload file to replace ${project.filename}`
+                  : waiting}
                 <input
                   onChange={(e) => {
                     const form = new FormData();
@@ -371,14 +411,15 @@ function ProjectEditor(props: {
               ></TextField>
               <FormControlLabel
                 label="Attend"
-                control={
-                  <Checkbox
-                    checked={true}
-                    disabled
-                  ></Checkbox>
-                }
+                control={<Checkbox checked={true} disabled></Checkbox>}
               ></FormControlLabel>
-              <Button variant="contained" color="info">Modify</Button>
+              <Button
+                variant="contained"
+                color="info"
+                onClick={() => router.push("/abstracts/personal")}
+              >
+                Modify
+              </Button>
             </Box>
             {project.collaborators.map((c, idx) => (
               <CollaboratorEditor
@@ -392,22 +433,35 @@ function ProjectEditor(props: {
             <CollaboratorEditor
               projectId={project.id}
               afterSave={(project) => {
-                setProject(project)
+                setProject(project);
               }}
             ></CollaboratorEditor>
             <FormControl>
               <InputLabel>Presontor</InputLabel>
-              <Select label={"Presontor"} value={project.presontor ?? -1} onChange={(e) => {
-                if (e.target.value === -1 || !collaborators.map(c => c.id).includes(e.target.value as number)) {
-                  updateProject({ presontor: null })
-                } else {
-                  updateProject({ presontor: e.target.value as number })
-                }
-              }}>
-                <MenuItem value={-1}>{props.user.name} - {props.user.email}</MenuItem>
-                {
-                  project.collaborators.map((c, idx) => <MenuItem key={idx} value={c.id}>{c.name} - {c.email}</MenuItem>)
-                }
+              <Select
+                label={"Presontor"}
+                value={project.presontor ?? -1}
+                onChange={(e) => {
+                  if (
+                    e.target.value === -1 ||
+                    !collaborators
+                      .map((c) => c.id)
+                      .includes(e.target.value as number)
+                  ) {
+                    updateProject({ presontor: null });
+                  } else {
+                    updateProject({ presontor: e.target.value as number });
+                  }
+                }}
+              >
+                <MenuItem value={-1}>
+                  {props.user.name} - {props.user.email}
+                </MenuItem>
+                {project.collaborators.map((c, idx) => (
+                  <MenuItem key={idx} value={c.id}>
+                    {c.name} - {c.email}
+                  </MenuItem>
+                ))}
               </Select>
             </FormControl>
           </Box>
@@ -419,7 +473,7 @@ function ProjectEditor(props: {
             onClick={() => {
               upload().then((res) => {
                 if (res.status < 400) {
-                  setProject(null)
+                  setProject(null);
                   props.afterSave();
                 } else {
                   alert("Faild to update data.");
@@ -436,9 +490,7 @@ function ProjectEditor(props: {
 }
 
 function ProjectCreator(props: {
-  afterSave: (
-    project: Project & { collaborators: Collaborator[] }
-  ) => void;
+  afterSave: (project: Project & { collaborators: Collaborator[] }) => void;
 }) {
   const [basicInfo, setBasicInfo] = useState({
     name: "",
@@ -456,9 +508,7 @@ function ProjectCreator(props: {
       alert("Must input title.");
       throw null;
     }
-    if (
-      file === undefined
-    ) {
+    if (file === undefined) {
       alert("File not selected.");
       throw null;
     }
@@ -497,9 +547,12 @@ function ProjectCreator(props: {
             variant="contained"
             component="label"
           >
-            <Upload></Upload>{file === undefined ? "Upload file" : `Replace ${file.name}`}
+            <Upload></Upload>
+            {file === undefined ? "Upload file" : `Replace ${file.name}`}
             <input
-              onChange={(e) => { setFile(e.target.files?.item(0) ?? undefined) }}
+              onChange={(e) => {
+                setFile(e.target.files?.item(0) ?? undefined);
+              }}
               hidden
               type="file"
             />
@@ -546,21 +599,21 @@ function CollaboratorEditor(props: {
   };
 
   useEffect(() => {
-    const matched = collaborators.find(
-      (c) => c.email === collaborator.email
-    );
+    const matched = collaborators.find((c) => c.email === collaborator.email);
     if (matched !== undefined) {
       setCollaborator(matched);
     }
   }, [collaborator.email, collaborators]);
 
   useEffect(() => {
-    setCollaborator(collaborators.find((c) => c.email === props.email) ?? {
-      email: "",
-      name: "",
-      attend: false,
-    })
-  }, [props.email, collaborators])
+    setCollaborator(
+      collaborators.find((c) => c.email === props.email) ?? {
+        email: "",
+        name: "",
+        attend: false,
+      }
+    );
+  }, [props.email, collaborators]);
 
   const createNewCollaborator = () => {
     const { email, name, attend } = collaborator;
@@ -590,7 +643,7 @@ function CollaboratorEditor(props: {
         label={"Full name"}
         value={collaborator.name}
         onChange={(e) => {
-          updateCollaborator({ name: e.target.value })
+          updateCollaborator({ name: e.target.value });
         }}
       ></TextField>
       <TextField
@@ -624,7 +677,7 @@ function CollaboratorEditor(props: {
           } else {
             const res = await updateExistedCollaborator(collaborator.id);
             if (res.status < 400) {
-              refresh("collaborators")
+              refresh("collaborators");
               props.afterSave(res.data);
             } else {
               alert(
@@ -633,7 +686,9 @@ function CollaboratorEditor(props: {
             }
           }
           setCollaborator({
-            email: "", name: "", attend: false
+            email: "",
+            name: "",
+            attend: false,
           });
         }}
       >

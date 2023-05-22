@@ -69,10 +69,11 @@ enum ProjectStatus {
 
 model Travel {
   id            Int       @id @default(autoincrement())
-  arrivalDate   DateTime?
-  arrivalNo     String?
-  departureDate DateTime?
-  departureNo   String?
+  arrivalDate   DateTime
+  arrivalNo     String
+  departureDate DateTime
+  departureNo   String
+  attendVisit   Boolean   @default(false)
   user          User      @relation(fields: [userId], references: [id])
   userId        Int       @unique
 }

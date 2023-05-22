@@ -26,6 +26,8 @@ import ICCOC2023 from "./index/ICCOC2023.jpg";
 import type { AppProps } from "next/app";
 import { useRouter } from "next/router";
 import { useEffect, useRef, useState } from "react";
+import { LocalizationProvider } from "@mui/x-date-pickers";
+import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 
 const mainRoutes = [
   ["Home", "/"],
@@ -231,23 +233,25 @@ function MDXMapper({
 export default function App({ Component, pageProps }: AppProps) {
   const router = useRouter();
   return (
-    <Container component="div" className="App">
-      {router.pathname.startsWith("/previous") ? (
-        <>
-          <MDXMapper>
-            <Component {...pageProps} />
-          </MDXMapper>
-          <Foot></Foot>
-        </>
-      ) : (
-        <>
-          <Head></Head>
-          <MDXMapper>
-            <Component {...pageProps} />
-          </MDXMapper>
-          <Foot></Foot>
-        </>
-      )}
-    </Container>
+    <LocalizationProvider dateAdapter={AdapterDateFns}>
+      <Container component="div" className="App">
+        {router.pathname.startsWith("/previous") ? (
+          <>
+            <MDXMapper>
+              <Component {...pageProps} />
+            </MDXMapper>
+            <Foot></Foot>
+          </>
+        ) : (
+          <>
+            <Head></Head>
+            <MDXMapper>
+              <Component {...pageProps} />
+            </MDXMapper>
+            <Foot></Foot>
+          </>
+        )}
+      </Container>
+    </LocalizationProvider>
   );
 }

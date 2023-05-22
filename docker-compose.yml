@@ -5,8 +5,8 @@ services:
     image: mariadb:latest
     ports:
       - ${DATABASE_HOST}:${DATABASE_PORT}:3306
-    volumes:
-      - ./db:/var/lib/mysql:rw
+    # volumes:
+    #   - ./db:/var/lib/mysql:rw
     environment:
       - MYSQL_RANDOM_ROOT_PASSWORD=1
       - MYSQL_DATABASE=${DATABASE_NAME}
@@ -17,10 +17,10 @@ services:
   counter:
     image: redis:latest
     ports:
-      - 127.0.0.1:6379:6379
+      - ${REDIS_HOST}:${REDIS_PORT}:6379
     command: redis-server --maxmemory-policy allkeys-lru --maxmemory 150M --save 900 1
-    volumes:
-      - ./redis:/data:rw
+    # volumes:
+    #   - ./redis:/data:rw
     restart: always
     deploy:
       resources:
