@@ -53,12 +53,12 @@ const TravelRoute: NextApiHandler = async (req, res) => {
   }
 
   if (req.method === "DELETE") {
-    if(user.hotelBooking === null) return res.json({message: "OK"})
-    
+    if (user.hotelBooking === null) return res.json({ message: "OK" });
+
     await prisma.hotelBooking.delete({
-      where: {userId: user.id}
+      where: { userId: user.id },
     });
-    return res.json({message: "OK"})
+    return res.json({ message: "OK" });
   }
 
   return res.status(405).send("Method not allowed.");

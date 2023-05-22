@@ -214,7 +214,7 @@ export default function HotelView() {
                     kingRooms,
                     location,
                   });
-                  alert("Saved")
+                  alert("Saved");
                 } else {
                   alert(
                     "Failed to update hotel booking information, please refresh and retry later."

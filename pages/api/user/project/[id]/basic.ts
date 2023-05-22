@@ -27,7 +27,7 @@ const handler: NextApiHandler = async (req, res) => {
       data: {
         name,
         type,
-        presontor
+        presontor,
       },
     });
     return res.json(updated);

@@ -37,13 +37,21 @@ const handler: NextApiHandler = async (req, res) => {
   }
 
   if (req.method === "GET") {
-    const readStream = createReadStream(join(cwd(), "upload", target.storagePath))
-    res.setHeader("Content-Disposition", `attachment;filename=${target.filename}`)
-    return readStream.pipe(res)
+    const readStream = createReadStream(
+      join(cwd(), "upload", target.storagePath)
+    );
+    res.setHeader(
+      "Content-Disposition",
+      `attachment;filename=${target.filename}`
+    );
+    return readStream.pipe(res);
   }
 
   if (req.method === "PUT") {
-    const form = formidable({ multiples: false, maxFileSize: 32 * 1024 * 1024 });
+    const form = formidable({
+      multiples: false,
+      maxFileSize: 32 * 1024 * 1024,
+    });
     const files = await new Promise<formidable.Files>((resolve, reject) => {
       form.parse(req, (err, _, files) => {
         if (err) {
@@ -71,7 +79,7 @@ const handler: NextApiHandler = async (req, res) => {
     return res.status(400).send("Bad uploaded file");
   }
 
-  return res.status(405).send("Method not allowed.")
+  return res.status(405).send("Method not allowed.");
 };
 
 export default withIronSessionApiRoute(handler, sessionOptions);

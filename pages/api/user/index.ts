@@ -23,18 +23,23 @@ async function usersRoute(req: NextApiRequest, res: NextApiResponse) {
     }
 
     if (req.method === "GET") {
-
       return res.json(user);
     }
 
     if (req.method === "PUT") {
-      const { name, institution, userType, title, phoneNumber } = await req.body;
+      const { name, institution, userType, title, phoneNumber } =
+        await req.body;
       const updated = await prisma.user.update({
-        where: { id: user.id }, data: {
-          name, institution, userType, title, phoneNumber
-        }
-      })
-      return res.json(updated)
+        where: { id: user.id },
+        data: {
+          name,
+          institution,
+          userType,
+          title,
+          phoneNumber,
+        },
+      });
+      return res.json(updated);
     }
   }
 

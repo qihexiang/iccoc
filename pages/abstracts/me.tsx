@@ -143,7 +143,9 @@ function PersonalCenterHeader(props: { email: string; name: string }) {
   const router = useRouter();
   const { email, name } = props;
   return (
-    <Box sx={{ display: "flex", gap: 2, flexWrap: "wrap", alignItems: "center" }}>
+    <Box
+      sx={{ display: "flex", gap: 2, flexWrap: "wrap", alignItems: "center" }}
+    >
       <Box>
         <Typography variant="h6">Welcome, {name}</Typography>
         <Typography variant="overline">{email}</Typography>

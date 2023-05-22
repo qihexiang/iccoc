@@ -36,7 +36,10 @@ const handler: NextApiHandler = async (req, res) => {
   }
 
   if (req.method === "POST") {
-    const form = formidable({ multiples: false, maxFileSize: 32 * 1024 * 1024 });
+    const form = formidable({
+      multiples: false,
+      maxFileSize: 32 * 1024 * 1024,
+    });
     const { fields, files } = await new Promise<{
       fields: formidable.Fields;
       files: formidable.Files;
