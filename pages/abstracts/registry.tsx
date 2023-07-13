@@ -170,7 +170,7 @@ export default function UserRegistry() {
                     alert("Account registry successfully, please login.");
                     router.push("/abstracts/login");
                   } else {
-                    alert("Failed to registry, please retry later.");
+                    alert(res.data)
                     setRegistryInfo(defaultValue);
                   }
                 })
