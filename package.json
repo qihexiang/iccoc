@@ -9,7 +9,7 @@
     "lint": "next lint",
     "prisma": "prisma",
     "fmt": "prettier -w .",
-    "package:docker": "docker build --output out ."
+    "package:docker": "sudo docker build --output out ."
   },
   "dependencies": {
     "@emotion/react": "^11.10.6",

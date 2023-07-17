@@ -384,7 +384,6 @@ function ProjectEditor(props: {
                       .put(`/user/project/${projectId}/attachment`, form, {
                         onUploadProgress(e) {
                           if (e.total !== undefined) {
-                            console.log(e.loaded / e.total)
                             setWaiting(
                               `${(e.loaded / e.total / 100).toFixed(2)}%`
                             );
@@ -720,7 +719,6 @@ function CollaboratorEditor(props: {
             color="error"
             onClick={async () => {
               const res = await deleteExistedCollaborator(collaborator.id);
-              console.log(res)
               if (res.status < 400) {
                 props.afterSave(res.data);
               } else {
