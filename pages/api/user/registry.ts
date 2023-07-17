@@ -11,7 +11,7 @@ const registryValidator = z.object({
   email: z.string().email("Email must be a valid email address"),
   name: z.string().regex(/^[^\s].*[^\s]$/, "Your name must start and end with non-empty characters"),
   password: z.string(),
-  phoneNumber: z.string().regex(/[\+\-\s0-9]*/, "Phone number can include +, - and numbers between 0-9"),
+  phoneNumber: z.string().regex(/^[\+\-\s0-9]*$/, "Phone number can include +, - and numbers between 0-9"),
   title: z.string().max(255, "Title too long."),
   institution: z.string().max(255, "Institution too long."),
   userType: z.nativeEnum(UserType)

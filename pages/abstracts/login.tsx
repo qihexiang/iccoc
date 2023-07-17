@@ -10,16 +10,24 @@ import {
   Typography,
 } from "@mui/material";
 import { useRouter } from "next/router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import useAlert from "@/components/useAlert";
 
 export default function LoginPage() {
   useUser({ redirectTo: "/abstracts/me", redirectOnLoggedIn: true });
   const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [errorMessage, setErrorMessage] = useState<string | undefined>(
-    undefined
-  );
+  // const [errorMessage, setErrorMessage] = useState<string | undefined>(
+  //   undefined
+  // );
+  const [setAlertInfo, alertElement] = useAlert(6000);
+  useEffect(() => {
+    if (router.query["registered"] !== undefined) {
+      setEmail(router.query["registered"] as string)
+      setAlertInfo({ color: "success", message: `Account ${router.query["registered"]} registry successfully, please login.` });
+    }
+  }, [router])
   return (
     <>
       <Head>
@@ -36,9 +44,7 @@ export default function LoginPage() {
         <Box>
           <Typography variant="h6">Login</Typography>
         </Box>
-        {errorMessage !== undefined ? (
-          <Alert severity="error">{errorMessage}</Alert>
-        ) : null}
+        {alertElement}
         <TextField
           label="Email"
           value={email}
@@ -67,14 +73,14 @@ export default function LoginPage() {
                     if (res.status === 200) {
                       router.push("/abstracts/me");
                     } else {
-                      setErrorMessage(res.data.message);
+                      setAlertInfo({ color: "error", message: "Failed to login, please retry." })
                       setPassword("");
                     }
                   });
               } else {
                 setEmail("");
                 setPassword("");
-                setErrorMessage("Please input username and password");
+                setAlertInfo({color:"error", message:"Both username and password must be input"})
               }
             }}
           >
