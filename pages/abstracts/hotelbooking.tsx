@@ -1,26 +1,19 @@
+import useAlert from "@/components/useAlert";
 import api from "@/lib/apiRequest";
 import { useUser } from "@/lib/useUser";
-import { GetServerSideProps } from "next";
-import { useEffect, useState } from "react";
-import { withIronSessionSsr } from "iron-session/next";
-import prisma from "@/lib/prisma";
-import travel from "../api/user/travel";
-import { sessionOptions } from "@/lib/session";
 import {
   Box,
   Button,
   Checkbox,
   FormControlLabel,
-  FormLabel,
   MenuItem,
   Select,
-  Slider,
   TextField,
-  Typography,
+  Typography
 } from "@mui/material";
 import { DatePicker } from "@mui/x-date-pickers";
 import { useRouter } from "next/router";
-import { Prisma } from "@prisma/client";
+import { useEffect, useState } from "react";
 
 type EditableStatus = {
   needHotelBookingHelp: boolean;
@@ -33,6 +26,8 @@ type EditableStatus = {
 };
 
 export default function HotelView() {
+  const [setAlertInfo, alertElement] = useAlert(6000);
+
   const user = useUser({
     redirectTo: "/abstracts/login",
     redirectOnLoggedIn: false,
@@ -54,7 +49,7 @@ export default function HotelView() {
   const router = useRouter();
 
   useEffect(() => {
-    api.get("/user/hotelbooking").then((res) => {
+    api.get("/user/hotelbooking").catch(err => ({ status: 500, data: "Network Error" })).then((res) => {
       if (res.status < 400) {
         if (res.data !== null) {
           const {
@@ -74,7 +69,7 @@ export default function HotelView() {
           });
         }
       } else {
-        alert("Failed to get data. Please refresh the page.");
+        setAlertInfo({ color: "error", message: "Failed to get data. Please refresh the page." });
       }
     });
   }, []);
@@ -102,9 +97,9 @@ export default function HotelView() {
                     if (res.status < 400) {
                       updateHotelInfo({ needHotelBookingHelp: false });
                     } else {
-                      alert(
-                        "Failed to cancel the request, please refresh the page and retry"
-                      );
+                      setAlertInfo({
+                        color: "error", message: "Failed to cancel the request, please refresh the page and retry"
+                      });
                     }
                   });
                 }
@@ -114,6 +109,7 @@ export default function HotelView() {
         ></FormControlLabel>
       </Box>
       <Typography variant="h6">Your hotel booking infomation</Typography>
+      {alertElement}
       <Box sx={{ display: "flex", gap: 1 }}>
         <DatePicker
           disabled={!hotelInfo.needHotelBookingHelp}
@@ -214,11 +210,12 @@ export default function HotelView() {
                     kingRooms,
                     location,
                   });
-                  alert("Saved");
+                  setAlertInfo({ color: "success", message: "Saved" });
                 } else {
-                  alert(
-                    "Failed to update hotel booking information, please refresh and retry later."
-                  );
+                  setAlertInfo({
+                    color: "error",
+                    message: "Failed to update hotel booking information, please refresh and retry later."
+                  });
                 }
               });
           }}
