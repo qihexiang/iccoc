@@ -14,6 +14,7 @@ import {
 import { DatePicker } from "@mui/x-date-pickers";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
+import { z } from "zod";
 
 type EditableStatus = {
   needHotelBookingHelp: boolean;
@@ -45,7 +46,7 @@ export default function HotelView() {
     setHotelInfo({ ...hotelInfo, ...patch });
   };
 
-  const confBegin = new Date("2023-10-20T00:00:00.000Z");
+  const confEnd = new Date("2023-10-23T00:00:00.000Z");
   const router = useRouter();
 
   useEffect(() => {
@@ -73,6 +74,49 @@ export default function HotelView() {
       }
     });
   }, []);
+
+  const validatedChecker = (): { validated: true } | { validated: false, message: string } => {
+    if (!hotelInfo.needHotelBookingHelp) {
+      return {
+        validated: true
+      }
+    }
+
+    if (hotelInfo.checkoutDate < hotelInfo.checkinDate) {
+      return {
+        validated: false,
+        message: "Please set checkin date before checkout date"
+      }
+    }
+
+    if (hotelInfo.checkinDate < new Date(new Date().getTime() - 24 * 60 * 60 * 1000)) {
+      return {
+        validated: false,
+        message: "You have to select a date after today"
+      }
+    }
+
+    if (hotelInfo.kingRooms <= 0 && hotelInfo.standardRooms <= 0) {
+      return {
+        validated: false,
+        message: "Please set at least one room if you need hotel booking service."
+      }
+    }
+
+    return {
+      validated: true
+    }
+  }
+
+  const validated = validatedChecker()
+
+  useEffect(() => {
+    if (!validated.validated) {
+      setAlertInfo({ color: "error", message: validated.message })
+    } else {
+      setAlertInfo({ color: "success", message: "" })
+    }
+  }, [hotelInfo])
 
   return (
     <Box
@@ -115,7 +159,7 @@ export default function HotelView() {
           disabled={!hotelInfo.needHotelBookingHelp}
           label={"checkin date"}
           minDate={new Date()}
-          maxDate={confBegin}
+          maxDate={confEnd}
           value={hotelInfo.checkinDate}
           onChange={(value) =>
             updateHotelInfo({ checkinDate: value ?? new Date() })
@@ -174,7 +218,7 @@ export default function HotelView() {
       </Select>
       <Box sx={{ display: "flex", gap: 1 }}>
         <Button
-          disabled={!hotelInfo.needHotelBookingHelp}
+          disabled={(!hotelInfo.needHotelBookingHelp) || (!validated.validated)}
           variant="contained"
           color="success"
           onClick={() => {
@@ -195,21 +239,6 @@ export default function HotelView() {
               })
               .then((res) => {
                 if (res.status === 200) {
-                  const {
-                    checkinDate,
-                    checkoutDate,
-                    standardRooms,
-                    kingRooms,
-                    location,
-                  } = res.data;
-                  setHotelInfo({
-                    needHotelBookingHelp: true,
-                    checkinDate: new Date(checkinDate),
-                    checkoutDate: new Date(checkoutDate),
-                    standardRooms,
-                    kingRooms,
-                    location,
-                  });
                   setAlertInfo({ color: "success", message: "Saved" });
                 } else {
                   setAlertInfo({

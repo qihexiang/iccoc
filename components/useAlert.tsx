@@ -9,6 +9,8 @@ export default function useAlert(autoClose: number) {
     useEffect(() => {
         if (alertInformation.message !== "") {
             setOpen(true)
+        } else {
+            setOpen(false)
         }
     }, [alertInformation])
     useEffect(() => {
