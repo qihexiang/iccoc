@@ -1,7 +1,11 @@
-import { Metadata } from 'next'
-import Head from '@/components/Head'
-import Foot from '@/components/Foot'
-import { Container } from '@mui/material'
+import Foot from '@/components/Foot';
+import Head from '@/components/Head';
+import "@/styles/globals.css";
+import "@fontsource/roboto/300.css";
+import "@fontsource/roboto/400.css";
+import "@fontsource/roboto/500.css";
+import "@fontsource/roboto/700.css";
+import { Metadata } from 'next';
 
 export const metadata: Metadata = {
     title: "ICCOC2023",
@@ -18,9 +22,7 @@ export default function RootLayout({
         <html lang="en">
             <body>
                 <Head></Head>
-                {/* <Container> */}
-                    {children}
-                {/* </Container> */}
+                {children}
                 <Foot></Foot>
             </body>
         </html>
