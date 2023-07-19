@@ -6,11 +6,11 @@ import { useState } from "react";
 export default function ExpandableIframe(
   props: {
     buttonName: string;
-    autoExpand: boolean;
+    autoExpand?: boolean;
   } & React.IframeHTMLAttributes<HTMLIFrameElement>
 ) {
   const { buttonName, autoExpand, ...iframeProps } = props;
-  const [expand, setExpand] = useState(autoExpand);
+  const [expand, setExpand] = useState(autoExpand ?? false);
   return (
     <Box>
       {expand ? (
