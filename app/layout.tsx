@@ -8,7 +8,7 @@ import "@fontsource/roboto/700.css";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "ICCOC2023",
+  title: "Welcome | ICCOC2023",
   description:
     "Homepage of International Conference of Computational Organometallic Chemistry",
   keywords: [

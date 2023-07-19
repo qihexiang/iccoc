@@ -5,6 +5,7 @@ import { cwd } from "process";
 import { Suspense } from "react";
 import { z } from "zod";
 import SpeakersView from "./speakersView";
+import { Metadata } from "next";
 
 const dataSchema = z.object({
   toBeUpdated: z.boolean(),
@@ -15,13 +16,13 @@ const dataSchema = z.object({
 
 export type SpeakersProps = z.infer<typeof dataSchema>;
 
+export const metadata: Metadata = {
+  title: "Invited speakers | ICCOC2023",
+};
+
 export default async function SpeakersPage() {
   const json = await loadJson();
-  return (
-    <Suspense>
-      <SpeakersView {...json}></SpeakersView>
-    </Suspense>
-  );
+  return <SpeakersView {...json}></SpeakersView>;
 }
 
 const loadJson = async () => {

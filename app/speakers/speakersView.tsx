@@ -1,13 +1,7 @@
 "use client";
 
-import { errorLog } from "@/lib/errors";
 import { Container, Typography } from "@mui/material";
-import { readFile } from "fs/promises";
 import { sortBy } from "lodash";
-import { GetServerSideProps } from "next";
-import Head from "next/head";
-import { join } from "path";
-import { cwd } from "process";
 import { SpeakersProps } from "./page";
 
 export default function SpeakersView(props: SpeakersProps) {
@@ -18,9 +12,6 @@ export default function SpeakersView(props: SpeakersProps) {
   }));
   return (
     <Container>
-      <Head>
-        <title>{`Speakers - ICCOC2023`}</title>
-      </Head>
       <Typography variant="h4">Invited Speakers</Typography>
       <Typography variant={"overline"}>(list in alphabetical order)</Typography>
       <ul>
