@@ -1,9 +1,5 @@
 import { errorLog } from "@/lib/errors";
-import { Typography } from "@mui/material";
 import { readFile } from "fs/promises";
-import { sortBy } from "lodash";
-import { GetServerSideProps } from "next";
-import Head from "next/head";
 import { join } from "path";
 import { cwd } from "process";
 import { Suspense } from "react";
@@ -20,7 +16,7 @@ const dataSchema = z.object({
 export type SpeakersProps = z.infer<typeof dataSchema>;
 
 export default async function SpeakersPage() {
-  const json = await loadJson()
+  const json = await loadJson();
   return (
     <Suspense>
       <SpeakersView {...json}></SpeakersView>
@@ -43,8 +39,8 @@ const loadJson = async () => {
   } else {
     errorLog(validate.error);
     return {
-        speakers: [],
-        toBeUpdated: true,
+      speakers: [],
+      toBeUpdated: true,
     };
   }
 };

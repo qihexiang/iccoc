@@ -1,4 +1,4 @@
-'use client'
+"use client";
 
 import { errorLog } from "@/lib/errors";
 import { Container, Typography } from "@mui/material";

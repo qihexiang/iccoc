@@ -9,7 +9,7 @@ import {
   MenuItem,
   Select,
   TextField,
-  Typography
+  Typography,
 } from "@mui/material";
 import { DatePicker } from "@mui/x-date-pickers";
 import { useRouter } from "next/router";
@@ -50,73 +50,85 @@ export default function HotelView() {
   const router = useRouter();
 
   useEffect(() => {
-    api.get("/user/hotelbooking").catch(err => ({ status: 500, data: "Network Error" })).then((res) => {
-      if (res.status < 400) {
-        if (res.data !== null) {
-          const {
-            checkinDate,
-            checkoutDate,
-            standardRooms,
-            kingRooms,
-            location,
-          } = res.data;
-          setHotelInfo({
-            needHotelBookingHelp: true,
-            checkinDate: new Date(checkinDate),
-            checkoutDate: new Date(checkoutDate),
-            standardRooms,
-            kingRooms,
-            location,
+    api
+      .get("/user/hotelbooking")
+      .catch((err) => ({ status: 500, data: "Network Error" }))
+      .then((res) => {
+        if (res.status < 400) {
+          if (res.data !== null) {
+            const {
+              checkinDate,
+              checkoutDate,
+              standardRooms,
+              kingRooms,
+              location,
+            } = res.data;
+            setHotelInfo({
+              needHotelBookingHelp: true,
+              checkinDate: new Date(checkinDate),
+              checkoutDate: new Date(checkoutDate),
+              standardRooms,
+              kingRooms,
+              location,
+            });
+          }
+        } else {
+          setAlertInfo({
+            color: "error",
+            message: "Failed to get data. Please refresh the page.",
           });
         }
-      } else {
-        setAlertInfo({ color: "error", message: "Failed to get data. Please refresh the page." });
-      }
-    });
+      });
   }, []);
 
-  const validatedChecker = (): { validated: true } | { validated: false, message: string } => {
+  const validatedChecker = ():
+    | { validated: true }
+    | { validated: false; message: string } => {
     if (!hotelInfo.needHotelBookingHelp) {
       return {
-        validated: true
-      }
+        validated: true,
+      };
     }
 
     if (hotelInfo.checkoutDate < hotelInfo.checkinDate) {
       return {
         validated: false,
-        message: "Please set checkin date before checkout date"
-      }
+        message: "Please set checkin date before checkout date",
+      };
     }
 
-    if (hotelInfo.checkinDate < new Date(new Date().getTime() - 24 * 60 * 60 * 1000)) {
+    if (
+      hotelInfo.checkinDate <
+      new Date(new Date().getTime() - 24 * 60 * 60 * 1000)
+    ) {
       return {
         validated: false,
-        message: "You have to select a date after today"
-      }
+        message: "You have to select a date after today",
+      };
     }
 
     if (hotelInfo.kingRooms <= 0 && hotelInfo.standardRooms <= 0) {
       return {
         validated: false,
-        message: "Please set at least one room if you need hotel booking service."
-      }
+        message:
+          "Please set at least one room if you need hotel booking service.",
+      };
     }
 
     return {
-      validated: true
-    }
-  }
+      validated: true,
+    };
+  };
 
-  const validated = validatedChecker()
+  const validated = validatedChecker();
 
   useEffect(() => {
     if (!validated.validated) {
-      setAlertInfo({ color: "error", message: validated.message })
+      setAlertInfo({ color: "error", message: validated.message });
     } else {
-      setAlertInfo({ color: "success", message: "" })
+      setAlertInfo({ color: "success", message: "" });
     }
-  }, [hotelInfo])
+  }, [hotelInfo]);
 
   return (
     <Box
@@ -142,7 +154,9 @@ export default function HotelView() {
                       updateHotelInfo({ needHotelBookingHelp: false });
                     } else {
                       setAlertInfo({
-                        color: "error", message: "Failed to cancel the request, please refresh the page and retry"
+                        color: "error",
+                        message:
+                          "Failed to cancel the request, please refresh the page and retry",
                       });
                     }
                   });
@@ -218,7 +232,7 @@ export default function HotelView() {
       </Select>
       <Box sx={{ display: "flex", gap: 1 }}>
         <Button
-          disabled={(!hotelInfo.needHotelBookingHelp) || (!validated.validated)}
+          disabled={!hotelInfo.needHotelBookingHelp || !validated.validated}
           variant="contained"
           color="success"
           onClick={() => {
@@ -243,7 +257,8 @@ export default function HotelView() {
                 } else {
                   setAlertInfo({
                     color: "error",
-                    message: "Failed to update hotel booking information, please refresh and retry later."
+                    message:
+                      "Failed to update hotel booking information, please refresh and retry later.",
                   });
                 }
               });

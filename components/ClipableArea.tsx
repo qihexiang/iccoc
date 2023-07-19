@@ -18,10 +18,17 @@ export default function ClipaleArea({ content }: { content: string }) {
               window.navigator.clipboard
                 .writeText(content)
                 .then(() =>
-                  setInformation({ color: "success", message: "Text successfully copied into your clipboard." })
+                  setInformation({
+                    color: "success",
+                    message: "Text successfully copied into your clipboard.",
+                  })
                 )
                 .catch(() =>
-                  setInformation({ color: "warning", message: "Unable to copy the text into your clipboard. Please copy it manually." })
+                  setInformation({
+                    color: "warning",
+                    message:
+                      "Unable to copy the text into your clipboard. Please copy it manually.",
+                  })
                 )
             }
           >

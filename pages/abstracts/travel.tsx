@@ -7,7 +7,7 @@ import {
   Checkbox,
   FormControlLabel,
   TextField,
-  Typography
+  Typography,
 } from "@mui/material";
 import { DatePicker } from "@mui/x-date-pickers";
 import { useRouter } from "next/router";
@@ -43,37 +43,41 @@ export default function TravelView() {
   const confEnd = new Date("2023-10-23T00:00:00.000Z");
   const router = useRouter();
 
-  const validatedChecker = (): { validated: true } | { validated: false, message: string } => {
+  const validatedChecker = ():
+    | { validated: true }
+    | { validated: false; message: string } => {
     if (travelInfo.arrivalDate > travelInfo.departureDate) {
       return {
-        validated: false, message: "Arrival date must earlier than departure date."
-      }
+        validated: false,
+        message: "Arrival date must earlier than departure date.",
+      };
     }
 
     if (travelInfo.arrivalNo === "" || travelInfo.departureNo === "") {
       return {
-        validated: false, message: "Must fill arrival no. and departure no."
-      }
+        validated: false,
+        message: "Must fill arrival no. and departure no.",
+      };
     }
 
     return {
-      validated: true
-    }
-  }
+      validated: true,
+    };
+  };
 
-  const validated = validatedChecker()
+  const validated = validatedChecker();
 
   useEffect(() => {
     if (!validated.validated) {
-      setAlertInfo({ color: "error", message: validated.message })
+      setAlertInfo({ color: "error", message: validated.message });
     } else {
-      setAlertInfo({ color: "success", message: "" })
+      setAlertInfo({ color: "success", message: "" });
     }
-  }, [travelInfo])
+  }, [travelInfo]);
 
   useEffect(() => {
     api.get("/user/travel").then((res) => {
-      console.log("GET")
+      console.log("GET");
       if (res.status < 400) {
         if (res.data !== null) {
           const {
@@ -92,7 +96,10 @@ export default function TravelView() {
           });
         }
       } else {
-        setAlertInfo({ color: "error", message: "Failed to get data. Please refresh the page." });
+        setAlertInfo({
+          color: "error",
+          message: "Failed to get data. Please refresh the page.",
+        });
       }
     });
   }, []);
@@ -162,7 +169,8 @@ export default function TravelView() {
               } else {
                 setAlertInfo({
                   color: "error",
-                  message: "Failed to update travel information, please refresh and retry later."
+                  message:
+                    "Failed to update travel information, please refresh and retry later.",
                 });
               }
             });

@@ -24,10 +24,13 @@ export default function LoginPage() {
   const [setAlertInfo, alertElement] = useAlert(6000);
   useEffect(() => {
     if (router.query["registered"] !== undefined) {
-      setEmail(router.query["registered"] as string)
-      setAlertInfo({ color: "success", message: `Account ${router.query["registered"]} registry successfully, please login.` });
+      setEmail(router.query["registered"] as string);
+      setAlertInfo({
+        color: "success",
+        message: `Account ${router.query["registered"]} registry successfully, please login.`,
+      });
     }
-  }, [router])
+  }, [router]);
   return (
     <>
       <Head>
@@ -73,14 +76,20 @@ export default function LoginPage() {
                     if (res.status === 200) {
                       router.push("/abstracts/me");
                     } else {
-                      setAlertInfo({ color: "error", message: "Failed to login, please retry." })
+                      setAlertInfo({
+                        color: "error",
+                        message: "Failed to login, please retry.",
+                      });
                       setPassword("");
                     }
                   });
               } else {
                 setEmail("");
                 setPassword("");
-                setAlertInfo({color:"error", message:"Both username and password must be input"})
+                setAlertInfo({
+                  color: "error",
+                  message: "Both username and password must be input",
+                });
               }
             }}
           >

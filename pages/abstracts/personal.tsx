@@ -47,7 +47,7 @@ export default function PersonalView() {
       setPersonalInfo({ name, institution, phoneNumber, title, userType });
     }
   }, [user]);
-  const [setAlertInfo, alertElement] = useAlert(6000)
+  const [setAlertInfo, alertElement] = useAlert(6000);
 
   return (
     <Box
@@ -110,12 +110,11 @@ export default function PersonalView() {
                 });
                 setAlertInfo({ color: "success", message: "Saved" });
               } else {
-                setAlertInfo(
-                  {
-                    color: "error",
-                    message: "Failed to update personal information, please refresh and retry later."
-                  }
-                );
+                setAlertInfo({
+                  color: "error",
+                  message:
+                    "Failed to update personal information, please refresh and retry later.",
+                });
               }
             });
           }}

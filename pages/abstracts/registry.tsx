@@ -170,9 +170,11 @@ export default function UserRegistry() {
                 .post("/user/registry", toSend)
                 .then((res) => {
                   if (res.status === 200) {
-                    router.push(`/abstracts/login?registered=${registryInfo.email}`);
+                    router.push(
+                      `/abstracts/login?registered=${registryInfo.email}`
+                    );
                   } else {
-                    setAlertInfo({ color: "error", message: res.data })
+                    setAlertInfo({ color: "error", message: res.data });
                     // alert(res.data)
                     // setRegistryInfo(defaultValue);
                   }
