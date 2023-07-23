@@ -425,7 +425,7 @@ function ProjectEditor(props: {
                         onUploadProgress(e) {
                           if (e.total !== undefined) {
                             setWaiting(
-                              `${(e.loaded / e.total / 100).toFixed(2)}%`
+                              `${((e.loaded / e.total) * 100).toFixed(2)}%`
                             );
                           } else {
                             setWaiting(
