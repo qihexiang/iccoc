@@ -58,6 +58,7 @@ export default function Head() {
             {routeName}
           </Button>
         ))}
+
         <Button ref={dropBtnRef} onClick={() => setDropOpen(!dropOpen)}>
           Pervious Events
         </Button>
@@ -80,8 +81,10 @@ export default function Head() {
                 <ClickAwayListener onClickAway={() => setDropOpen(false)}>
                   <MenuList autoFocusItem={dropOpen}>
                     {previousEvents.map(([label, path], idx) => (
-                      <MenuItem key={idx} LinkComponent={Link} href={path}>
-                        {label}
+                      <MenuItem key={idx}>
+                        <Button variant={"text"} LinkComponent={Link} href={`/previous${path}`}>
+                          {label}
+                        </Button>
                       </MenuItem>
                     ))}
                   </MenuList>
