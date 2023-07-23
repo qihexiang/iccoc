@@ -1,4 +1,4 @@
-import { Box, Typography } from "@mui/material";
+import { Box, Link, Typography } from "@mui/material";
 import Category from "./_category";
 import Head from "next/head";
 import ICOC2016Photo from "./ICOC2016.png";
@@ -25,7 +25,8 @@ export default function Index2016() {
         <Box>
           <Category noCategory={false} vertical noHeader />
         </Box>
-        <Box
+        <Box display={"flex"} flexDirection={"column"} gap={1} alignItems={"center"}>
+          <Box
           sx={{
             backgroundImage: `url(${ICOC2016Photo.src})`,
             aspectRatio: `${ICOC2016Photo.width} / ${ICOC2016Photo.height}`,
@@ -33,8 +34,11 @@ export default function Index2016() {
             width: 640,
             backgroundPosition: "center center",
             backgroundSize: "cover",
-          }}
-        ></Box>
+          }}>
+          </Box>
+          <Link href="/ICOC2016_Photo.jpg" download={"ICOC2016_Photo.jpg"}>Download Origin Picture</Link>
+        </Box>
+        
       </Box>
     </>
   );
