@@ -18,7 +18,7 @@ WORKDIR /root/iccoc
 
 COPY out/iccoc.tar.bz2 /root/
 
-RUN pbzip2 -d -c /root/iccoc.tar.bz2 2>/dev/null | tar x node_modules .next 2>/dev/null; exit 0
+RUN pbzip2 -d -c /root/iccoc.tar.bz2 2>/dev/null | tar x .next 2>/dev/null; exit 0
 
 RUN pnpm install 
 RUN pnpm prisma generate
