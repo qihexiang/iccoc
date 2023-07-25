@@ -1,4 +1,5 @@
 import { Table, TableBody, TableCell, TableHead, TableRow, Typography } from "@mui/material";
+import Image from "next/image";
 import React, { DetailedHTMLProps, ImgHTMLAttributes, ReactNode } from "react";
 
 export const H1 = ({ children }: { children: ReactNode }) => (
@@ -48,15 +49,4 @@ export const CODE = ({ children }: { children: React.ReactNode }) => (
     <Typography variant="body2" component={"code"}>
         {children}
     </Typography>
-)
-export const IMAGE = (props: DetailedHTMLProps<ImgHTMLAttributes<HTMLImageElement>, HTMLImageElement>) => (
-    <div
-        style={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-        }}
-    >
-        <img {...props} style={{ maxWidth: "100%" }}></img>
-    </div>
 )
