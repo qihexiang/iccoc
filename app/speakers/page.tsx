@@ -1,11 +1,10 @@
 import { errorLog } from "@/lib/errors";
 import { readFile } from "fs/promises";
+import { Metadata } from "next";
 import { join } from "path";
 import { cwd } from "process";
-import { Suspense } from "react";
 import { z } from "zod";
 import SpeakersView from "./speakersView";
-import { Metadata } from "next";
 
 const dataSchema = z.object({
   toBeUpdated: z.boolean(),

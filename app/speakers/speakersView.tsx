@@ -3,6 +3,7 @@
 import { Container, Typography } from "@mui/material";
 import { sortBy } from "lodash";
 import { SpeakersProps } from "./page";
+import { H1 } from "@/components/TypoElement";
 
 export default function SpeakersView(props: SpeakersProps) {
   const speakers = props.speakers.map(([firstName, lastName, college]) => ({
@@ -12,7 +13,7 @@ export default function SpeakersView(props: SpeakersProps) {
   }));
   return (
     <Container>
-      <Typography variant="h4">Invited Speakers</Typography>
+      <H1>Invited Speakers</H1>
       <Typography variant={"overline"}>(list in alphabetical order)</Typography>
       <ul>
         {sortBy(speakers, ["lastName", "fistName", "college"]).map(

@@ -1,56 +1,51 @@
 "use client";
 
 import ClipableArea from "@/components/ClipableArea";
+import { H1, H2, LI, P, SPAN, TABLE, TBODY, TD, THEAD, TR } from "@/components/TypoElement";
 import {
-  Link,
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableRow,
-  Typography,
+  Link
 } from "@mui/material";
 import { Container } from "@mui/system";
 
 export default function Registration() {
   return (
     <Container>
-      <Typography variant="h4">Registration</Typography>
-      <Typography variant="h5">Registration fees:</Typography>
-      <Table>
-        <TableHead>
-          <TableRow>
-            <TableCell>Regular registrations*</TableCell>
-            <TableCell>Fee</TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          <TableRow>
-            <TableCell>regular</TableCell>
-            <TableCell>1600 RMB (230 US Dollar)</TableCell>
-          </TableRow>
-          <TableRow>
-            <TableCell>student</TableCell>
-            <TableCell>1200 RMB (170 US Dollar)</TableCell>
-          </TableRow>
-          <TableRow>
-            <TableCell>on site</TableCell>
-            <TableCell>2000 RMB (285 US Dollar)</TableCell>
-          </TableRow>
-        </TableBody>
-      </Table>
-      <Typography variant="overline" textAlign={"center"}>
+      <H1>Registration</H1>
+      <H2>Registration fees:</H2>
+      <TABLE>
+        <THEAD>
+          <TR>
+            <TD>Regular registrations*</TD>
+            <TD>Fee</TD>
+          </TR>
+        </THEAD>
+        <TBODY>
+          <TR>
+            <TD>Regular</TD>
+            <TD>1600 RMB (230 US Dollar)</TD>
+          </TR>
+          <TR>
+            <TD>Student</TD>
+            <TD>1200 RMB (170 US Dollar)</TD>
+          </TR>
+          <TR>
+            <TD>On site</TD>
+            <TD>2000 RMB (285 US Dollar)</TD>
+          </TR>
+        </TBODY>
+      </TABLE>
+      <SPAN>
         *Graduate and undergraduate students with validated student IDs; Please
         provide the scanned file of the student ID and the letter from the
         advisor (both in pdf format) for the special rate for students.
-      </Typography>
-      <Typography variant="h5">Insurance:</Typography>
-      <Typography variant="body1">
+      </SPAN>
+      <H2>Insurance:</H2>
+      <P>
         Neither travel insurance nor medical, accident or liability insurance is
         included in the registration fees. The ICCOC participants should make
         sure that they are fully insured from their home institution.
-      </Typography>
-      <Typography variant="h5">Method of payment:</Typography>
+      </P>
+      <H2>Method of payment:</H2>
       <ClipableArea
         content={`Beijing Univ. of Chem. Tech.
 Beneficiary Address: BeiSanHuan East Rd. 15th, ChaoYang District, Beijing, 100029 P. R. China
@@ -65,57 +60,57 @@ Bank Address: BeiSanHuan East Rd. 15th, ChaoYang District, Beijing, 100029 P. R.
 银行账号： 0109 0504 3001 2010 5029 689
 `}
       ></ClipableArea>
-      <Typography variant="h5">Abstract Submission and Deadlines:</Typography>
+      <H2>Abstract Submission and Deadlines:</H2>
       <ul>
-        <Typography component={"li"} variant="body1">
+        <LI>
           Abstract Submission Deadline: Sept. 30<sup>th</sup>, 2023
-        </Typography>
-        <Typography component={"li"} variant="body1">
+        </LI>
+        <LI>
           Registration Deadline: Sept. 30<sup>th</sup>, 2023
-        </Typography>
-        <Typography component={"li"} variant="body1">
+        </LI>
+        <LI>
           Conference Date: Oct. 20<sup>th</sup>-23<sup>rd</sup>, 2023
-        </Typography>
+        </LI>
       </ul>
-      <Typography variant="h5">
+      <H2>
         Please observe the following guidelines:
-      </Typography>
+      </H2>
       <ul>
-        <Typography component={"li"} variant="body1">
+        <LI>
           We accept abstracts in PDF format only.
-        </Typography>
-        <Typography component={"li"} variant="body1">
+        </LI>
+        <LI>
           The language of the abstracts is English.
-        </Typography>
-        <Typography component={"li"} variant="body1">
+        </LI>
+        <LI>
           The abstract has two parts: 1. Graphic summary and 2. Full abstract.
-        </Typography>
-        <Typography component={"li"} variant="body1">
+        </LI>
+        <LI>
           The full abstract should fit on one A4 page (210 x 297 mm).
-        </Typography>
-        <Typography component={"li"} variant="body1">
+        </LI>
+        <LI>
           Please use Times New Roman 12 point font.
-        </Typography>
-        <Typography component={"li"} variant="body1">
+        </LI>
+        <LI>
           Please follow the layout and instructions below.
-        </Typography>
+        </LI>
       </ul>
-      <Typography variant="body1">
+      <P>
         Abstracts can be prepared according to the provided templates and submit
         it on line which will be available soon.
-      </Typography>
+      </P>
       <Link href="./Template.docx">Abstract_doc Template</Link>
-      <Typography variant="h5">Information for Poster Presenters:</Typography>
-      <Typography variant="body1">
+      <H2>Information for Poster Presenters:</H2>
+      <P>
         The poster (A0 size) should be designed to fit the space of 85 cm width
         x 120 cm height. Pushpins or other related materials will be provided on
         site for your convenience. Poster space will be allocated by the number
         on the poster board in the conference hall.
-      </Typography>
-      <Typography variant="body1">
+      </P>
+      <P>
         Taking photograph of his/her poster without permission is strictlly
         prohibited!
-      </Typography>
+      </P>
     </Container>
   );
 }
