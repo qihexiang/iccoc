@@ -68,6 +68,9 @@ dependencies:
   formidable:
     specifier: ^2.1.1
     version: 2.1.1
+  forwarded-parse:
+    specifier: ^2.1.2
+    version: 2.1.2
   iron-session:
     specifier: ^6.3.1
     version: 6.3.1(next@13.4.10)
@@ -2574,6 +2577,10 @@ packages:
       hexoid: 1.0.0
       once: 1.4.0
       qs: 6.11.1
+    dev: false
+
+  /forwarded-parse@2.1.2:
+    resolution: {integrity: sha512-alTFZZQDKMporBH77856pXgzhEzaUVmLCDk+egLgIgHst3Tpndzz8MnKe+GzRJRfvVdn69HhpW7cmXzvtLvJAw==}
     dev: false
 
   /fs-constants@1.0.0:
