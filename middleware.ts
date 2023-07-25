@@ -6,11 +6,10 @@ export const middleware = (req: NextRequest) => {
     const forwarded = forwardedURL(req);
     const origin =
       forwarded !== null ? new URL(req.nextUrl, forwarded) : new URL(req.url);
-    if (origin.protocol === "https:") {
-      return NextResponse.next();
+    if (origin.protocol !== "https:") {
+      origin.protocol = "https:";
+      return NextResponse.redirect(origin);
     }
-    origin.protocol = "https:";
-    return NextResponse.redirect(origin);
   }
 
   return NextResponse.next();
