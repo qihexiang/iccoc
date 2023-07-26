@@ -5,7 +5,7 @@ import { Container, Typography } from "@mui/material";
 import { useState, useEffect } from "react";
 
 export default function Foot() {
-  const [count, setCount] = useState(0);
+  const [count, setCount] = useState<number>();
   useEffect(() => {
     api.get("/counter").then((res) => {
       setCount(res.data.count);
