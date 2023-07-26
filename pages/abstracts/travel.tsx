@@ -44,7 +44,7 @@ export default function TravelView() {
   const router = useRouter();
 
   const validatedChecker = ():
-    | { validated: true }
+    | { validated: true; message: undefined }
     | { validated: false; message: string } => {
     if (travelInfo.arrivalDate > travelInfo.departureDate) {
       return {
@@ -61,7 +61,7 @@ export default function TravelView() {
     }
 
     return {
-      validated: true,
+      validated: true, message: undefined
     };
   };
 
@@ -73,7 +73,7 @@ export default function TravelView() {
     } else {
       setAlertInfo({ color: "success", message: "" });
     }
-  }, [travelInfo]);
+  }, [setAlertInfo, travelInfo, validated.message, validated.validated]);
 
   useEffect(() => {
     api.get("/user/travel").then((res) => {
@@ -102,7 +102,7 @@ export default function TravelView() {
         });
       }
     });
-  }, []);
+  }, [setAlertInfo]);
 
   return (
     <Box

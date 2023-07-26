@@ -21,7 +21,7 @@ export default function useAlert(autoClose: number) {
         clearTimeout(timer);
       };
     }
-  }, [open]);
+  }, [autoClose, open]);
   return [
     setInformation,
     open ? (

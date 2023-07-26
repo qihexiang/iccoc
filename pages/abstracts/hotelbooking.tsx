@@ -79,14 +79,14 @@ export default function HotelView() {
           });
         }
       });
-  }, []);
+  }, [setAlertInfo]);
 
   const validatedChecker = ():
-    | { validated: true }
+    | { validated: true; message: undefined}
     | { validated: false; message: string } => {
     if (!hotelInfo.needHotelBookingHelp) {
       return {
-        validated: true,
+        validated: true, message: undefined
       };
     }
 
@@ -116,7 +116,7 @@ export default function HotelView() {
     }
 
     return {
-      validated: true,
+      validated: true, message: undefined
     };
   };
 
@@ -128,7 +128,7 @@ export default function HotelView() {
     } else {
       setAlertInfo({ color: "success", message: "" });
     }
-  }, [hotelInfo]);
+  }, [hotelInfo, setAlertInfo, validated.message, validated.validated]);
 
   return (
     <Box

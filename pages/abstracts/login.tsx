@@ -30,7 +30,7 @@ export default function LoginPage() {
         message: `Account ${router.query["registered"]} registry successfully, please login.`,
       });
     }
-  }, [router]);
+  }, [router, setAlertInfo]);
   return (
     <>
       <Head>
