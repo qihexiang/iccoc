@@ -22,7 +22,7 @@ import {
   TableRow,
   Typography,
 } from "@mui/material";
-import ICCOC2023 from "./index/ICCOC2023.jpg";
+import ICCOC2023 from "@/images/ICCOC2023.jpg";
 import type { AppProps } from "next/app";
 import { useRouter } from "next/router";
 import { useEffect, useRef, useState } from "react";

@@ -9,7 +9,7 @@
     "lint": "next lint",
     "prisma": "prisma",
     "fmt": "prettier -w .",
-    "package:docker": "docker build --output out ."
+    "package:docker": "sudo docker build --output out ."
   },
   "dependencies": {
     "@emotion/react": "^11.10.6",
@@ -22,7 +22,6 @@
     "@mui/system": "^5.11.15",
     "@mui/x-data-grid": "^6.0.4",
     "@mui/x-date-pickers": "^6.5.0",
-    "@next/font": "13.1.6",
     "@next/mdx": "^13.1.6",
     "@prisma/client": "^4.13.0",
     "@types/node": "18.14.0",
@@ -33,13 +32,13 @@
     "bcrypt": "^5.1.0",
     "check-password-strength": "^2.0.7",
     "date-fns": "^2.30.0",
-    "eslint-config-next": "13.1.6",
     "formidable": "^2.1.1",
+    "forwarded-parse": "^2.1.2",
     "iron-session": "^6.3.1",
     "lodash": "^4.17.21",
     "mime": "^3.0.0",
     "nanoid": "^4.0.2",
-    "next": "13.1.6",
+    "next": "13.4.10",
     "qrcode.react": "^3.1.0",
     "react": "18.2.0",
     "react-dom": "18.2.0",
@@ -56,6 +55,7 @@
     "@types/formidable": "^2.0.5",
     "@types/lodash": "^4.14.191",
     "@types/mime": "^3.0.1",
+    "eslint-config-next": "13.4.10",
     "prettier": "^2.8.8",
     "prisma": "^4.13.0"
   }

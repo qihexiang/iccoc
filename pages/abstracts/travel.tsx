@@ -1,22 +1,17 @@
+import useAlert from "@/components/useAlert";
 import api from "@/lib/apiRequest";
 import { useUser } from "@/lib/useUser";
-import { GetServerSideProps } from "next";
-import { useEffect, useState } from "react";
-import { withIronSessionSsr } from "iron-session/next";
-import prisma from "@/lib/prisma";
-import travel from "../api/user/travel";
-import { sessionOptions } from "@/lib/session";
 import {
   Box,
   Button,
   Checkbox,
-  FormControl,
   FormControlLabel,
   TextField,
   Typography,
 } from "@mui/material";
 import { DatePicker } from "@mui/x-date-pickers";
 import { useRouter } from "next/router";
+import { useEffect, useState } from "react";
 
 type EditableTravelInfo = {
   arrivalDate: Date;
@@ -32,6 +27,8 @@ export default function TravelView() {
     redirectOnLoggedIn: false,
   });
 
+  const [setAlertInfo, alertElement] = useAlert(6000);
+
   const [travelInfo, setTravelInfo] = useState<EditableTravelInfo>({
     arrivalDate: new Date(),
     arrivalNo: "",
@@ -43,11 +40,44 @@ export default function TravelView() {
     setTravelInfo({ ...travelInfo, ...patch });
   };
 
-  const confBegin = new Date("2023-10-20T00:00:00.000Z");
+  const confEnd = new Date("2023-10-23T00:00:00.000Z");
   const router = useRouter();
+
+  const validatedChecker = ():
+    | { validated: true; message: undefined }
+    | { validated: false; message: string } => {
+    if (travelInfo.arrivalDate > travelInfo.departureDate) {
+      return {
+        validated: false,
+        message: "Arrival date must earlier than departure date.",
+      };
+    }
+
+    if (travelInfo.arrivalNo === "" || travelInfo.departureNo === "") {
+      return {
+        validated: false,
+        message: "Must fill arrival no. and departure no.",
+      };
+    }
+
+    return {
+      validated: true, message: undefined
+    };
+  };
+
+  const validated = validatedChecker();
+
+  useEffect(() => {
+    if (!validated.validated) {
+      setAlertInfo({ color: "error", message: validated.message });
+    } else {
+      setAlertInfo({ color: "success", message: "" });
+    }
+  }, [setAlertInfo, travelInfo, validated.message, validated.validated]);
 
   useEffect(() => {
     api.get("/user/travel").then((res) => {
+      console.log("GET");
       if (res.status < 400) {
         if (res.data !== null) {
           const {
@@ -66,10 +96,13 @@ export default function TravelView() {
           });
         }
       } else {
-        alert("Failed to get data. Please refresh the page.");
+        setAlertInfo({
+          color: "error",
+          message: "Failed to get data. Please refresh the page.",
+        });
       }
     });
-  }, []);
+  }, [setAlertInfo]);
 
   return (
     <Box
@@ -81,11 +114,12 @@ export default function TravelView() {
       }}
     >
       <Typography variant="h6">Your travel infomation</Typography>
+      {alertElement}
       <Box sx={{ display: "flex", gap: 1 }}>
         <DatePicker
           label={"Arrival date"}
           minDate={new Date()}
-          maxDate={confBegin}
+          maxDate={confEnd}
           value={travelInfo.arrivalDate}
           onChange={(value) =>
             updateTravelInfo({ arrivalDate: value ?? new Date() })
@@ -125,30 +159,19 @@ export default function TravelView() {
       ></FormControlLabel>
       <Box sx={{ display: "flex", gap: 1 }}>
         <Button
+          disabled={!validated.validated}
           variant="contained"
           color="success"
           onClick={() => {
             api.put("/user/travel", travelInfo).then((res) => {
               if (res.status === 200) {
-                const {
-                  arrivalDate,
-                  arrivalNo,
-                  departureDate,
-                  departureNo,
-                  attendVisit,
-                } = res.data;
-                setTravelInfo({
-                  arrivalNo,
-                  departureNo,
-                  arrivalDate: new Date(arrivalDate),
-                  departureDate: new Date(departureDate),
-                  attendVisit,
-                });
-                alert("Saved");
+                setAlertInfo({ color: "success", message: "Saved" });
               } else {
-                alert(
-                  "Failed to update travel information, please refresh and retry later."
-                );
+                setAlertInfo({
+                  color: "error",
+                  message:
+                    "Failed to update travel information, please refresh and retry later.",
+                });
               }
             });
           }}

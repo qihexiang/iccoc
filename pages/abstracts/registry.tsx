@@ -16,6 +16,7 @@ import { passwordStrength } from "check-password-strength";
 import router from "next/router";
 import { useState } from "react";
 import { UserType } from "@prisma/client";
+import useAlert from "@/components/useAlert";
 
 export default function UserRegistry() {
   const defaultValue = {
@@ -30,6 +31,7 @@ export default function UserRegistry() {
   };
   const [registryInfo, setRegistryInfo] = useState(defaultValue);
   const [waiting, setWaiting] = useState(false);
+  const [setAlertInfo, alertElement] = useAlert(6000);
   const passwordNotTooWeak =
     registryInfo.password === "" ||
     passwordStrength(registryInfo.password).id !== 0;
@@ -56,6 +58,7 @@ export default function UserRegistry() {
         <Box>
           <Typography variant="h6">Registry a new account</Typography>
         </Box>
+        {alertElement}
         <Box
           display={"flex"}
           gap={1}
@@ -167,11 +170,13 @@ export default function UserRegistry() {
                 .post("/user/registry", toSend)
                 .then((res) => {
                   if (res.status === 200) {
-                    alert("Account registry successfully, please login.");
-                    router.push("/abstracts/login");
+                    router.push(
+                      `/abstracts/login?registered=${registryInfo.email}`
+                    );
                   } else {
-                    alert("Failed to registry, please retry later.");
-                    setRegistryInfo(defaultValue);
+                    setAlertInfo({ color: "error", message: res.data });
+                    // alert(res.data)
+                    // setRegistryInfo(defaultValue);
                   }
                 })
                 .finally(() => {

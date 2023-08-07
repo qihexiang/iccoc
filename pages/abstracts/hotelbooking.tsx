@@ -1,26 +1,20 @@
+import useAlert from "@/components/useAlert";
 import api from "@/lib/apiRequest";
 import { useUser } from "@/lib/useUser";
-import { GetServerSideProps } from "next";
-import { useEffect, useState } from "react";
-import { withIronSessionSsr } from "iron-session/next";
-import prisma from "@/lib/prisma";
-import travel from "../api/user/travel";
-import { sessionOptions } from "@/lib/session";
 import {
   Box,
   Button,
   Checkbox,
   FormControlLabel,
-  FormLabel,
   MenuItem,
   Select,
-  Slider,
   TextField,
   Typography,
 } from "@mui/material";
 import { DatePicker } from "@mui/x-date-pickers";
 import { useRouter } from "next/router";
-import { Prisma } from "@prisma/client";
+import { useEffect, useState } from "react";
+import { z } from "zod";
 
 type EditableStatus = {
   needHotelBookingHelp: boolean;
@@ -33,6 +27,8 @@ type EditableStatus = {
 };
 
 export default function HotelView() {
+  const [setAlertInfo, alertElement] = useAlert(6000);
+
   const user = useUser({
     redirectTo: "/abstracts/login",
     redirectOnLoggedIn: false,
@@ -50,34 +46,89 @@ export default function HotelView() {
     setHotelInfo({ ...hotelInfo, ...patch });
   };
 
-  const confBegin = new Date("2023-10-20T00:00:00.000Z");
+  const confEnd = new Date("2023-10-23T00:00:00.000Z");
   const router = useRouter();
 
   useEffect(() => {
-    api.get("/user/hotelbooking").then((res) => {
-      if (res.status < 400) {
-        if (res.data !== null) {
-          const {
-            checkinDate,
-            checkoutDate,
-            standardRooms,
-            kingRooms,
-            location,
-          } = res.data;
-          setHotelInfo({
-            needHotelBookingHelp: true,
-            checkinDate: new Date(checkinDate),
-            checkoutDate: new Date(checkoutDate),
-            standardRooms,
-            kingRooms,
-            location,
+    api
+      .get("/user/hotelbooking")
+      .catch((err) => ({ status: 500, data: "Network Error" }))
+      .then((res) => {
+        if (res.status < 400) {
+          if (res.data !== null) {
+            const {
+              checkinDate,
+              checkoutDate,
+              standardRooms,
+              kingRooms,
+              location,
+            } = res.data;
+            setHotelInfo({
+              needHotelBookingHelp: true,
+              checkinDate: new Date(checkinDate),
+              checkoutDate: new Date(checkoutDate),
+              standardRooms,
+              kingRooms,
+              location,
+            });
+          }
+        } else {
+          setAlertInfo({
+            color: "error",
+            message: "Failed to get data. Please refresh the page.",
           });
         }
-      } else {
-        alert("Failed to get data. Please refresh the page.");
-      }
-    });
-  }, []);
+      });
+  }, [setAlertInfo]);
+
+  const validatedChecker = ():
+    | { validated: true; message: undefined}
+    | { validated: false; message: string } => {
+    if (!hotelInfo.needHotelBookingHelp) {
+      return {
+        validated: true, message: undefined
+      };
+    }
+
+    if (hotelInfo.checkoutDate < hotelInfo.checkinDate) {
+      return {
+        validated: false,
+        message: "Please set checkin date before checkout date",
+      };
+    }
+
+    if (
+      hotelInfo.checkinDate <
+      new Date(new Date().getTime() - 24 * 60 * 60 * 1000)
+    ) {
+      return {
+        validated: false,
+        message: "You have to select a date after today",
+      };
+    }
+
+    if (hotelInfo.kingRooms <= 0 && hotelInfo.standardRooms <= 0) {
+      return {
+        validated: false,
+        message:
+          "Please set at least one room if you need hotel booking service.",
+      };
+    }
+
+    return {
+      validated: true, message: undefined
+    };
+  };
+
+  const validated = validatedChecker();
+
+  useEffect(() => {
+    if (!validated.validated) {
+      setAlertInfo({ color: "error", message: validated.message });
+    } else {
+      setAlertInfo({ color: "success", message: "" });
+    }
+  }, [hotelInfo, setAlertInfo, validated.message, validated.validated]);
 
   return (
     <Box
@@ -102,9 +153,11 @@ export default function HotelView() {
                     if (res.status < 400) {
                       updateHotelInfo({ needHotelBookingHelp: false });
                     } else {
-                      alert(
-                        "Failed to cancel the request, please refresh the page and retry"
-                      );
+                      setAlertInfo({
+                        color: "error",
+                        message:
+                          "Failed to cancel the request, please refresh the page and retry",
+                      });
                     }
                   });
                 }
@@ -114,12 +167,13 @@ export default function HotelView() {
         ></FormControlLabel>
       </Box>
       <Typography variant="h6">Your hotel booking infomation</Typography>
+      {alertElement}
       <Box sx={{ display: "flex", gap: 1 }}>
         <DatePicker
           disabled={!hotelInfo.needHotelBookingHelp}
           label={"checkin date"}
           minDate={new Date()}
-          maxDate={confBegin}
+          maxDate={confEnd}
           value={hotelInfo.checkinDate}
           onChange={(value) =>
             updateHotelInfo({ checkinDate: value ?? new Date() })
@@ -178,7 +232,7 @@ export default function HotelView() {
       </Select>
       <Box sx={{ display: "flex", gap: 1 }}>
         <Button
-          disabled={!hotelInfo.needHotelBookingHelp}
+          disabled={!hotelInfo.needHotelBookingHelp || !validated.validated}
           variant="contained"
           color="success"
           onClick={() => {
@@ -199,26 +253,13 @@ export default function HotelView() {
               })
               .then((res) => {
                 if (res.status === 200) {
-                  const {
-                    checkinDate,
-                    checkoutDate,
-                    standardRooms,
-                    kingRooms,
-                    location,
-                  } = res.data;
-                  setHotelInfo({
-                    needHotelBookingHelp: true,
-                    checkinDate: new Date(checkinDate),
-                    checkoutDate: new Date(checkoutDate),
-                    standardRooms,
-                    kingRooms,
-                    location,
-                  });
-                  alert("Saved");
+                  setAlertInfo({ color: "success", message: "Saved" });
                 } else {
-                  alert(
-                    "Failed to update hotel booking information, please refresh and retry later."
-                  );
+                  setAlertInfo({
+                    color: "error",
+                    message:
+                      "Failed to update hotel booking information, please refresh and retry later.",
+                  });
                 }
               });
           }}

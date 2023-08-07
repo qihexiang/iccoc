@@ -1,11 +1,6 @@
+import useAlert from "@/components/useAlert";
 import api from "@/lib/apiRequest";
 import { useUser } from "@/lib/useUser";
-import { GetServerSideProps } from "next";
-import { useEffect, useState } from "react";
-import { withIronSessionSsr } from "iron-session/next";
-import prisma from "@/lib/prisma";
-import travel from "../api/user/travel";
-import { sessionOptions } from "@/lib/session";
 import {
   Box,
   Button,
@@ -14,9 +9,9 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import { DatePicker } from "@mui/x-date-pickers";
-import { useRouter } from "next/router";
 import { UserType } from "@prisma/client";
+import { useRouter } from "next/router";
+import { useEffect, useState } from "react";
 
 type EditablePersonalInfo = {
   name: string;
@@ -52,6 +47,7 @@ export default function PersonalView() {
       setPersonalInfo({ name, institution, phoneNumber, title, userType });
     }
   }, [user]);
+  const [setAlertInfo, alertElement] = useAlert(6000);
 
   return (
     <Box
@@ -62,7 +58,8 @@ export default function PersonalView() {
         gap: 2,
       }}
     >
-      <Typography variant="h6">Update your travel infomation</Typography>
+      <Typography variant="h6">Update your personal infomation</Typography>
+      {alertElement}
       <TextField
         label="Name"
         value={personalInfo.name}
@@ -111,11 +108,13 @@ export default function PersonalView() {
                   title,
                   userType,
                 });
-                alert("Saved");
+                setAlertInfo({ color: "success", message: "Saved" });
               } else {
-                alert(
-                  "Failed to update personal information, please refresh and retry later."
-                );
+                setAlertInfo({
+                  color: "error",
+                  message:
+                    "Failed to update personal information, please refresh and retry later.",
+                });
               }
             });
           }}

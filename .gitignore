@@ -41,3 +41,6 @@ db/
 redis/
 .env
 upload/
+
+# Too many binary files here
+public/ 

@@ -4,20 +4,21 @@ RUN dnf install nodejs bzip2 pbzip2 tar git -y
 
 RUN npm install -g pnpm
 
+RUN pnpm config set sharp_binary_host "https://npmmirror.com/mirrors/sharp" && \
+    pnpm config set sharp_libvips_binary_host "https://npmmirror.com/mirrors/sharp-libvips" && \
+    pnpm config set registry "https://registry.npmmirror.com"
+
 COPY .git /root/iccoc.git
 
 WORKDIR /root
 
 RUN git clone /root/iccoc.git /root/iccoc 
 
-COPY out/iccoc.tar.bz2 /root/
-
 WORKDIR /root/iccoc
 
-RUN pbzip2 -d -c /root/iccoc.tar.bz2 2>/dev/null | tar x node_modules .next 2>/dev/null; exit 0
+COPY out/iccoc.tar.bz2 /root/
 
-RUN pnpm config set sharp_binary_host "https://npmmirror.com/mirrors/sharp" && \
-    pnpm config set sharp_libvips_binary_host "https://npmmirror.com/mirrors/sharp-libvips"
+RUN pbzip2 -d -c /root/iccoc.tar.bz2 2>/dev/null | tar x node_modules .next 2>/dev/null; exit 0
 
 RUN pnpm install 
 RUN pnpm prisma generate

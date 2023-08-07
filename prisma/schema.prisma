@@ -34,7 +34,7 @@ model Collaborator {
   id       Int       @id @default(autoincrement())
   email    String
   name     String
-  user     User      @relation(fields: [userId], references: [id])
+  user     User      @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId   Int
   projects Project[] @relation("ProjectCollaborators")
   attend   Boolean
@@ -47,7 +47,7 @@ model Project {
   name          String
   type          ProjectType
   status        ProjectStatus
-  user          User           @relation(fields: [userId], references: [id])
+  user          User           @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId        Int
   filename      String
   storagePath   String
@@ -74,7 +74,7 @@ model Travel {
   departureDate DateTime
   departureNo   String
   attendVisit   Boolean   @default(false)
-  user          User      @relation(fields: [userId], references: [id])
+  user          User      @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId        Int       @unique
 }
 
@@ -85,6 +85,6 @@ model HotelBooking {
   standardRooms Int
   kingRooms     Int
   location      String
-  user          User     @relation(fields: [userId], references: [id])
+  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId        Int      @unique
 }

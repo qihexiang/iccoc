@@ -1,3 +1,4 @@
+import useAlert from "@/components/useAlert";
 import api from "@/lib/apiRequest";
 import { useUser } from "@/lib/useUser";
 import { Upload } from "@mui/icons-material";
@@ -52,6 +53,8 @@ export default function MeView() {
     redirectOnLoggedIn: false,
   });
 
+  const [setAlertInfo, alertElement] = useAlert(6000);
+
   const [data, setData] = useState<{
     projects: (Project & { collaborators: Collaborator[] })[];
     collaborators: Collaborator[];
@@ -62,34 +65,51 @@ export default function MeView() {
 
   const refresh = (prop?: keyof UserProjectData) => {
     if (prop === "collaborators") {
-      api.get(`/user/collaborator`).then((res) => {
-        if (res.status < 400) {
-          setData({ ...data, collaborators: res.data });
-        } else {
-          alert("Failed to get data, please refresh and retry");
-        }
-      });
+      api
+        .get(`/user/collaborator`)
+        .catch(() => ({ status: 500, data: "Network Error" }))
+        .then((res) => {
+          if (res.status < 400) {
+            setData({ ...data, collaborators: res.data });
+          } else {
+            setAlertInfo({
+              color: "error",
+              message: "Failed to get data, please refresh and retry",
+            });
+          }
+        });
     }
     if (prop === "projects") {
-      api.get("/user/project").then((res) => {
-        if (res.status < 400) {
-          setData({ ...data, projects: res.data });
-        } else {
-          alert("Failed to get data, please refresh and retry");
-        }
-      });
+      api
+        .get("/user/project")
+        .catch(() => ({ status: 500, data: "Network Error" }))
+        .then((res) => {
+          if (res.status < 400) {
+            setData({ ...data, projects: res.data });
+          } else {
+            setAlertInfo({
+              color: "error",
+              message: "Failed to get data, please refresh and retry",
+            });
+          }
+        });
     }
     if (prop === undefined) {
-      Promise.all([
-        api.get("/user/project"),
-        api.get("/user/collaborator"),
-      ]).then(([pRes, cRes]) => {
-        if (pRes.status < 400 && cRes.status < 400) {
-          setData({ projects: pRes.data, collaborators: cRes.data });
-        } else {
-          alert("Failed to fetch data, please refresh the page and retry.");
-        }
-      });
+      Promise.all([api.get("/user/project"), api.get("/user/collaborator")])
+        .catch(() => [
+          { status: 500, data: "Network Error" },
+          { status: 500, data: "Network Error" },
+        ])
+        .then(([pRes, cRes]) => {
+          if (pRes.status < 400 && cRes.status < 400) {
+            setData({ projects: pRes.data, collaborators: cRes.data });
+          } else {
+            setAlertInfo({
+              color: "error",
+              message: "Failed to get data, please refresh and retry",
+            });
+          }
+        });
     }
   };
 
@@ -113,6 +133,7 @@ export default function MeView() {
             name={user.name}
           ></PersonalCenterHeader>
         ) : null}
+        {alertElement}
         <UserProjectCtx.Provider
           value={{
             ...data,
@@ -127,7 +148,7 @@ export default function MeView() {
               afterSave={refresh}
             ></ProjectItem>
           ))}
-          <Typography variant="subtitle2">Add another abstract?</Typography>
+          <Typography variant="subtitle2">Add a new abstract?</Typography>
           <ProjectItem
             project={null}
             user={user}
@@ -192,6 +213,7 @@ function ProjectItem(props: {
   const { project, afterSave } = props;
   const [editState, setEditState] = useState(false);
   const { collaborators } = useContext(UserProjectCtx);
+  const [setAlertInfo, alertElement] = useAlert(6000);
   if (editState || project === null) {
     return (
       <ProjectEditor
@@ -207,6 +229,7 @@ function ProjectItem(props: {
     const presontor = collaborators.find((c) => c.id === project.presontor);
     return (
       <Card>
+        {alertElement}
         <CardContent>
           <Box display={"flex"} gap={1}>
             <StatusIndicator status={project.status}></StatusIndicator>
@@ -227,14 +250,23 @@ function ProjectItem(props: {
               <Button
                 color="success"
                 onClick={() => {
-                  api.post(`/user/project/${project.id}/status`).then((res) => {
-                    if (res.status < 400) {
-                      alert("Submitted!");
-                      props.afterSave();
-                    } else {
-                      alert("Failed to submit. Please retry later.");
-                    }
-                  });
+                  api
+                    .post(`/user/project/${project.id}/status`)
+                    .catch(() => ({ status: 500, data: "Network Error" }))
+                    .then((res) => {
+                      if (res.status < 400) {
+                        setAlertInfo({
+                          color: "success",
+                          message: "Submitted!",
+                        });
+                        props.afterSave();
+                      } else {
+                        setAlertInfo({
+                          color: "error",
+                          message: "Failed to submit. Please retry later.",
+                        });
+                      }
+                    });
                 }}
               >
                 Submit
@@ -242,14 +274,20 @@ function ProjectItem(props: {
               <Button
                 color="error"
                 onClick={() => {
-                  api.delete(`/user/project/${project.id}`).then((res) => {
-                    if (res.status < 400) {
-                      alert("Deleted");
-                      props.afterSave();
-                    } else {
-                      alert("Failed to delete. Please retry later.");
-                    }
-                  });
+                  api
+                    .delete(`/user/project/${project.id}`)
+                    .catch(() => ({ status: 500, data: "Network Error" }))
+                    .then((res) => {
+                      if (res.status < 400) {
+                        setAlertInfo({ color: "success", message: "Deleted" });
+                        props.afterSave();
+                      } else {
+                        setAlertInfo({
+                          color: "error",
+                          message: "Failed to delete. Please retry later.",
+                        });
+                      }
+                    });
                 }}
               >
                 Remove
@@ -261,14 +299,20 @@ function ProjectItem(props: {
               variant="contained"
               color="info"
               onClick={() => {
-                api.delete(`/user/project/${project.id}/status`).then((res) => {
-                  if (res.status < 400) {
-                    alert("Withdrawed");
-                    props.afterSave();
-                  } else {
-                    alert("Failed to withdraw. Please retry later.");
-                  }
-                });
+                api
+                  .delete(`/user/project/${project.id}/status`)
+                  .catch(() => ({ status: 500, data: "Network Error" }))
+                  .then((res) => {
+                    if (res.status < 400) {
+                      setAlertInfo({ color: "success", message: "Withdrawed" });
+                      props.afterSave();
+                    } else {
+                      setAlertInfo({
+                        color: "error",
+                        message: "Failed to withdraw. Please retry later.",
+                      });
+                    }
+                  });
               }}
             >
               Withdraw
@@ -299,6 +343,7 @@ function ProjectEditor(props: {
   user: Omit<User, "password">;
   afterSave: () => void;
 }) {
+  const [setAlertInfo, alertElement] = useAlert(6000);
   const router = useRouter();
   const [project, setProject] = useState(props.project);
   // const uploadRef = useRef<HTMLInputElement>(null);
@@ -321,15 +366,18 @@ function ProjectEditor(props: {
     };
 
     const upload = () =>
-      api.put(`/user/project/${projectId}/basic`, {
-        name: project.name,
-        type: project.type,
-        presontor: project.presontor,
-      });
+      api
+        .put(`/user/project/${projectId}/basic`, {
+          name: project.name,
+          type: project.type,
+          presontor: project.presontor,
+        })
+        .catch(() => ({ status: 500, data: "Network Error" }));
 
     return (
       <Card>
         <CardContent>
+          {alertElement}
           <Box display={"flex"} flexDirection={"column"} gap={2}>
             <FormControl>
               <InputLabel>Type</InputLabel>
@@ -377,7 +425,7 @@ function ProjectEditor(props: {
                         onUploadProgress(e) {
                           if (e.total !== undefined) {
                             setWaiting(
-                              `${(e.loaded / e.total / 100).toFixed(2)}%`
+                              `${((e.loaded / e.total) * 100).toFixed(2)}%`
                             );
                           } else {
                             setWaiting(
@@ -386,11 +434,16 @@ function ProjectEditor(props: {
                           }
                         },
                       })
+                      .catch(() => ({ status: 500, data: "Network Error" }))
                       .then((res) => {
                         if (res.status < 400) {
                           updateProject({ filename: e.target.files![0].name });
                         } else {
-                          alert("Failed to update the file.");
+                          setAlertInfo({
+                            color: "error",
+                            message:
+                              "Failed to update the file. May it's larger than 32MB?",
+                          });
                         }
                       })
                       .finally(() => setWaiting(undefined));
@@ -478,7 +531,10 @@ function ProjectEditor(props: {
                   setProject(null);
                   props.afterSave();
                 } else {
-                  alert("Faild to update data.");
+                  setAlertInfo({
+                    color: "error",
+                    message: "Faild to update data.",
+                  });
                 }
               });
             }}
@@ -494,6 +550,8 @@ function ProjectEditor(props: {
 function ProjectCreator(props: {
   afterSave: (project: Project & { collaborators: Collaborator[] }) => void;
 }) {
+  const [setAlertInfo, alertElement] = useAlert(6000);
+
   const [basicInfo, setBasicInfo] = useState({
     name: "",
     type: ProjectType.TALK as ProjectType,
@@ -507,23 +565,29 @@ function ProjectCreator(props: {
 
   const uploadFn = () => {
     if (basicInfo.name === "") {
-      alert("Must input title.");
+      setAlertInfo({ color: "error", message: "Must input title." });
       throw null;
     }
     if (file === undefined) {
-      alert("File not selected.");
+      setAlertInfo({
+        color: "error",
+        message: "Please select an attachment file.",
+      });
       throw null;
     }
     const form = new FormData();
     form.append("name", basicInfo.name);
     form.append("type", basicInfo.type);
     form.append("upload", file);
-    return api.post("/user/project", form);
+    return api
+      .post("/user/project", form)
+      .catch(() => ({ status: 500, data: "Network Error" }));
   };
 
   return (
     <Card>
       <CardContent>
+        {alertElement}
         <Box display={"flex"} flexDirection={"column"} gap={2}>
           <FormControl>
             <InputLabel>Type</InputLabel>
@@ -550,7 +614,9 @@ function ProjectCreator(props: {
             component="label"
           >
             <Upload></Upload>
-            {file === undefined ? "Upload file" : `Replace ${file.name}`}
+            {file === undefined
+              ? "Choose a file (less than 32MB) to upload"
+              : `Choose a file (less than 32MB) to replace ${file.name}`}
             <input
               onChange={(e) => {
                 setFile(e.target.files?.item(0) ?? undefined);
@@ -570,7 +636,11 @@ function ProjectCreator(props: {
               if (res.status < 400) {
                 props.afterSave(res.data);
               } else {
-                alert("Faild to update data.");
+                setAlertInfo({
+                  color: "error",
+                  message:
+                    "Faild to update data. May the attachment is too large?",
+                });
               }
             });
           }}
@@ -587,6 +657,7 @@ function CollaboratorEditor(props: {
   projectId?: number;
   afterSave: (updated: Project & { collaborators: Collaborator[] }) => void;
 }) {
+  const [setAlertInfo, alertElement] = useAlert(6000);
   const { collaborators, refresh } = useContext(UserProjectCtx);
   const [collaborator, setCollaborator] = useState(
     collaborators.find((c) => c.email === props.email) ?? {
@@ -619,101 +690,116 @@ function CollaboratorEditor(props: {
 
   const createNewCollaborator = () => {
     const { email, name, attend } = collaborator;
-    return api.post(`/user/project/${props.projectId}/collaborator`, {
-      email,
-      name,
-      attend,
-    });
+    return api
+      .post(`/user/project/${props.projectId}/collaborator`, {
+        email,
+        name,
+        attend,
+      })
+      .catch(() => ({ status: 500, data: "Network Error" }));
   };
 
   const updateExistedCollaborator = (cid: number) => {
     const { email, name, attend } = collaborator;
-    return api.put(`/user/project/${props.projectId}/collaborator/${cid}`, {
-      email,
-      name,
-      attend,
-    });
+    return api
+      .put(`/user/project/${props.projectId}/collaborator/${cid}`, {
+        email,
+        name,
+        attend,
+      })
+      .catch(() => ({ status: 500, data: "Network Error" }));
   };
 
   const deleteExistedCollaborator = (cid: number) => {
-    return api.delete(`/user/project/${props.projectId}/collaborator/${cid}`);
+    return api
+      .delete(`/user/project/${props.projectId}/collaborator/${cid}`)
+      .catch(() => ({ status: 500, data: "Network Error" }));
   };
 
   return (
-    <Box display={"flex"} gap={1} flexWrap={"wrap"}>
-      <TextField
-        label={"Full name"}
-        value={collaborator.name}
-        onChange={(e) => {
-          updateCollaborator({ name: e.target.value });
-        }}
-      ></TextField>
-      <TextField
-        label={"Email address"}
-        value={collaborator.email}
-        onChange={(e) => updateCollaborator({ email: e.target.value })}
-      ></TextField>
-      <FormControlLabel
-        label="Attend"
-        control={
-          <Checkbox
-            checked={collaborator.attend}
-            onChange={(e) => updateCollaborator({ attend: e.target.checked })}
-          ></Checkbox>
-        }
-      ></FormControlLabel>
-      <Button
-        variant="contained"
-        color="success"
-        onClick={async () => {
-          if (!("id" in collaborator)) {
-            const res = await createNewCollaborator();
-            if (res.status < 400) {
-              refresh("collaborators");
-              props.afterSave(res.data);
-            } else {
-              alert(
-                "Failed to create collaborator. Please check and retry later."
-              );
-            }
-          } else {
-            const res = await updateExistedCollaborator(collaborator.id);
-            if (res.status < 400) {
-              refresh("collaborators");
-              props.afterSave(res.data);
-            } else {
-              alert(
-                "Failed to update collaborator. Please check and retry later."
-              );
-            }
+    <>
+      {alertElement}
+      <Box display={"flex"} gap={1} flexWrap={"wrap"}>
+        <TextField
+          label={"Full name"}
+          value={collaborator.name}
+          onChange={(e) => {
+            updateCollaborator({ name: e.target.value });
+          }}
+        ></TextField>
+        <TextField
+          label={"Email address"}
+          value={collaborator.email}
+          onChange={(e) => updateCollaborator({ email: e.target.value })}
+        ></TextField>
+        <FormControlLabel
+          label="Attend"
+          control={
+            <Checkbox
+              checked={collaborator.attend}
+              onChange={(e) => updateCollaborator({ attend: e.target.checked })}
+            ></Checkbox>
           }
-          setCollaborator({
-            email: "",
-            name: "",
-            attend: false,
-          });
-        }}
-      >
-        Save
-      </Button>
-      {props.email !== undefined && "id" in collaborator ? (
+        ></FormControlLabel>
         <Button
           variant="contained"
-          color="error"
+          color="success"
           onClick={async () => {
-            const res = await deleteExistedCollaborator(collaborator.id);
-            if (res.status < 400) {
-              props.afterSave(res.data);
+            if (!("id" in collaborator)) {
+              const res = await createNewCollaborator();
+              if (res.status < 400) {
+                refresh("collaborators");
+                props.afterSave(res.data);
+              } else {
+                setAlertInfo({
+                  color: "error",
+                  message:
+                    "Failed to create collaborator. Please check and retry later.",
+                });
+              }
             } else {
-              alert(
-                "Failed to remove the collaborator. Please refresh the page and retry."
-              );
+              const res = await updateExistedCollaborator(collaborator.id);
+              if (res.status < 400) {
+                refresh("collaborators");
+                props.afterSave(res.data);
+              } else {
+                setAlertInfo({
+                  color: "error",
+                  message:
+                    "Failed to update collaborator. Please check and retry later.",
+                });
+              }
             }
+            setCollaborator({
+              email: "",
+              name: "",
+              attend: false,
+            });
           }}
         >
-          Delete
+          Save
         </Button>
-      ) : null}
-    </Box>
+        {props.email !== undefined && "id" in collaborator ? (
+          <Button
+            variant="contained"
+            color="error"
+            onClick={async () => {
+              const res = await deleteExistedCollaborator(collaborator.id);
+              if (res.status < 400) {
+                props.afterSave(res.data);
+              } else {
+                setAlertInfo({
+                  color: "error",
+                  message:
+                    "Failed to remove the collaborator. Please refresh the page and retry.",
+                });
+              }
+            }}
+          >
+            Delete
+          </Button>
+        ) : null}
+      </Box>
+    </>
   );
 }
