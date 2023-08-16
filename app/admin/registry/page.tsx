@@ -42,7 +42,7 @@ export default function AddAdmin() {
         <QRCodeCanvas value={fullTotpURL}></QRCodeCanvas>
         <P>Current code should be: {totp}</P>
         <Button onClick={() => {
-            fetch("/admin/manage/registry", {
+            fetch("/api/v2/admin/registry", {
                 method: "POST",
                 body: JSON.stringify({
                     username, secret: encodedSecret

@@ -10,7 +10,6 @@ const registrySchema = z.object({
 })
 
 export async function POST(request: NextRequest) {
-    const currentUserId = request.cookies.get("admin");
     const registryInfo = await request.json();
     const validateResult = registrySchema.safeParse(registryInfo);
     if (validateResult.success === false) {

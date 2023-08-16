@@ -1,7 +1,7 @@
-import { NextRequest, NextResponse } from "next/server";
 import forwardedParse from "forwarded-parse";
+import { NextRequest, NextResponse } from "next/server";
 
-export const middleware = (req: NextRequest) => {
+export const middleware = async (req: NextRequest) => {
   const forward = forwardedURL(req);
   if (process.env["NODE_ENV"] === "production" && forward !== null) {
     const { host, proto } = forward;

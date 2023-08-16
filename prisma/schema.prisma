@@ -53,6 +53,9 @@ model Project {
   storagePath   String
   collaborators Collaborator[] @relation("ProjectCollaborators")
   presontor     Int?
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @default(now())
+  rejectedWith  String?
 }
 
 enum ProjectType {

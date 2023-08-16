@@ -77,7 +77,6 @@ export default function TravelView() {
 
   useEffect(() => {
     api.get("/user/travel").then((res) => {
-      console.log("GET");
       if (res.status < 400) {
         if (res.data !== null) {
           const {
