@@ -1,3 +1,4 @@
+import StatusIndicator from "@/components/StatusIndicator";
 import useAlert from "@/components/useAlert";
 import api from "@/lib/apiRequest";
 import { useUser } from "@/lib/useUser";
@@ -322,20 +323,6 @@ function ProjectItem(props: {
       </Card>
     );
   }
-}
-
-function StatusIndicator(props: { status: ProjectStatus }) {
-  const { status } = props;
-  if (status === ProjectStatus.SAVED) {
-    return <Chip label="Saved" color="info"></Chip>;
-  }
-  if (status === ProjectStatus.SUBMITTED) {
-    return <Chip label="Submitted" color="primary"></Chip>;
-  }
-  if (status === ProjectStatus.ACCEPTED) {
-    return <Chip label="Accepted" color="success"></Chip>;
-  }
-  return <Chip label="Rejected" color="error"></Chip>;
 }
 
 function ProjectEditor(props: {
