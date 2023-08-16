@@ -68,14 +68,14 @@ enum ProjectStatus {
 }
 
 model Travel {
-  id            Int       @id @default(autoincrement())
+  id            Int      @id @default(autoincrement())
   arrivalDate   DateTime
   arrivalNo     String
   departureDate DateTime
   departureNo   String
-  attendVisit   Boolean   @default(false)
-  user          User      @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId        Int       @unique
+  attendVisit   Boolean  @default(false)
+  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId        Int      @unique
 }
 
 model HotelBooking {
@@ -87,4 +87,10 @@ model HotelBooking {
   location      String
   user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId        Int      @unique
+}
+
+model Admin {
+  id       Int    @id @default(autoincrement())
+  username String @unique
+  secret   String
 }
