@@ -27,6 +27,7 @@ export async function GET(
           name: true,
           institution: true,
           phoneNumber: true,
+          title: true,
         },
       },
       collaborators: true,

@@ -88,6 +88,7 @@ function AbstractItem(props: { abstractId: number }) {
     name: string;
     user: {
       name: string;
+      title: string;
       email: string;
       phoneNumber: string;
       institution: string;
@@ -136,7 +137,8 @@ function AbstractItem(props: { abstractId: number }) {
         <H3>Authors</H3>
         <Box display="flex" flexDirection="column">
           <CollaboratorItem
-            {...abstract.user}
+            name={`${abstract.user.name} ${abstract.user.institution} ${abstract.user.title}`}
+            email={`${abstract.user.email}(${abstract.user.phoneNumber})`}
             attend={true}
             presentor={abstract.presontor === null}
           ></CollaboratorItem>
