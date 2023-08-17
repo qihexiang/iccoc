@@ -135,7 +135,7 @@ function AbstractItem(props: { abstractId: number }) {
           updated: {new Date(abstract.updatedAt).toLocaleDateString()}
         </P>
         <H3>Authors</H3>
-        <Box display="flex" flexDirection="column">
+        <Box display="flex" flexDirection="column" gap={1}>
           <CollaboratorItem
             name={`${abstract.user.name} ${abstract.user.institution} ${abstract.user.title}`}
             email={`${abstract.user.email}(${abstract.user.phoneNumber})`}
@@ -257,12 +257,7 @@ function CollaboratorItem(props: {
   presentor: boolean;
 }) {
   return (
-    <Box
-      display="flex"
-      flexDirection="row"
-      alignItems="center"
-      justifyContent="space-between"
-    >
+    <Box borderBottom={"solid grey 1px"}>
       <P>{props.name}</P>
       <P>{props.email}</P>
       <Box>
