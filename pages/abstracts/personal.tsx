@@ -1,3 +1,4 @@
+import Contact from "@/components/Contact";
 import useAlert from "@/components/useAlert";
 import api from "@/lib/apiRequest";
 import { useUser } from "@/lib/useUser";
@@ -58,6 +59,7 @@ export default function PersonalView() {
         gap: 2,
       }}
     >
+      <Contact></Contact>
       <Typography variant="h6">Update your personal infomation</Typography>
       {alertElement}
       <TextField

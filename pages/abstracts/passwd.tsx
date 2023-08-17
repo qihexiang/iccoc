@@ -1,3 +1,4 @@
+import Contact from "@/components/Contact";
 import api from "@/lib/apiRequest";
 import { useUser } from "@/lib/useUser";
 import { Button, TextField, Typography } from "@mui/material";
@@ -31,6 +32,7 @@ export default function PasswdView() {
           gap: 1,
         }}
       >
+        <Contact></Contact>
         <Typography variant="h6">Reset password for {user?.email}</Typography>
         <TextField
           label={"Password"}

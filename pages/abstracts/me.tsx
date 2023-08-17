@@ -1,3 +1,4 @@
+import Contact from "@/components/Contact";
 import StatusIndicator from "@/components/StatusIndicator";
 import { P } from "@/components/TypoElement";
 import useAlert from "@/components/useAlert";
@@ -46,7 +47,7 @@ const UserProjectCtx = createContext<
 >({
   projects: [],
   collaborators: [],
-  refresh: (prop) => {},
+  refresh: (prop) => { },
 });
 
 export default function MeView() {
@@ -129,6 +130,7 @@ export default function MeView() {
         <title>Personal center - ICCOC2023</title>
       </Head>
       <Box display={"flex"} flexDirection={"column"} gap={1}>
+        <Contact></Contact>
         {user !== undefined ? (
           <PersonalCenterHeader
             email={user.email}
@@ -300,7 +302,7 @@ function ProjectItem(props: {
             </ButtonGroup>
           ) : null}
           {project.status === ProjectStatus.SUBMITTED ||
-          project.status === ProjectStatus.REJECTED ? (
+            project.status === ProjectStatus.REJECTED ? (
             <Button
               variant="contained"
               color="info"

@@ -12,6 +12,7 @@ import {
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import useAlert from "@/components/useAlert";
+import Contact from "@/components/Contact";
 
 export default function LoginPage() {
   useUser({ redirectTo: "/abstracts/me", redirectOnLoggedIn: true });
@@ -44,6 +45,7 @@ export default function LoginPage() {
           gap: 8,
         }}
       >
+        <Contact></Contact>
         <Box>
           <Typography variant="h6">Login</Typography>
         </Box>

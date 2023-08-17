@@ -17,6 +17,7 @@ import router from "next/router";
 import { useState } from "react";
 import { UserType } from "@prisma/client";
 import useAlert from "@/components/useAlert";
+import Contact from "@/components/Contact";
 
 export default function UserRegistry() {
   const defaultValue = {
@@ -55,6 +56,7 @@ export default function UserRegistry() {
           gap: 8,
         }}
       >
+        <Contact></Contact>
         <Box>
           <Typography variant="h6">Registry a new account</Typography>
         </Box>

@@ -1,3 +1,4 @@
+import Contact from "@/components/Contact";
 import useAlert from "@/components/useAlert";
 import api from "@/lib/apiRequest";
 import { useUser } from "@/lib/useUser";
@@ -141,6 +142,7 @@ export default function HotelView() {
         gap: 2,
       }}
     >
+      <Contact></Contact>
       <Box>
         <FormControlLabel
           label={"I need help of hotel booking"}
