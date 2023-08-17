@@ -17,15 +17,18 @@ import {
 import { Box, Container } from "@mui/system";
 import { Collaborator, ProjectStatus } from "@prisma/client";
 import axios from "axios";
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { InView } from "react-intersection-observer";
 import useSWR from "swr";
 
 export default function AdminHome() {
+  const router = useRouter()
   return (
-    <>
+    <Container>
+      <Button variant="contained" color="error" onClick={() => axios.delete("/api/v2/admin/login").then(() => router.push("/admin/login"))}>Logout</Button>
       <AbstractList></AbstractList>
-    </>
+    </Container>
   );
 }
 
@@ -63,7 +66,7 @@ function AbstractList() {
   if (list === undefined) return <Container>{loading}</Container>;
 
   return (
-    <Container>
+    <>
       <H2>Abstracts</H2>
       {list.map((itemId) => (
         <AbstractItem abstractId={itemId} key={itemId}></AbstractItem>
@@ -73,7 +76,7 @@ function AbstractList() {
           <P>Loading more...</P>
         </InView>
       ) : null}
-    </Container>
+    </>
   );
 }
 

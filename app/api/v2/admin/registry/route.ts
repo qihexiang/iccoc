@@ -9,7 +9,7 @@ const registrySchema = z.object({
 });
 
 export async function POST(request: NextRequest) {
-  const currentUserId = request.cookies.get("admin");
+  const admin = request.cookies.get("admin");
   const registryInfo = await request.json();
   const validateResult = registrySchema.safeParse(registryInfo);
   if (validateResult.success === false) {
@@ -17,9 +17,9 @@ export async function POST(request: NextRequest) {
   }
   const { username, secret } = validateResult.data;
   if (
-    (currentUserId !== undefined &&
+    (admin !== undefined &&
       (await prisma.admin.findUnique({
-        where: { id: Number(currentUserId) },
+        where: { username: admin.value },
       })) !== null) ||
     (await prisma.admin.count()) === 0
   ) {

@@ -42,3 +42,18 @@ export async function POST(request: NextRequest) {
   }
   return new Response("Failed to login, retry later", { status: 403 });
 }
+
+export async function DELETE() {
+  const cookie = cookies()
+  cookie.set("admin", "", {
+    expires: new Date().getTime() - 1000,
+    sameSite: "lax",
+    httpOnly: true,
+    secure: process.env["NODE_ENV"] === "production",
+  })
+  return new Response("Logout success", {
+    headers: {
+      "Set-Cookie": cookie.toString(),
+    },
+  });
+}

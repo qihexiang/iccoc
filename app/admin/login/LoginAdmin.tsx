@@ -21,7 +21,7 @@ export default function LoginAdmin() {
       }}
     >
       {alertComponent}
-      <H1>Add an administrator</H1>
+      <H1>Login to Admin</H1>
       <TextField
         label="Username"
         value={username}
