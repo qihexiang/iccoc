@@ -1,3 +1,4 @@
+import logger from "@/lib/logger";
 import prisma from "@/lib/prisma";
 import { sessionOptions } from "@/lib/session";
 import { ProjectStatus, ProjectType } from "@prisma/client";
@@ -74,6 +75,7 @@ const handler: NextApiHandler = async (req, res) => {
       },
     });
 
+    logger(`Abstract submitted, id=${created.id}, attachment=${created.filename}, store at ${created.storagePath}`, 2)
     return res.json(created);
   }
 

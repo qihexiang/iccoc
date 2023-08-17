@@ -1,3 +1,4 @@
+import logger from "@/lib/logger";
 import prisma from "@/lib/prisma";
 import { sessionOptions } from "@/lib/session";
 import { UserType } from "@prisma/client";
@@ -26,8 +27,6 @@ const registryValidator = z.object({
   institution: z.string().max(255, "Institution too long."),
   userType: z.nativeEnum(UserType),
 });
-
-const emailCheck = z.string().email();
 
 const RegistryRoute: NextApiHandler = async (req, res) => {
   const fromClient = registryValidator.safeParse(await req.body);
@@ -61,6 +60,7 @@ const RegistryRoute: NextApiHandler = async (req, res) => {
     },
   });
 
+  logger(`User Registrated: ${created.email}`, 2)
   return res.json(created);
 };
 
