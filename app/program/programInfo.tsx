@@ -1,9 +1,10 @@
 "use client";
 
-import { Container } from "@mui/material";
+import { Button, Container } from "@mui/material";
 import { Box } from "@mui/system";
 import Image from "next/image";
 import LectureTimetable from "@/images/LectureTimetable.png";
+import NextLink from "next/link";
 
 export default function ProgramInfo() {
   return (
@@ -17,6 +18,7 @@ export default function ProgramInfo() {
           alt="program table"
         ></Image>
       </Box>
+      <Button variant="contained" color="primary" LinkComponent={NextLink} href="/abstracts/registration">Registration</Button>
     </Container>
   );
 }
