@@ -1,3 +1,4 @@
+import cookieConfig from "@/lib/cookieConfig";
 import prisma from "@/lib/prisma";
 import { cookies } from "next/headers";
 import { NextRequest } from "next/server";
@@ -28,12 +29,7 @@ export async function POST(request: NextRequest) {
       timestamp: new Date().getTime() - 30 * 1000,
     }) === totp
   ) {
-    const cookie = cookies().set("admin", username, {
-      expires: new Date().getTime() + 4 * 60 * 60 * 1000,
-      sameSite: "lax",
-      httpOnly: true,
-      secure: process.env["NODE_ENV"] === "production",
-    });
+    const cookie = cookies().set("admin", username, cookieConfig);
     return new Response("Login success", {
       headers: {
         "Set-Cookie": cookie.toString(),
@@ -45,12 +41,7 @@ export async function POST(request: NextRequest) {
 
 export async function DELETE() {
   const cookie = cookies()
-  cookie.set("admin", "", {
-    expires: new Date().getTime() - 1000,
-    sameSite: "lax",
-    httpOnly: true,
-    secure: process.env["NODE_ENV"] === "production",
-  })
+  cookie.set("admin", "", {...cookieConfig, expires: new Date().getTime() - 1000})
   return new Response("Logout success", {
     headers: {
       "Set-Cookie": cookie.toString(),
