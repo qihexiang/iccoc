@@ -18,7 +18,6 @@ export default function ProgramInfo() {
           alt="program table"
         ></Image>
       </Box>
-      <Button variant="contained" color="primary" LinkComponent={NextLink} href="/abstracts/registration">Registration</Button>
     </Container>
   );
 }

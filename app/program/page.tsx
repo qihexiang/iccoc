@@ -1,4 +1,4 @@
-import ProgramInfo from "./programInfo";
+import ProgramInfo from "./ProgramInfo";
 
 export const metadata = {
   title: "Program | ICCOC2023",
