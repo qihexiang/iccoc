@@ -1,9 +1,8 @@
-import z from "zod";
-import totpGenerator from "totp-generator";
 import prisma from "@/lib/prisma";
-import { NextRequest } from "next/server";
 import { cookies } from "next/headers";
-import logger from "@/lib/logger";
+import { NextRequest } from "next/server";
+import totpGenerator from "totp-generator";
+import z from "zod";
 
 const registrySchema = z.object({
   username: z.string().email(),
@@ -31,8 +30,9 @@ export async function POST(request: NextRequest) {
   ) {
     const cookie = cookies().set("admin", username, {
       expires: new Date().getTime() + 4 * 60 * 60 * 1000,
+      sameSite: "lax",
       httpOnly: true,
-      secure: process.env["NODE_ENV"] === "production",
+      secure: false,
     });
     return new Response("Login success", {
       headers: {

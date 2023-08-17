@@ -21,6 +21,9 @@ export default function Registration() {
   return (
     <Container>
       <H1>Registration</H1>
+      <Box>
+        <Button variant="contained" LinkComponent={NextLink} href={"/abstracts/registration"}>Registration</Button>
+      </Box>
       <H2>Registration fees:</H2>
       <TABLE>
         <THEAD>
@@ -49,10 +52,6 @@ export default function Registration() {
         provide the scanned file of the student ID and the letter from the
         advisor (both in pdf format) for the special rate for students.
       </SPAN>
-      <Box>
-        <Button variant="contained" LinkComponent={NextLink} href={"/abstracts/registration"}>Registration</Button>
-      </Box>
-      
       <H2>Insurance:</H2>
       <P>
         Neither travel insurance nor medical, accident or liability insurance is

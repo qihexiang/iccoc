@@ -11,7 +11,9 @@ export async function GET(
   req: NextRequest,
   { params }: { params: { projectId: string } }
 ) {
-  const _ = await requireAdminLogin(req);
+  const isAdminCheck = await requireAdminLogin(req)
+  if (isAdminCheck instanceof Response) return isAdminCheck
+
   const idValidate = idSchema.safeParse(params.projectId);
   if (!idValidate.success) {
     return new Response("Invalid given id", { status: 400 });
