@@ -7,6 +7,7 @@ import base32Encode from "base32-encode";
 import { QRCodeCanvas } from "qrcode.react";
 import totpGenerator from "totp-generator";
 import useAlert from "@/components/useAlert";
+import { useRouter } from "next/navigation";
 
 const tEncoder = new TextEncoder();
 
@@ -28,6 +29,7 @@ export default function AddAdmin() {
   const encodedSecret = base32Encode(tEncoder.encode(secret), "RFC4648");
   const fullTotpURL = `otpauth://totp/${username}?secret=${encodedSecret}`;
   const totp = useTotp(encodedSecret);
+  const router = useRouter();
   return (
     <Box
       sx={{
@@ -56,6 +58,8 @@ export default function AddAdmin() {
       <QRCodeCanvas value={fullTotpURL}></QRCodeCanvas>
       <P>Current code should be: {totp}</P>
       <Button
+        variant="contained"
+        color="success"
         onClick={() => {
           fetch("/api/v2/admin/registry", {
             method: "POST",
@@ -73,6 +77,7 @@ export default function AddAdmin() {
                 message: "Registry successfully",
               });
               setUsername("");
+              router.push("/admin/login")
             } else {
               setInformation({
                 color: "error",
@@ -80,10 +85,13 @@ export default function AddAdmin() {
               });
             }
             setSecret("");
-          });
+          })
         }}
       >
-        Add
+        Registry
+      </Button>
+      <Button variant="contained" color="info" onClick={() => router.push("/admin/login")}>
+        Go back to login
       </Button>
     </Box>
   );
