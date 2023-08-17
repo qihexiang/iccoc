@@ -1,4 +1,5 @@
 import StatusIndicator from "@/components/StatusIndicator";
+import { P } from "@/components/TypoElement";
 import useAlert from "@/components/useAlert";
 import api from "@/lib/apiRequest";
 import { useUser } from "@/lib/useUser";
@@ -236,6 +237,9 @@ function ProjectItem(props: {
             <StatusIndicator status={project.status}></StatusIndicator>
             <Typography variant="h6">{project.name}</Typography>
           </Box>
+          {project.status === ProjectStatus.REJECTED ? (
+            <P>{project.rejectedWith}</P>
+          ) : null}
           <Typography variant="subtitle1">
             {presontor === undefined
               ? `${props.user.name} (${props.user.email})`
@@ -295,7 +299,8 @@ function ProjectItem(props: {
               </Button>
             </ButtonGroup>
           ) : null}
-          {project.status === ProjectStatus.SUBMITTED ? (
+          {project.status === ProjectStatus.SUBMITTED ||
+          project.status === ProjectStatus.REJECTED ? (
             <Button
               variant="contained"
               color="info"
@@ -333,7 +338,6 @@ function ProjectEditor(props: {
   const [setAlertInfo, alertElement] = useAlert(6000);
   const router = useRouter();
   const [project, setProject] = useState(props.project);
-  // const uploadRef = useRef<HTMLInputElement>(null);
   const [waiting, setWaiting] = useState<string | undefined>(undefined);
   const { collaborators } = useContext(UserProjectCtx);
 

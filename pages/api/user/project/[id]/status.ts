@@ -17,7 +17,7 @@ const handler: NextApiHandler = async (req, res) => {
       id,
       user: { email },
       status: {
-        notIn: [ProjectStatus.ACCEPTED, ProjectStatus.REJECTED],
+        not: ProjectStatus.ACCEPTED,
       },
     },
   });
