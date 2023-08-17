@@ -3,6 +3,7 @@ import totpGenerator from "totp-generator";
 import prisma from "@/lib/prisma";
 import { NextRequest } from "next/server";
 import { cookies } from "next/headers";
+import logger from "@/lib/logger";
 
 const registrySchema = z.object({
   username: z.string().email(),
@@ -29,13 +30,13 @@ export async function POST(request: NextRequest) {
     }) === totp
   ) {
     const cookie = cookies().set("admin", username, {
-      expires: 4 * 60 * 60 * 1000,
+      expires: new Date().getTime() + 4 * 60 * 60 * 1000,
+      httpOnly: true,
       secure: process.env["NODE_ENV"] === "production",
     });
-    const admin = cookie.get("admin");
     return new Response("Login success", {
       headers: {
-        "Set-Cookie": `admin=${admin!.value}`,
+        "Set-Cookie": cookie.toString(),
       },
     });
   }
