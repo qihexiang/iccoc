@@ -391,60 +391,63 @@ function ProjectEditor(props: {
               onChange={(e) => updateProject({ name: e.target.value })}
             ></TextField>
             <Box display={"flex"} gap={1} flexWrap={"wrap"}>
-              <Link
-                component={NextLink}
-                href={`/api/user/project/${project.id}/attachment`}
-              >
-                {project.filename}
-              </Link>
-              <Button
-                disabled={waiting !== undefined}
-                variant="contained"
-                component="label"
-              >
-                <Upload></Upload>
-                {waiting === undefined
-                  ? `upload file to replace ${project.filename}`
-                  : waiting}
-                <input
-                  onChange={(e) => {
-                    const form = new FormData();
-                    if (e.target.files === null) {
-                      return;
-                    }
-                    form.append("updated", e.target.files[0]);
-                    api
-                      .put(`/user/project/${projectId}/attachment`, form, {
-                        onUploadProgress(e) {
-                          if (e.total !== undefined) {
-                            setWaiting(
-                              `${((e.loaded / e.total) * 100).toFixed(2)}%`
-                            );
+              <Box display="flex" gap={1} alignItems="center">
+                <Button
+                  href={`/api/user/project/${project.id}/attachment`}
+                  download={project.filename}
+                >
+                  {project.filename}
+                </Button>
+                <Button
+                  disabled={waiting !== undefined}
+                  variant="contained"
+                  component="label"
+                >
+                  <Upload></Upload>
+                  {waiting === undefined
+                    ? `upload file to replace ${project.filename}`
+                    : waiting}
+                  <input
+                    onChange={(e) => {
+                      const form = new FormData();
+                      if (e.target.files === null) {
+                        return;
+                      }
+                      form.append("updated", e.target.files[0]);
+                      api
+                        .put(`/user/project/${projectId}/attachment`, form, {
+                          onUploadProgress(e) {
+                            if (e.total !== undefined) {
+                              setWaiting(
+                                `${((e.loaded / e.total) * 100).toFixed(2)}%`
+                              );
+                            } else {
+                              setWaiting(
+                                `${(e.loaded / 1024 / 1024).toFixed(2)}MB`
+                              );
+                            }
+                          },
+                        })
+                        .catch(() => ({ status: 500, data: "Network Error" }))
+                        .then((res) => {
+                          if (res.status < 400) {
+                            updateProject({ filename: e.target.files![0].name });
                           } else {
-                            setWaiting(
-                              `${(e.loaded / 1024 / 1024).toFixed(2)}MB`
-                            );
+                            setAlertInfo({
+                              color: "error",
+                              message:
+                                "Failed to update the file. May it's larger than 32MB?",
+                            });
                           }
-                        },
-                      })
-                      .catch(() => ({ status: 500, data: "Network Error" }))
-                      .then((res) => {
-                        if (res.status < 400) {
-                          updateProject({ filename: e.target.files![0].name });
-                        } else {
-                          setAlertInfo({
-                            color: "error",
-                            message:
-                              "Failed to update the file. May it's larger than 32MB?",
-                          });
-                        }
-                      })
-                      .finally(() => setWaiting(undefined));
-                  }}
-                  hidden
-                  type="file"
-                />
-              </Button>
+                        })
+                        .finally(() => setWaiting(undefined));
+                    }}
+                    hidden
+                    type="file"
+                  />
+                </Button>
+                <Button color="info" href="/Template.docx" download={"Template.docx"}>Download Template</Button>
+              </Box>
             </Box>
             <Box display={"flex"} gap={1} flexWrap={"wrap"}>
               <TextField
@@ -534,6 +537,27 @@ function ProjectEditor(props: {
           >
             Save
           </Button>
+          <Button
+            variant="contained"
+            color="success"
+            onClick={() => {
+              upload().then(async (res) => {
+                if (res.status < 400) {
+                  await api
+                    .post(`/user/project/${project.id}/status`)
+                  setProject(null);
+                  props.afterSave();
+                } else {
+                  setAlertInfo({
+                    color: "error",
+                    message: "Faild to update data.",
+                  });
+                }
+              });
+            }}
+          >
+            Save & Submit
+          </Button>
         </CardActions>
       </Card>
     );
@@ -601,23 +625,26 @@ function ProjectCreator(props: {
             value={basicInfo.name}
             onChange={(e) => updateBasicInfo({ name: e.target.value })}
           ></TextField>
-          <Button
-            disabled={basicInfo.name === ""}
-            variant="contained"
-            component="label"
-          >
-            <Upload></Upload>
-            {file === undefined
-              ? "Choose a file (less than 32MB) to upload"
-              : `Choose a file (less than 32MB) to replace ${file.name}`}
-            <input
-              onChange={(e) => {
-                setFile(e.target.files?.item(0) ?? undefined);
-              }}
-              hidden
-              type="file"
-            />
-          </Button>
+          <Box display={basicInfo.name === "" ? "none" : "flex"} gap={1}>
+            <Button
+              disabled={basicInfo.name === ""}
+              variant="contained"
+              component="label"
+            >
+              <Upload></Upload>
+              {file === undefined
+                ? "Choose a file (less than 32MB) to upload as abstract"
+                : `Choose a file (less than 32MB) to replace ${file.name}`}
+              <input
+                onChange={(e) => {
+                  setFile(e.target.files?.item(0) ?? undefined);
+                }}
+                hidden
+                type="file"
+              />
+            </Button>
+            <Button color="info" href="/Template.docx" download={"Template.docx"}>Download Template</Button>
+          </Box>
         </Box>
       </CardContent>
       <CardActions>
