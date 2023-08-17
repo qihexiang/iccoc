@@ -162,7 +162,7 @@ export default function UserRegistry() {
               !passwordNotTooWeak ||
               waiting
             }
-            color="success"
+            color="primary"
             onClick={() => {
               setWaiting(true);
               const { confirmPassword, ...toSend } = registryInfo;
@@ -184,7 +184,7 @@ export default function UserRegistry() {
                 });
             }}
           >
-            {waiting ? <CircularProgress /> : "Registry"}
+            {waiting ? <CircularProgress /> : "Registration"}
           </Button>
           <Button
             disabled={waiting}
