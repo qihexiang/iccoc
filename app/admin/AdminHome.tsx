@@ -71,9 +71,11 @@ function AbstractList() {
   return (
     <>
       <H2>Abstracts</H2>
+      <Box display="flex" flexDirection="column" gap={1}>
       {list.map((itemId) => (
         <AbstractItem abstractId={itemId} key={itemId}></AbstractItem>
       ))}
+      </Box>
       {displayAmount < list.length ? (
         <InView as={"div"} onChange={(inview) => setLoadMore(inview)}>
           <P>Loading more...</P>
