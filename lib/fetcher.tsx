@@ -9,7 +9,7 @@ export const loadingFailed = (
   <>
     <H2>Error </H2>
     <P>
-      Can't load the data now. Please wait a few minutes or contact the
+      Can{"'"}t load the data now. Please wait a few minutes or contact the
       administrator
     </P>
   </>
