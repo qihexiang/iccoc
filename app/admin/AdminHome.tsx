@@ -5,10 +5,14 @@ import { H2, H3, P } from "@/components/TypoElement";
 import useAlert from "@/components/useAlert";
 import fetcher, { loading, loadingFailed } from "@/lib/fetcher";
 import {
-  Button, Card, CardActions,
-  CardContent, Checkbox,
-  FormControlLabel, TextField,
-  Typography
+  Button,
+  Card,
+  CardActions,
+  CardContent,
+  Checkbox,
+  FormControlLabel,
+  TextField,
+  Typography,
 } from "@mui/material";
 import { Box, Container } from "@mui/system";
 import { Collaborator, ProjectStatus } from "@prisma/client";
@@ -50,9 +54,9 @@ function AbstractList() {
 
   useEffect(() => {
     if (displayAmount > (list?.length ?? 0)) {
-      setLoadMore(false)
+      setLoadMore(false);
     }
-  }, [list, displayAmount])
+  }, [list, displayAmount]);
 
   if (error) return <Container>{loadingFailed}</Container>;
 
@@ -76,7 +80,11 @@ function AbstractList() {
 function AbstractItem(props: { abstractId: number }) {
   const abstractPath = `/api/v2/admin/abstract/${props.abstractId}`;
   const [setInformation, alertCompnent] = useAlert(6000);
-  const { data: abstract, error, mutate } = useSWR<{
+  const {
+    data: abstract,
+    error,
+    mutate,
+  } = useSWR<{
     name: string;
     user: {
       name: string;
@@ -90,7 +98,7 @@ function AbstractItem(props: { abstractId: number }) {
     createdAt: string;
     updatedAt: string;
     collaborators: Collaborator[];
-    rejectedWith: string | null
+    rejectedWith: string | null;
   }>(abstractPath, fetcher, {
     refreshInterval: 60 * 1000,
     errorRetryCount: 5,
@@ -121,7 +129,6 @@ function AbstractItem(props: { abstractId: number }) {
           <StatusIndicator status={abstract.status}></StatusIndicator>
           <Typography variant="h5">{abstract.name}</Typography>
         </Box>
-        <H3>Authors</H3>
         <P>
           Created At: {new Date(abstract.createdAt).toLocaleDateString()} | Last
           updated: {new Date(abstract.updatedAt).toLocaleDateString()}
@@ -152,15 +159,29 @@ function AbstractItem(props: { abstractId: number }) {
         <Button
           href={`${abstractPath}/attachment`}
           download={abstract.filename}
-        >Download abstract</Button>
+        >
+          Download abstract
+        </Button>
         <Button
           color="success"
           disabled={abstract.status !== ProjectStatus.SUBMITTED}
           onClick={() => {
-            axios.put(abstractPath, { status: ProjectStatus.ACCEPTED, rejectedWith: null })
-              .catch(_ => setInformation({ color: "error", message: "Failed to accept data" }))
-              .finally(() => mutate())
-          }}>Accept</Button>
+            axios
+              .put(abstractPath, {
+                status: ProjectStatus.ACCEPTED,
+                rejectedWith: null,
+              })
+              .catch((_) =>
+                setInformation({
+                  color: "error",
+                  message: "Failed to accept data",
+                })
+              )
+              .finally(() => mutate());
+          }}
+        >
+          Accept
+        </Button>
         <Box
           sx={{
             display: "flex",
@@ -168,29 +189,60 @@ function AbstractItem(props: { abstractId: number }) {
             alignItems: "center",
           }}
         >
-          <TextField fullWidth placeholder={abstract.rejectedWith ?? "Must give a reason to reject"} value={rejectedWith} onChange={e => setRejectedWith(e.target.value)}></TextField>
+          <TextField
+            fullWidth
+            placeholder={
+              abstract.rejectedWith ?? "Must give a reason to reject"
+            }
+            value={rejectedWith}
+            onChange={(e) => setRejectedWith(e.target.value)}
+          ></TextField>
           <Button
             color="error"
-            disabled={abstract.status !== ProjectStatus.SUBMITTED || rejectedWith === ""}
+            disabled={
+              abstract.status !== ProjectStatus.SUBMITTED || rejectedWith === ""
+            }
             onClick={() => {
-              axios.put(abstractPath, {status: ProjectStatus.REJECTED, rejectedWith})
-              .catch(_ => setInformation({color: "error", message: "Failed to set status, please retry later"}))
-              .finally(() => {
-                setRejectedWith("")
-                mutate()
-              })
+              axios
+                .put(abstractPath, {
+                  status: ProjectStatus.REJECTED,
+                  rejectedWith,
+                })
+                .catch((_) =>
+                  setInformation({
+                    color: "error",
+                    message: "Failed to set status, please retry later",
+                  })
+                )
+                .finally(() => {
+                  setRejectedWith("");
+                  mutate();
+                });
             }}
-          >Reject</Button>
+          >
+            Reject
+          </Button>
         </Box>
         <Button
           color="primary"
-          disabled={abstract.status === ProjectStatus.SUBMITTED}
+          disabled={
+            abstract.status === ProjectStatus.SUBMITTED ||
+            abstract.status === ProjectStatus.SAVED
+          }
           onClick={() => {
-            axios.put(abstractPath, {status: ProjectStatus.SUBMITTED, rejectedWith: null})
-              .catch(_ => setInformation({color: "error", message: "Failed to cancel"}))
-              .finally(() => mutate())
+            axios
+              .put(abstractPath, {
+                status: ProjectStatus.SUBMITTED,
+                rejectedWith: null,
+              })
+              .catch((_) =>
+                setInformation({ color: "error", message: "Failed to cancel" })
+              )
+              .finally(() => mutate());
           }}
-        >Cancel</Button>
+        >
+          Cancel
+        </Button>
       </CardActions>
     </Card>
   );

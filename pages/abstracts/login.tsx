@@ -108,9 +108,9 @@ export default function LoginPage() {
         <Button
           variant="contained"
           color="info"
-          onClick={() => router.push("/abstracts/registry")}
+          onClick={() => router.push("/abstracts/registration")}
         >
-          Registry
+          Registration
         </Button>
       </Box>
     </>

@@ -61,7 +61,8 @@ export default function TravelView() {
     }
 
     return {
-      validated: true, message: undefined
+      validated: true,
+      message: undefined,
     };
   };
 

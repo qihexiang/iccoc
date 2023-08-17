@@ -11,7 +11,7 @@ import {
   ImageList,
   ImageListItem,
   ImageListItemBar,
-  Typography
+  Typography,
 } from "@mui/material";
 import Image from "next/image";
 
@@ -73,7 +73,16 @@ export default function Homepage() {
         ].map((item, idx) => (
           <ImageListItem key={idx}>
             {/* <img src={item.src}></img> */}
-            <Image src={item} alt={item.title} style={{maxWidth: "100%", objectFit: "cover", objectPosition: "center center", height: 256}}></Image>
+            <Image
+              src={item}
+              alt={item.title}
+              style={{
+                maxWidth: "100%",
+                objectFit: "cover",
+                objectPosition: "center center",
+                height: 256,
+              }}
+            ></Image>
             <ImageListItemBar title={item.title}></ImageListItemBar>
           </ImageListItem>
         ))}

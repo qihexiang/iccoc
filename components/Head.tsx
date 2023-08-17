@@ -82,7 +82,11 @@ export default function Head() {
                   <MenuList autoFocusItem={dropOpen}>
                     {previousEvents.map(([label, path], idx) => (
                       <MenuItem key={idx}>
-                        <Button variant={"text"} LinkComponent={Link} href={`/previous${path}`}>
+                        <Button
+                          variant={"text"}
+                          LinkComponent={Link}
+                          href={`/previous${path}`}
+                        >
                           {label}
                         </Button>
                       </MenuItem>

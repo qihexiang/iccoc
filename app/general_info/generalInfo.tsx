@@ -12,9 +12,7 @@ export default function GeneralInfo() {
           There will be 6 keynote lectures, 30 invited lectures presented in the
           two-day conference of ICCOC2023.
         </LI>
-        <LI>
-          To be updated.
-        </LI>
+        <LI>To be updated.</LI>
       </ul>
       <H2>Instructions for Speakers:</H2>
       <ul>
@@ -29,9 +27,7 @@ export default function GeneralInfo() {
       </ul>
       <H2>Instructions for Poster Presenters:</H2>
       <ul>
-        <LI>
-          The size of poster board is 90cm (width) X 120cm (height).
-        </LI>
+        <LI>The size of poster board is 90cm (width) X 120cm (height).</LI>
         <LI>
           All posters are to be mounted between 12:30 and 14:30, Oct. 20
           <sup>th</sup>. Posters are to be removed before noon on Oct. 23
@@ -50,9 +46,7 @@ export default function GeneralInfo() {
         </LI>
       </ul>
       <H2>Conference Language:</H2>
-      <P>
-        The official language of the conference is English.
-      </P>
+      <P>The official language of the conference is English.</P>
     </Container>
   );
 }

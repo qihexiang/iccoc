@@ -7,7 +7,8 @@ export default async function LoginPage() {
   const adminUsername = cookies().get("admin");
   if (
     adminUsername === undefined ||
-    (await prisma.admin.count({ where: { username: adminUsername.value } }) === 0)
+    (await prisma.admin.count({ where: { username: adminUsername.value } })) ===
+      0
   ) {
     return <LoginAdmin></LoginAdmin>;
   }

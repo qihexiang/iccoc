@@ -82,11 +82,12 @@ export default function HotelView() {
   }, [setAlertInfo]);
 
   const validatedChecker = ():
-    | { validated: true; message: undefined}
+    | { validated: true; message: undefined }
     | { validated: false; message: string } => {
     if (!hotelInfo.needHotelBookingHelp) {
       return {
-        validated: true, message: undefined
+        validated: true,
+        message: undefined,
       };
     }
 
@@ -116,7 +117,8 @@ export default function HotelView() {
     }
 
     return {
-      validated: true, message: undefined
+      validated: true,
+      message: undefined,
     };
   };
 

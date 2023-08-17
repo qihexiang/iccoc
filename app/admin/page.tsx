@@ -22,10 +22,14 @@ export type AbstractItemData = {
 };
 
 export default async function AdminPage() {
-    const adminUsername = cookies().get("admin")
-    if(adminUsername === undefined || await  prisma.admin.count({where: {username: adminUsername.value}}) === 0) {
-        return redirect("/admin/login")
-    }
+  const adminUsername = cookies().get("admin");
+  if (
+    adminUsername === undefined ||
+    (await prisma.admin.count({ where: { username: adminUsername.value } })) ===
+      0
+  ) {
+    return redirect("/admin/login");
+  }
 
-    return <AdminHome></AdminHome>
+  return <AdminHome></AdminHome>;
 }

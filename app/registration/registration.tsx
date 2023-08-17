@@ -1,11 +1,21 @@
 "use client";
 
 import ClipableArea from "@/components/ClipableArea";
-import { H1, H2, LI, P, SPAN, TABLE, TBODY, TD, THEAD, TR } from "@/components/TypoElement";
 import {
-  Link
-} from "@mui/material";
-import { Container } from "@mui/system";
+  H1,
+  H2,
+  LI,
+  P,
+  SPAN,
+  TABLE,
+  TBODY,
+  TD,
+  THEAD,
+  TR,
+} from "@/components/TypoElement";
+import { Button, Link } from "@mui/material";
+import { Box, Container } from "@mui/system";
+import NextLink from "next/link"
 
 export default function Registration() {
   return (
@@ -39,6 +49,10 @@ export default function Registration() {
         provide the scanned file of the student ID and the letter from the
         advisor (both in pdf format) for the special rate for students.
       </SPAN>
+      <Box>
+        <Button variant="contained" LinkComponent={NextLink} href={"/abstracts/registration"}>Registration</Button>
+      </Box>
+      
       <H2>Insurance:</H2>
       <P>
         Neither travel insurance nor medical, accident or liability insurance is
@@ -72,28 +86,16 @@ Bank Address: BeiSanHuan East Rd. 15th, ChaoYang District, Beijing, 100029 P. R.
           Conference Date: Oct. 20<sup>th</sup>-23<sup>rd</sup>, 2023
         </LI>
       </ul>
-      <H2>
-        Please observe the following guidelines:
-      </H2>
+      <H2>Please observe the following guidelines:</H2>
       <ul>
-        <LI>
-          We accept abstracts in PDF format only.
-        </LI>
-        <LI>
-          The language of the abstracts is English.
-        </LI>
+        <LI>We accept abstracts in PDF format only.</LI>
+        <LI>The language of the abstracts is English.</LI>
         <LI>
           The abstract has two parts: 1. Graphic summary and 2. Full abstract.
         </LI>
-        <LI>
-          The full abstract should fit on one A4 page (210 x 297 mm).
-        </LI>
-        <LI>
-          Please use Times New Roman 12 point font.
-        </LI>
-        <LI>
-          Please follow the layout and instructions below.
-        </LI>
+        <LI>The full abstract should fit on one A4 page (210 x 297 mm).</LI>
+        <LI>Please use Times New Roman 12 point font.</LI>
+        <LI>Please follow the layout and instructions below.</LI>
       </ul>
       <P>
         Abstracts can be prepared according to the provided templates and submit
