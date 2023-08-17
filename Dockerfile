@@ -4,9 +4,8 @@ RUN dnf install nodejs bzip2 pbzip2 tar git -y
 
 RUN npm install -g pnpm
 
-RUN pnpm config set sharp_binary_host "https://npmmirror.com/mirrors/sharp" && \
-    pnpm config set sharp_libvips_binary_host "https://npmmirror.com/mirrors/sharp-libvips" && \
-    pnpm config set registry "https://registry.npmmirror.com"
+# RUN pnpm config set sharp_binary_host "https://npmmirror.com/mirrors/sharp" && \
+#     pnpm config set sharp_libvips_binary_host "https://npmmirror.com/mirrors/sharp-libvips"
 
 COPY .git /root/iccoc.git
 
