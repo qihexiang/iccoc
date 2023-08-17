@@ -32,7 +32,7 @@ export async function POST(request: NextRequest) {
       expires: new Date().getTime() + 4 * 60 * 60 * 1000,
       sameSite: "lax",
       httpOnly: true,
-      secure: false,
+      secure: process.env["NODE_ENV"] === "production",
     });
     return new Response("Login success", {
       headers: {
