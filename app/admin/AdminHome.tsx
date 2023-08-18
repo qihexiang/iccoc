@@ -17,6 +17,7 @@ import {
 import { Box, Container } from "@mui/system";
 import { Collaborator, ProjectStatus } from "@prisma/client";
 import axios from "axios";
+import { format } from "date-fns";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { InView } from "react-intersection-observer";
@@ -139,8 +140,8 @@ function AbstractItem(props: { abstractId: number }) {
           <Typography variant="h5">{abstract.name}</Typography>
         </Box>
         <P>
-          Created At: {new Date(abstract.createdAt).toLocaleDateString()} | Last
-          updated: {new Date(abstract.updatedAt).toLocaleDateString()}
+          Created At: {format(new Date(abstract.createdAt), "yyyy-MM-dd hh:mm:ss")} | Last
+          updated: {format(new Date(abstract.updatedAt), "yyyy-MM-dd hh:mm:ss")}
         </P>
         <H3>Authors</H3>
         <Box display="flex" flexDirection="column" gap={1}>
