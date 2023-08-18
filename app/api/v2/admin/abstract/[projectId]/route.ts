@@ -10,7 +10,7 @@ export async function GET(
   req: NextRequest,
   { params }: { params: { projectId: string } }
 ) {
-  const isAdminCheck = await apiRequireAdmin(req)
+  const isAdminCheck = await apiRequireAdmin()
   if (isAdminCheck instanceof Response) return isAdminCheck
 
   const idValidate = idSchema.safeParse(params.projectId);
@@ -52,7 +52,7 @@ export async function PUT(
   req: NextRequest,
   { params }: { params: { projectId: string } }
 ) {
-  const isAdminCheck = await apiRequireAdmin(req)
+  const isAdminCheck = await apiRequireAdmin()
   if (isAdminCheck instanceof Response) return isAdminCheck
 
   const data = await req.json();

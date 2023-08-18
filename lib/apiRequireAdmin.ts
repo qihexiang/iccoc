@@ -3,7 +3,7 @@ import { NextRequest } from "next/server";
 import { parseToken } from "./cookieConfig";
 import prisma from "./prisma";
 
-export default async function apiRequireAdmin(req: NextRequest) {
+export default async function apiRequireAdmin() {
   const cookie = cookies();
   const errResponse = () => {
     const responseCookie = cookie.set("admin", "")

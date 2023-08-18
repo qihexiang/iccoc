@@ -5,9 +5,7 @@ import { parseToken } from "./cookieConfig";
 import prisma from "./prisma";
 
 export default async function pageRequireUser() {
-    const userCookie = cookies().get("user")
-    if (userCookie === undefined) return redirect("/user/login")
-    const email = parseToken(userCookie.value)
+    const email = parseToken(cookies().get("user")?.value)
     if (email === null) return redirect("/user/login")
     if ((await prisma.user.count({ where: { email } })) === 0) return redirect("/user/login")
     return email
