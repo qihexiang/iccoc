@@ -1,5 +1,5 @@
 import prisma from "@/lib/prisma";
-import requireAdminLogin from "@/lib/requireAdminLogin";
+import apiRequireAdmin from "@/lib/apiRequireAdmin";
 import { NextRequest, NextResponse } from "next/server";
 import { createReadStream } from "node:fs";
 import { Readable } from "node:stream";
@@ -11,7 +11,7 @@ export async function GET(
   req: NextRequest,
   { params }: { params: { projectId: string } }
 ) {
-  const isAdminCheck = await requireAdminLogin(req)
+  const isAdminCheck = await apiRequireAdmin(req)
   if (isAdminCheck instanceof Response) return isAdminCheck
 
   const idValidate = idSchema.safeParse(params.projectId);

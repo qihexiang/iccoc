@@ -1,10 +1,9 @@
-import logger from "@/lib/logger";
+import apiRequireAdmin from "@/lib/apiRequireAdmin";
 import prisma from "@/lib/prisma";
-import requireAdminLogin from "@/lib/requireAdminLogin";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(req: NextRequest) {
-  const isAdminCheck = await requireAdminLogin(req)
+  const isAdminCheck = await apiRequireAdmin(req)
   if (isAdminCheck instanceof Response) return isAdminCheck
 
   const projects = await prisma.project.findMany({
