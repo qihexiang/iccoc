@@ -2,6 +2,7 @@ import z from "zod";
 import bcrypt from "bcrypt";
 import prisma from "@/lib/prisma";
 import { NextRequest } from "next/server";
+import apiRequireAdmin from "@/lib/apiRequireAdmin";
 
 const registrySchema = z.object({
   username: z.string().email(),
@@ -16,11 +17,11 @@ export async function POST(request: NextRequest) {
     return new Response("Bad request", { status: 400 });
   }
   const { username, secret } = validateResult.data;
+
+  const isAdminCheck = await apiRequireAdmin()
+
   if (
-    (admin !== undefined &&
-      (await prisma.admin.findUnique({
-        where: { username: admin.value },
-      })) !== null) ||
+    typeof isAdminCheck === "string" ||
     (await prisma.admin.count()) === 0
   ) {
     const newAdmin = await prisma.admin.create({
