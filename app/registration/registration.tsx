@@ -73,45 +73,6 @@ Bank Address: BeiSanHuan East Rd. 15th, ChaoYang District, Beijing, 100029 P. R.
 银行账号： 0109 0504 3001 2010 5029 689
 `}
       ></ClipableArea>
-      <H2>Abstract Submission and Deadlines:</H2>
-      <ul>
-        <LI>
-          Abstract Submission Deadline: Sept. 30<sup>th</sup>, 2023
-        </LI>
-        <LI>
-          Registration Deadline: Sept. 30<sup>th</sup>, 2023
-        </LI>
-        <LI>
-          Conference Date: Oct. 20<sup>th</sup>-23<sup>rd</sup>, 2023
-        </LI>
-      </ul>
-      <H2>Please observe the following guidelines:</H2>
-      <ul>
-        <LI>We accept abstracts in PDF format only.</LI>
-        <LI>The language of the abstracts is English.</LI>
-        <LI>
-          The abstract has two parts: 1. Graphic summary and 2. Full abstract.
-        </LI>
-        <LI>The full abstract should fit on one A4 page (210 x 297 mm).</LI>
-        <LI>Please use Times New Roman 12 point font.</LI>
-        <LI>Please follow the layout and instructions below.</LI>
-      </ul>
-      <P>
-        Abstracts can be prepared according to the provided templates and submit
-        it on line which will be available soon.
-      </P>
-      <Link href="./Template.docx">Abstract_doc Template</Link>
-      <H2>Information for Poster Presenters:</H2>
-      <P>
-        The poster (A0 size) should be designed to fit the space of 85 cm width
-        x 120 cm height. Pushpins or other related materials will be provided on
-        site for your convenience. Poster space will be allocated by the number
-        on the poster board in the conference hall.
-      </P>
-      <P>
-        Taking photograph of his/her poster without permission is strictlly
-        prohibited!
-      </P>
     </Container>
   );
 }
