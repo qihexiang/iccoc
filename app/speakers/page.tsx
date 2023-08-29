@@ -10,6 +10,9 @@ const dataSchema = z.object({
   toBeUpdated: z.boolean(),
   speakers: z.array(
     z.tuple([z.string().min(1), z.string().min(1), z.string().min(1)])
+      .or(
+        z.tuple([z.string().min(1), z.string().min(1), z.string().min(1), z.string().min(1)])
+      )
   ),
 });
 

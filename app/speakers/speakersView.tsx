@@ -1,15 +1,16 @@
 "use client";
 
-import { Container, Typography } from "@mui/material";
+import { Container, Link, Typography } from "@mui/material";
 import { sortBy } from "lodash";
 import { SpeakersProps } from "./page";
 import { H1 } from "@/components/TypoElement";
 
 export default function SpeakersView(props: SpeakersProps) {
-  const speakers = props.speakers.map(([firstName, lastName, college]) => ({
+  const speakers = props.speakers.map(([firstName, lastName, college, url]) => ({
     firstName,
     lastName,
     college,
+    url
   }));
   return (
     <Container>
@@ -17,10 +18,10 @@ export default function SpeakersView(props: SpeakersProps) {
       <Typography variant={"overline"}>(list in alphabetical order)</Typography>
       <ul>
         {sortBy(speakers, ["lastName", "fistName", "college"]).map(
-          ({ firstName, lastName, college }, idx) => {
+          ({ firstName, lastName, college, url }, idx) => {
             return (
               <Typography key={idx} variant="body1" component={"li"}>
-                {firstName} {lastName} {college}
+                <Link href={url}>{firstName} {lastName}</Link> {college}
               </Typography>
             );
           }
