@@ -313,7 +313,7 @@ export default function HotelView() {
       </Box>
       <Box sx={{ display: "flex", gap: 1 }}>
         <Button
-          disabled={!validated.validated}
+          disabled={(!bookBySelf && !hotelInfo.needHotelBookingHelp) || !validated.validated}
           variant="contained"
           color="success"
           onClick={() => {
