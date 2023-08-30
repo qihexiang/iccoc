@@ -1,5 +1,5 @@
 import z from "zod";
-import bcrypt from "bcrypt";
+import bcrypt from "bcryptjs";
 import prisma from "@/lib/prisma";
 import { NextRequest } from "next/server";
 import apiRequireAdmin from "@/lib/apiRequireAdmin";

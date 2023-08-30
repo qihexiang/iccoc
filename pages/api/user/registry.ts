@@ -1,7 +1,7 @@
 import prisma from "@/lib/prisma";
 import { sessionOptions } from "@/lib/session";
 import { UserType } from "@prisma/client";
-import bcrypt from "bcrypt";
+import bcrypt from "bcryptjs";
 import { passwordStrength } from "check-password-strength";
 import { withIronSessionApiRoute } from "iron-session/next";
 import { NextApiHandler } from "next";
