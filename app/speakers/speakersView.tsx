@@ -21,7 +21,9 @@ export default function SpeakersView(props: SpeakersProps) {
           ({ firstName, lastName, college, url }, idx) => {
             return (
               <Typography key={idx} variant="body1" component={"li"}>
-                <Link href={url} target="_blank">{firstName} {lastName}</Link> {college}
+                {
+                  url !== undefined ? <Link href={url} target="_blank">{firstName} {lastName}</Link> : <>{firstName} {lastName}</>
+                } {college}
               </Typography>
             );
           }
