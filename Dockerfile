@@ -15,7 +15,7 @@ RUN git clone /root/iccoc.git /root/iccoc
 
 WORKDIR /root/iccoc
 
-COPY out/iccoc.tar.bz2 /root/
+COPY package/iccoc.tar.bz2 /root/
 
 RUN pbzip2 -d -c /root/iccoc.tar.bz2 2>/dev/null | tar x node_modules .next 2>/dev/null; exit 0
 
@@ -23,7 +23,7 @@ RUN pnpm install
 RUN pnpm prisma generate
 RUN pnpm build
 
-RUN tar c node_modules/ .next/ prisma/ public/ docker-compose.yml package.json next.config.mjs | pbzip2 -c > iccoc.tar.bz2
+RUN tar c node_modules/ .next/ prisma/ docker-compose.yml package.json next.config.mjs | pbzip2 -c > iccoc.tar.bz2
 
 FROM scratch as output
 
