@@ -12,6 +12,7 @@ import {
 } from "@mui/material";
 import { DatePicker } from "@mui/x-date-pickers";
 import axios from "axios";
+import { update } from "lodash";
 import { useRouter } from "next/router";
 import { useCallback, useEffect, useMemo, useState } from "react";
 
@@ -65,8 +66,15 @@ export default function HotelView() {
   useEffect(() => {
     if (bookBySelf) {
       updateHotelInfo({ needHotelBookingHelp: false });
+    } else {
+      updateHotelInfo({
+        location: hotelList.includes(hotelInfo.location)
+          ? hotelInfo.location
+          : hotelList[0],
+      });
+      setOtherHotel(undefined)
     }
-  }, [bookBySelf, updateHotelInfo]);
+  }, [bookBySelf, hotelInfo.location, hotelList, updateHotelInfo]);
 
   const confEnd = new Date("2023-10-23T00:00:00.000Z");
   const router = useRouter();
@@ -239,7 +247,7 @@ export default function HotelView() {
         ></DatePicker>
       </Box>
       <Box sx={{ display: "flex", gap: 1, alignItems: "center" }}>
-        <Typography variant="subtitle1">Number of standard rooms</Typography>
+        <Typography variant="subtitle1">Number of standard rooms (two beds in one room)</Typography>
         <TextField
           disabled={!hotelInfo.needHotelBookingHelp}
           type="number"
@@ -295,6 +303,7 @@ export default function HotelView() {
             control={
               <>
                 <Checkbox
+                  disabled={hotelInfo.needHotelBookingHelp}
                   checked={otherHotel !== undefined}
                   onChange={(e) => {
                     if (e.target.checked) setOtherHotel("");
@@ -305,6 +314,7 @@ export default function HotelView() {
             }
           ></FormControlLabel>
           <TextField
+            disabled={hotelInfo.needHotelBookingHelp}
             value={otherHotel ?? ""}
             onChange={(e) => setOtherHotel(e.target.value)}
             placeholder="Input hotel you choose."
@@ -313,7 +323,10 @@ export default function HotelView() {
       </Box>
       <Box sx={{ display: "flex", gap: 1 }}>
         <Button
-          disabled={(!bookBySelf && !hotelInfo.needHotelBookingHelp) || !validated.validated}
+          disabled={
+            (!bookBySelf && !hotelInfo.needHotelBookingHelp) ||
+            !validated.validated
+          }
           variant="contained"
           color="success"
           onClick={() => {
