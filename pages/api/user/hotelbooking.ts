@@ -26,7 +26,6 @@ const TravelRoute: NextApiHandler = async (req, res) => {
   if (req.method === "PUT") {
     const { checkinDate, checkoutDate, standardRooms, kingRooms, location, bookBySelf } =
       await req.body;
-    console.log(bookBySelf)
     if (user.hotelBooking === null) {
       const created = await prisma.hotelBooking.create({
         data: {
