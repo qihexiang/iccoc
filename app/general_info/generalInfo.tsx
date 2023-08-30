@@ -7,13 +7,10 @@ export default function GeneralInfo() {
   return (
     <Container>
       <H1>General Information</H1>
-      <ul>
-        <LI>
-          There will be 6 keynote lectures, 30 invited lectures presented in the
-          two-day conference of ICCOC2023.
-        </LI>
-        <LI>To be updated.</LI>
-      </ul>
+      <P>
+        There will be 6 keynote lectures, 46 invited lectures presented in the
+        two-day conference of ICCOC2023.
+      </P>
       <H2>Instructions for Speakers:</H2>
       <ul>
         <LI>
