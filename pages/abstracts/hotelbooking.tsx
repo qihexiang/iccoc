@@ -7,15 +7,13 @@ import {
   Button,
   Checkbox,
   FormControlLabel,
-  MenuItem,
-  Select,
   TextField,
   Typography,
 } from "@mui/material";
 import { DatePicker } from "@mui/x-date-pickers";
+import axios from "axios";
 import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
-import { z } from "zod";
+import { useCallback, useEffect, useMemo, useState } from "react";
 
 type EditableStatus = {
   needHotelBookingHelp: boolean;
@@ -30,10 +28,16 @@ type EditableStatus = {
 export default function HotelView() {
   const [setAlertInfo, alertElement] = useAlert(6000);
 
+  const hotelList = useMemo(() => ["Guizhou Hotel", "Guest House of BUCT"], []);
+
   const user = useUser({
     redirectTo: "/abstracts/login",
     redirectOnLoggedIn: false,
   });
+
+  const [bookBySelf, setBookHotelBySelf] = useState<boolean>(false);
+
+  const [otherHotel, setOtherHotel] = useState<string | undefined>(undefined);
 
   const [hotelInfo, setHotelInfo] = useState<EditableStatus>({
     needHotelBookingHelp: false,
@@ -43,9 +47,26 @@ export default function HotelView() {
     kingRooms: 0,
     location: "Guizhou Hotel",
   });
-  const updateHotelInfo = (patch: Partial<typeof hotelInfo>) => {
-    setHotelInfo({ ...hotelInfo, ...patch });
-  };
+  const updateHotelInfo = useCallback(
+    (patch: Partial<typeof hotelInfo>) => {
+      setHotelInfo((hotelInfo) => ({ ...hotelInfo, ...patch }));
+    },
+    [setHotelInfo]
+  );
+
+  useEffect(() => {
+    if (otherHotel !== undefined) {
+      updateHotelInfo({ location: otherHotel });
+    } else {
+      updateHotelInfo({ location: hotelList[0] });
+    }
+  }, [otherHotel, updateHotelInfo, hotelList]);
+
+  useEffect(() => {
+    if (bookBySelf) {
+      updateHotelInfo({ needHotelBookingHelp: false });
+    }
+  }, [bookBySelf, updateHotelInfo]);
 
   const confEnd = new Date("2023-10-23T00:00:00.000Z");
   const router = useRouter();
@@ -63,15 +84,20 @@ export default function HotelView() {
               standardRooms,
               kingRooms,
               location,
+              bookBySelf,
             } = res.data;
             setHotelInfo({
-              needHotelBookingHelp: true,
+              needHotelBookingHelp: !bookBySelf,
               checkinDate: new Date(checkinDate),
               checkoutDate: new Date(checkoutDate),
               standardRooms,
               kingRooms,
               location,
             });
+            setBookHotelBySelf(bookBySelf);
+            if (!hotelList.includes(location)) {
+              setOtherHotel(location);
+            }
           }
         } else {
           setAlertInfo({
@@ -80,11 +106,17 @@ export default function HotelView() {
           });
         }
       });
-  }, [setAlertInfo]);
+  }, [setAlertInfo, setOtherHotel, setHotelInfo, hotelList]);
 
   const validatedChecker = ():
     | { validated: true; message: undefined }
     | { validated: false; message: string } => {
+    if (bookBySelf) {
+      return {
+        validated: true,
+        message: undefined,
+      };
+    }
     if (!hotelInfo.needHotelBookingHelp) {
       return {
         validated: true,
@@ -145,12 +177,25 @@ export default function HotelView() {
       <Contact></Contact>
       <Box>
         <FormControlLabel
-          label={"I need help of hotel booking"}
+          label={"I book hotel by myself."}
+          control={
+            <Checkbox
+              checked={bookBySelf}
+              onChange={(e) => {
+                setBookHotelBySelf(e.target.checked);
+                updateHotelInfo({ needHotelBookingHelp: false });
+              }}
+            ></Checkbox>
+          }
+        ></FormControlLabel>
+        <FormControlLabel
+          label={"I need the conference organization to book hotel for me."}
           control={
             <Checkbox
               checked={hotelInfo.needHotelBookingHelp}
               onChange={(e) => {
                 if (e.target.checked) {
+                  setBookHotelBySelf(false);
                   updateHotelInfo({ needHotelBookingHelp: true });
                 } else {
                   api.delete("/user/hotelbooking").then((res) => {
@@ -226,17 +271,49 @@ export default function HotelView() {
         ></TextField>
       </Box>
       <Typography variant="subtitle1">Select a hotel</Typography>
-      <Select
-        disabled={!hotelInfo.needHotelBookingHelp}
-        value={hotelInfo.location}
-        onChange={(e) => updateHotelInfo({ location: e.target.value })}
-      >
-        <MenuItem value={"Guizhou Hotel"}>Guizhou Hotel</MenuItem>
-        <MenuItem value={"Guest House of BUCT"}>Guest House of BUCT</MenuItem>
-      </Select>
+      <Box display={"flex"} flexDirection={"row"} gap={1}>
+        {hotelList.map((hotelName, idx) => (
+          <FormControlLabel
+            key={idx}
+            label={hotelName}
+            control={
+              <Checkbox
+                checked={hotelName === hotelInfo.location}
+                onChange={(e) => {
+                  if (e.target.checked) {
+                    updateHotelInfo({ location: hotelName });
+                    setOtherHotel(undefined);
+                  }
+                }}
+              ></Checkbox>
+            }
+          ></FormControlLabel>
+        ))}
+        <Box display={"flex"} alignItems={"center"}>
+          <FormControlLabel
+            label={"other"}
+            control={
+              <>
+                <Checkbox
+                  checked={otherHotel !== undefined}
+                  onChange={(e) => {
+                    if (e.target.checked) setOtherHotel("");
+                    else setOtherHotel(undefined);
+                  }}
+                ></Checkbox>
+              </>
+            }
+          ></FormControlLabel>
+          <TextField
+            value={otherHotel ?? ""}
+            onChange={(e) => setOtherHotel(e.target.value)}
+            placeholder="Input hotel you choose."
+          ></TextField>
+        </Box>
+      </Box>
       <Box sx={{ display: "flex", gap: 1 }}>
         <Button
-          disabled={!hotelInfo.needHotelBookingHelp || !validated.validated}
+          disabled={!validated.validated}
           variant="contained"
           color="success"
           onClick={() => {
@@ -247,13 +324,14 @@ export default function HotelView() {
               kingRooms,
               location,
             } = hotelInfo;
-            api
-              .put("/user/hotelbooking", {
+            axios
+              .put("/api/user/hotelbooking", {
                 checkinDate,
                 checkoutDate,
                 standardRooms,
                 kingRooms,
                 location,
+                bookBySelf,
               })
               .then((res) => {
                 if (res.status === 200) {
