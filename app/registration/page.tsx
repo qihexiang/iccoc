@@ -1,6 +1,7 @@
 import ClipableArea from "@/components/ClipableArea";
 import { Metadata } from "next";
 import Link from "next/link"
+import "./registration.css"
 
 export const metadata: Metadata = {
   title: "Registration Information | ICCOC2023",
@@ -17,8 +18,8 @@ export default function RegistrationPage() {
       <table className="typoblock">
         <thead>
           <tr>
-            <td>Regular registrations*</td>
-            <td>Fee</td>
+            <th>Regular registrations*</th>
+            <th>Fee</th>
           </tr>
         </thead>
         <tbody>
@@ -36,7 +37,7 @@ export default function RegistrationPage() {
           </tr>
         </tbody>
       </table>
-      <span>
+      <span className="text-sm italic">
         *Graduate and undergraduate students with validated student IDs; Please
         provide the scanned file of the student ID and the letter from the
         advisor (both in pdf format) for the special rate for students.
