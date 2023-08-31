@@ -1,28 +1,35 @@
 "use client";
 
 import ExpandableIframe from "@/components/ExpandableIframe";
-import { Container, Link, Typography } from "@mui/material";
+import { H1, H2, P } from "@/components/TypoElement";
+import { Button, Container, Link, Typography } from "@mui/material";
+import { Box } from "@mui/system";
+import NextLink from "next/link"
 
 export default function AccommodationInfo() {
   return (
     <Container>
-      <Typography variant="h4">Accommodation</Typography>
-      <Typography variant="body1">
+      <H1>Accommodation</H1>
+      <Box display={"flex"} gap={1} alignItems={"center"}>
+        <Button variant="contained" LinkComponent={NextLink} href="/abstracts/travel">My travel information</Button>
+        <Button variant="contained" LinkComponent={NextLink} href="/abstracts/hotelbooking">Hotel booking support</Button>
+      </Box>
+      <P>
         Kindly remind all participants to make hotel reservations soon.
-      </Typography>
-      <Typography variant="body1">
+      </P>
+      <P>
         {" "}
         Hotel accommodation is not included in the registration fees. However, a
         limited number of rooms are available at special rates to conference
         attendees at the Beijing Guizhou Hotel.
-      </Typography>
-      <Typography variant="h5">Beijing Guizhou Hotel:</Typography>
-      <Typography variant="body1">
+      </P>
+      <H2>Beijing Guizhou Hotel:</H2>
+      <P>
         The Beijing Guizhou Hotel provieds special rates for the participatns of
         ICCOC2023. The hotel charges your credit card when you check out. Please
         make your reservations as early as possible because rooms are limited.
-      </Typography>
-      <Typography variant="body1">Tel: +86-10-58109988</Typography>
+      </P>
+      <P>Tel: +86-10-58109988</P>
       <Link href="https://maps.app.goo.gl/vdVbCUJ1vSe6ixC4A">Google Map</Link>
       <br></br>
       <Link href="https://j.map.baidu.com/6c/p7xJ">Baidu Map</Link>
@@ -35,16 +42,16 @@ export default function AccommodationInfo() {
         loading="lazy"
         referrerPolicy="no-referrer-when-downgrade"
       ></ExpandableIframe>
-      <Typography variant="h5">Guest House of BUCT :</Typography>
-      <Typography variant="body1">
+      <H2>Guest House of BUCT :</H2>
+      <P>
         For students and junior scientists with limited financial budget, we
         help to list several budget hostels in the neighborhood of the ICCOC
         venue. Most of them are dormitory-type and are within walking distance
         either from the venue. Please note that these accommodation are NOT
         affiliated with ICCOC organizers and interested participants should
         refer to the map below and make reservations by themselves.
-      </Typography>
-      <Typography variant="body1">Tel: +86-10-64435232</Typography>
+      </P>
+      <P>Tel: +86-10-64435232</P>
       <Link href="https://j.map.baidu.com/fa/Kt8J">Baidu Map</Link>
     </Container>
   );
