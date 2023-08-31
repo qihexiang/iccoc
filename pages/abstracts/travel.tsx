@@ -23,7 +23,7 @@ type EditableTravelInfo = {
 
 export default function TravelView() {
   const user = useUser({
-    redirectTo: "/abstracts/login",
+    redirectTo: "/abstracts/login?redirectTo=/abstracts/travel",
     redirectOnLoggedIn: false,
   });
 

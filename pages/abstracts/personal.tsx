@@ -24,7 +24,7 @@ type EditablePersonalInfo = {
 
 export default function PersonalView() {
   const user = useUser({
-    redirectTo: "/abstracts/login",
+    redirectTo: "/abstracts/login?redirectTo=/abstracts/personal",
     redirectOnLoggedIn: false,
   });
 

@@ -13,13 +13,16 @@ import {
 } from "@mui/material";
 import { Container } from "@mui/system";
 import Head from "next/head";
+import { useSearchParams } from "next/navigation";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 
 export default function LoginPage() {
-  useUser({ redirectTo: "/abstracts/me", redirectOnLoggedIn: true });
+  const redirectTo = useSearchParams()?.get("redirectTo") ?? undefined
+  useUser({ redirectTo: redirectTo ?? "/abstracts/me", redirectOnLoggedIn: true });
   const router = useRouter();
   const [email, setEmail] = useState("");
+  console.log(redirectTo)
   const [password, setPassword] = useState("");
   const [setAlertInfo, alertElement] = useAlert(6000);
   useEffect(() => {
@@ -75,7 +78,7 @@ export default function LoginPage() {
                   )
                   .then((res) => {
                     if (res.status === 200) {
-                      router.push("/abstracts/me");
+                      router.push(redirectTo ?? "/abstracts/me");
                     } else {
                       setAlertInfo({
                         color: "error",

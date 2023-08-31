@@ -32,7 +32,7 @@ export default function HotelView() {
   const hotelList = useMemo(() => ["Guizhou Hotel", "Guest House of BUCT"], []);
 
   const user = useUser({
-    redirectTo: "/abstracts/login",
+    redirectTo: "/abstracts/login?redirectTo=/abstracts/hotelbooking",
     redirectOnLoggedIn: false,
   });
 
