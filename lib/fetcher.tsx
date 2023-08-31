@@ -1,4 +1,3 @@
-import { h2, P } from "@/components/TypoElement";
 import axios from "axios";
 
 export default function fetcher<T>(url: string): Promise<T> {
