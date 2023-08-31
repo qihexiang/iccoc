@@ -13,15 +13,13 @@ import {
   CardActions,
   CardContent,
   Checkbox,
-  Chip,
   FormControl,
   FormControlLabel,
   InputLabel,
-  Link,
   MenuItem,
   Select,
   TextField,
-  Typography,
+  Typography
 } from "@mui/material";
 import {
   Collaborator,
@@ -31,9 +29,8 @@ import {
   User,
 } from "@prisma/client";
 import Head from "next/head";
-import NextLink from "next/link";
 import { useRouter } from "next/router";
-import { createContext, useContext, useEffect, useState } from "react";
+import { createContext, useCallback, useContext, useEffect, useState } from "react";
 
 type UserProjectData = {
   projects: (Project & { collaborators: Collaborator[] })[];
@@ -66,7 +63,7 @@ export default function MeView() {
     collaborators: [],
   });
 
-  const refresh = (prop?: keyof UserProjectData) => {
+  const refresh = useCallback((prop?: keyof UserProjectData) => {
     if (prop === "collaborators") {
       api
         .get(`/user/collaborator`)
@@ -114,11 +111,11 @@ export default function MeView() {
           }
         });
     }
-  };
+  }, [data, setAlertInfo]);
 
   useEffect(() => {
     refresh();
-  }, []);
+  }, [refresh]);
 
   if (user === undefined) {
     return null;
