@@ -70,7 +70,7 @@ export default function MeView() {
         .catch(() => ({ status: 500, data: "Network Error" }))
         .then((res) => {
           if (res.status < 400) {
-            setData({ ...data, collaborators: res.data });
+            setData(data => ({ ...data, collaborators: res.data }));
           } else {
             setAlertInfo({
               color: "error",
@@ -85,7 +85,7 @@ export default function MeView() {
         .catch(() => ({ status: 500, data: "Network Error" }))
         .then((res) => {
           if (res.status < 400) {
-            setData({ ...data, projects: res.data });
+            setData(data => ({ ...data, projects: res.data }));
           } else {
             setAlertInfo({
               color: "error",
@@ -111,7 +111,7 @@ export default function MeView() {
           }
         });
     }
-  }, [data, setAlertInfo]);
+  }, [setAlertInfo]);
 
   useEffect(() => {
     refresh();
