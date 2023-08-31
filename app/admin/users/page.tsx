@@ -3,7 +3,7 @@ import prisma from "@/lib/prisma";
 import UserManage from "./UserManage";
 
 export default async function Page() {
-  const admin = pageRequireAdmin();
+  await pageRequireAdmin();
   const users = await prisma.user.findMany({
     select: {
       id: true,
