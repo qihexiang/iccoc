@@ -47,13 +47,13 @@ const loadJson = async () => {
 export default async function SpeakersPage() {
   const json = await loadJson();
   return <div>
-    <h1>Invited Speakers</h1>
-    <p>(list in alphabetical order)</p>
-    <ul>
+    <h1 className="typoblock">Invited Speakers</h1>
+    <p className="typoblock">(list in alphabetical order)</p>
+    <ul className="typoblock">
       {sortBy(json.speakers, [1, 0, 2]).map(
         ([firstName, lastName, college, url], idx) => <li key={idx}>
           {
-            url !== undefined ? <Link href={url} target="_blank">{firstName} {lastName}</Link> : <>{firstName} {lastName}</>
+            url !== undefined ? <Link className="link" href={url} target="_blank">{firstName} {lastName}</Link> : <>{firstName} {lastName}</>
           } {college}
         </li>
       )}
