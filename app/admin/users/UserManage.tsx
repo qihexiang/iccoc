@@ -6,6 +6,7 @@ import fetcher from "@/lib/fetcher";
 import { Box } from "@mui/system";
 import axios from "axios";
 import { useEffect, useState } from "react";
+import { InView } from "react-intersection-observer";
 import useSWR from "swr";
 
 export default function UserManage(props: { users: { id: number }[] }) {
@@ -33,6 +34,11 @@ export default function UserManage(props: { users: { id: number }[] }) {
       {userIds.slice(0, displayAmount).map(({ id }) => (
         <UserItem key={id} id={id}></UserItem>
       ))}
+      {displayAmount < userIds.length ? (
+        <InView as={"div"} onChange={(inview) => setLoadMore(inview)}>
+          <p>Loading more...</p>
+        </InView>
+      ) : null}
     </div>
   );
 }
