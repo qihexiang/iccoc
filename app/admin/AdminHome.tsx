@@ -30,6 +30,7 @@ export default function AdminHome() {
       <Box display="flex" gap={1}>
         <Button variant="contained" color="error" onClick={() => axios.delete("/api/v2/admin/login").then(() => router.push("/admin/login"))}>Logout</Button>
         <Button variant="contained" color="info" onClick={() => router.push("/admin/registry")}>Registry a new Administrator</Button>
+        <Button variant="contained" color="info" onClick={() => router.push("/admin/users")}>User manage</Button>
       </Box>
       <AbstractList></AbstractList>
     </Container>
