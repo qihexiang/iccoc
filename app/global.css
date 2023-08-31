@@ -1,0 +1,76 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.container {
+  @apply mx-auto w-full sm:w-11/12 md:w-10/12 lg:w-10/12 xl:w-9/12 2xl:w-9/12 px-2;
+}
+
+.btn {
+    @apply font-bold rounded text-white py-1 px-2 text-center shadow-neutral-200 hover:shadow-md
+}
+
+.safe {
+    @apply bg-green-500 hover:bg-green-600
+}
+
+.danger {
+    @apply bg-red-500 hover:bg-red-600
+}
+
+.warning {
+    @apply bg-orange-500 hover:bg-orange-600
+}
+
+.info {
+    @apply bg-blue-500 hover:bg-blue-600
+}
+
+* {
+  @apply font-sans ease-in-out duration-150;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  @apply font-bold;
+}
+
+h1 {
+  @apply text-3xl;
+}
+
+h2 {
+  @apply text-2xl;
+}
+
+h3 {
+  @apply text-xl;
+}
+
+h4 {
+  @apply text-lg;
+}
+
+h6 {
+  @apply text-sm;
+}
+
+.typoblock {
+  @apply mt-2;
+}
+
+ul {
+  @apply list-disc list-inside;
+}
+
+ol {
+  @apply list-decimal list-inside;
+}
+
+.link {
+    @apply underline text-sky-500 hover:text-sky-600
+}

@@ -1,20 +1,20 @@
 "use client";
 
 import StatusIndicator from "@/components/StatusIndicator";
-import { H2, H3, P } from "@/components/TypoElement";
+import { h2, h3, P } from "@/components/TypoElement";
 import useAlert from "@/components/useAlert";
 import fetcher, { loading, loadingFailed } from "@/lib/fetcher";
 import {
-  Button,
+  button,
   Card,
   CardActions,
   CardContent,
-  Checkbox,
+  Checkdiv,
   FormControlLabel,
   TextField,
   Typography,
 } from "@mui/material";
-import { Box, Container } from "@mui/system";
+import { div, div } from "@mui/system";
 import { Collaborator, ProjectStatus } from "@prisma/client";
 import axios from "axios";
 import { format } from "date-fns";
@@ -26,13 +26,13 @@ import useSWR from "swr";
 export default function AdminHome() {
   const router = useRouter()
   return (
-    <Container>
-      <Box display="flex" gap={1}>
-        <Button variant="contained" color="error" onClick={() => axios.delete("/api/v2/admin/login").then(() => router.push("/admin/login"))}>Logout</Button>
-        <Button variant="contained" color="info" onClick={() => router.push("/admin/registry")}>Registry a new Administrator</Button>
-      </Box>
+    <div>
+      <div className="flex items-center gap-1">
+        <button className="btn danger" onClick={() => axios.delete("/api/v2/admin/login").then(() => router.push("/admin/login"))}>Logout</button>
+        <button className="btn info" onClick={() => router.push("/admin/registry")}>Registry a new Administrator</button>
+      </div>
       <AbstractList></AbstractList>
-    </Container>
+    </div>
   );
 }
 
@@ -65,21 +65,21 @@ function AbstractList() {
     }
   }, [list, displayAmount]);
 
-  if (error) return <Container>{loadingFailed}</Container>;
+  if (error) return <div>{loadingFailed}</div>;
 
-  if (list === undefined) return <Container>{loading}</Container>;
+  if (list === undefined) return <div>{loading}</div>;
 
   return (
     <>
-      <H2>Abstracts</H2>
-      <Box display="flex" flexDirection="column" gap={1}>
+      <h2>Abstracts</h2>
+      <div className="flex items-center gap-1">
       {list.map((itemId) => (
         <AbstractItem abstractId={itemId} key={itemId}></AbstractItem>
       ))}
-      </Box>
+      </div>
       {displayAmount < list.length ? (
         <InView as={"div"} onChange={(inview) => setLoadMore(inview)}>
-          <P>Loading more...</P>
+          <p>Loading more...</p>
         </InView>
       ) : null}
     </>
@@ -119,32 +119,32 @@ function AbstractItem(props: { abstractId: number }) {
 
   if (error)
     return (
-      <Card>
-        <CardContent>{loadingFailed}</CardContent>
-      </Card>
+      <div className="rounded shadow-neutral-200 shadow-md">
+        <div className="w-full">{loadingFailed}</div>
+      </div>
     );
 
   if (abstract === undefined)
     return (
-      <Card>
-        <CardContent>{loading}</CardContent>
-      </Card>
+      <div className="rounded shadow-neutral-200 shadow-md">
+        <div className="w-full">{loading}</div>
+      </div>
     );
 
   return (
-    <Card>
-      <CardContent>
+    <div className="rounded shadow-neutral-200 shadow-md">
+      <div className="w-full">
         {alertCompnent}
-        <Box display="flex" gap={1} alignItems="center">
+        <div className="flex items-center gap-1">
           <StatusIndicator status={abstract.status}></StatusIndicator>
           <Typography variant="h5">{abstract.name}</Typography>
-        </Box>
-        <P>
+        </div>
+        <p>
           Created At: {format(new Date(abstract.createdAt), "yyyy-MM-dd hh:mm:ss")} | Last
           updated: {format(new Date(abstract.updatedAt), "yyyy-MM-dd hh:mm:ss")}
-        </P>
-        <H3>Authors</H3>
-        <Box display="flex" flexDirection="column" gap={1}>
+        </p>
+        <h3>Authors</h3>
+        <div className="flex items-center gap-1">
           <CollaboratorItem
             name={`${abstract.user.name} ${abstract.user.institution} ${abstract.user.title}`}
             email={`${abstract.user.email}(${abstract.user.phoneNumber})`}
@@ -158,8 +158,8 @@ function AbstractItem(props: { abstractId: number }) {
               presentor={abstract.presontor === item.id}
             ></CollaboratorItem>
           ))}
-        </Box>
-      </CardContent>
+        </div>
+      </div>
       <CardActions
         sx={{
           display: "flex",
@@ -167,13 +167,13 @@ function AbstractItem(props: { abstractId: number }) {
           alignItems: "center",
         }}
       >
-        <Button
+        <button
           href={`${abstractPath}/attachment`}
           download={abstract.filename}
         >
           Download abstract
-        </Button>
-        <Button
+        </button>
+        <button
           color="success"
           disabled={abstract.status !== ProjectStatus.SUBMITTED}
           onClick={() => {
@@ -192,8 +192,8 @@ function AbstractItem(props: { abstractId: number }) {
           }}
         >
           Accept
-        </Button>
-        <Box
+        </button>
+        <div
           sx={{
             display: "flex",
             justifyContent: "space-between",
@@ -208,7 +208,7 @@ function AbstractItem(props: { abstractId: number }) {
             value={rejectedWith}
             onChange={(e) => setRejectedWith(e.target.value)}
           ></TextField>
-          <Button
+          <button
             color="error"
             disabled={
               abstract.status !== ProjectStatus.SUBMITTED || rejectedWith === ""
@@ -232,9 +232,9 @@ function AbstractItem(props: { abstractId: number }) {
             }}
           >
             Reject
-          </Button>
-        </Box>
-        <Button
+          </button>
+        </div>
+        <button
           color="primary"
           disabled={
             abstract.status === ProjectStatus.SUBMITTED ||
@@ -253,9 +253,9 @@ function AbstractItem(props: { abstractId: number }) {
           }}
         >
           Cancel
-        </Button>
+        </button>
       </CardActions>
-    </Card>
+    </div>
   );
 }
 
@@ -266,19 +266,19 @@ function CollaboratorItem(props: {
   presentor: boolean;
 }) {
   return (
-    <Box borderBottom={"solid grey 1px"}>
-      <P>{props.name}</P>
-      <P>{props.email}</P>
-      <Box>
+    <div borderBottom={"solid grey 1px"}>
+      <p>{props.name}</p>
+      <p>{props.email}</p>
+      <div>
         <FormControlLabel
-          control={<Checkbox checked={props.attend}></Checkbox>}
+          control={<Checkdiv checked={props.attend}></Checkdiv>}
           label="Attend"
         ></FormControlLabel>
         <FormControlLabel
-          control={<Checkbox checked={props.presentor}></Checkbox>}
+          control={<Checkdiv checked={props.presentor}></Checkdiv>}
           label="Presentor"
         ></FormControlLabel>
-      </Box>
-    </Box>
+      </div>
+    </div>
   );
 }

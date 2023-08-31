@@ -1,11 +1,10 @@
-import Foot from "@/components/Foot";
-import Head from "@/components/Head";
-import "@/styles/globals.css";
-import "@fontsource/roboto/300.css";
-import "@fontsource/roboto/400.css";
-import "@fontsource/roboto/500.css";
-import "@fontsource/roboto/700.css";
+import Navibar from "@/components/Navibar";
+import HeaderImage from "@/config/headerImage";
+import { getCount } from "@/lib/redis";
 import { Metadata } from "next";
+import Image from "next/image";
+import "./global.css";
+import "./layout.css";
 
 export const metadata: Metadata = {
   title: "Welcome | ICCOC2023",
@@ -25,13 +24,29 @@ export default async function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
+  const count = await getCount().catch(_ => 0);
   return (
     <html lang="en">
       <body>
         <Head></Head>
-        {children}
-        <Foot></Foot>
+        <div className="container">{children}</div>
+        <Foot count={count}></Foot>
       </body>
     </html>
   );
 }
+
+function Head() {
+  return <header className="container">
+    <Image src={HeaderImage} alt={"header image"} width={1920} height={1600}></Image>
+    <Navibar></Navibar>
+  </header>
+}
+
+function Foot(props: { count: number }) {
+  return <footer className="container mt-2">
+    <div className="text-center">ICCOC2023, International Conference of Computational Organometallic Catalysis</div>
+    <div className="text-center">Recently visited: {props.count}</div>
+  </footer>
+}
+

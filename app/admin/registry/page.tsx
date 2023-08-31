@@ -1,7 +1,7 @@
 "use client";
 
-import { Box, Button, TextField } from "@mui/material";
-import { H1, P } from "@/components/TypoElement";
+import { div, button, TextField } from "@mui/material";
+import { h1, P } from "@/components/TypoElement";
 import { useEffect, useState } from "react";
 import base32Encode from "base32-encode";
 import { QRCodeCanvas } from "qrcode.react";
@@ -31,7 +31,7 @@ export default function AddAdmin() {
   const totp = useTotp(encodedSecret);
   const router = useRouter();
   return (
-    <Box
+    <div
       sx={{
         display: "flex",
         flexDirection: "column",
@@ -40,7 +40,7 @@ export default function AddAdmin() {
       }}
     >
       {alertComponent}
-      <H1>Add an administrator</H1>
+      <h1>Add an administrator</h1>
       <TextField
         label="Username"
         value={username}
@@ -54,10 +54,10 @@ export default function AddAdmin() {
         onChange={(e) => setSecret(e.target.value)}
         placeholder="Set secret here"
       ></TextField>
-      {/* <P>{fullTotpURL}</P> */}
+      {/* <p>{fullTotpURL}</p> */}
       <QRCodeCanvas value={fullTotpURL}></QRCodeCanvas>
-      <P>Current code should be: {totp}</P>
-      <Button
+      <p>Current code should be: {totp}</p>
+      <button
         variant="contained"
         color="success"
         onClick={() => {
@@ -89,10 +89,10 @@ export default function AddAdmin() {
         }}
       >
         Registry
-      </Button>
-      <Button variant="contained" color="info" onClick={() => router.push("/admin/login")}>
+      </button>
+      <button variant="contained" color="info" onClick={() => router.push("/admin/login")}>
         Go back to login
-      </Button>
-    </Box>
+      </button>
+    </div>
   );
 }

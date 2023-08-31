@@ -1,28 +1,22 @@
 "use client";
 
-import Foot from "@/components/Foot";
-import Head from "@/components/Head";
-import { Box, Button, Typography } from "@mui/material";
-import { Container } from "@mui/system";
 import { useRouter } from "next/navigation";
 
 export default function NotFound() {
   const router = useRouter();
   return (
     <>
-      <Head></Head>
-      <Container>
-        <Typography>Page Not Found.</Typography>
-        <Box style={{ display: "flex", flexDirection: "row", gap: 4 }}>
-          <Button onClick={() => router.push("/")} variant="contained">
+      <div>
+        <p>Page Not Found.</p>
+        <div style={{ display: "flex", flexDirection: "row", gap: 4 }}>
+          <button onClick={() => router.push("/")}>
             Go Home
-          </Button>
-          <Button onClick={() => router.back()} variant="contained">
+          </button>
+          <button onClick={() => router.back()}>
             Back to previous page
-          </Button>
-        </Box>
-      </Container>
-      <Foot></Foot>
+          </button>
+        </div>
+      </div>
     </>
   );
 }

@@ -1,4 +1,4 @@
-import { Alert, Button } from "@mui/material";
+import { Alert, button } from "@mui/material";
 
 export default function Contact() {
     return <Alert severity="info">

@@ -1,10 +1,11 @@
 import { errorLog } from "@/lib/errors";
 import { readFile } from "fs/promises";
+import { sortBy } from "lodash";
 import { Metadata } from "next";
 import { join } from "path";
 import { cwd } from "process";
 import { z } from "zod";
-import SpeakersView from "./speakersView";
+import Link from "next/link"
 
 const dataSchema = z.object({
   toBeUpdated: z.boolean(),
@@ -21,11 +22,6 @@ export type SpeakersProps = z.infer<typeof dataSchema>;
 export const metadata: Metadata = {
   title: "Invited speakers | ICCOC2023",
 };
-
-export default async function SpeakersPage() {
-  const json = await loadJson();
-  return <SpeakersView {...json}></SpeakersView>;
-}
 
 const loadJson = async () => {
   const data = await readFile(join(cwd(), "jsonData", "speakers.json"), "utf-8")
@@ -47,3 +43,23 @@ const loadJson = async () => {
     };
   }
 };
+
+export default async function SpeakersPage() {
+  const json = await loadJson();
+  return <div>
+    <h1>Invited Speakers</h1>
+    <p>(list in alphabetical order)</p>
+    <ul>
+      {sortBy(json.speakers, [1, 0, 2]).map(
+        ([firstName, lastName, college, url], idx) => <li key={idx}>
+          {
+            url !== undefined ? <Link href={url} target="_blank">{firstName} {lastName}</Link> : <>{firstName} {lastName}</>
+          } {college}
+        </li>
+      )}
+      {json.toBeUpdated ? <li>to be updated...</li> : null}
+    </ul>
+  </div>;
+}
+
+

@@ -1,4 +1,4 @@
-import { H2, P } from "@/components/TypoElement";
+import { h2, P } from "@/components/TypoElement";
 import axios from "axios";
 
 export default function fetcher<T>(url: string): Promise<T> {
@@ -7,17 +7,17 @@ export default function fetcher<T>(url: string): Promise<T> {
 
 export const loadingFailed = (
   <>
-    <H2>Error </H2>
-    <P>
+    <h2>Error </h2>
+    <p>
       Can{"'"}t load the data now. Please wait a few minutes or contact the
       administrator
-    </P>
+    </p>
   </>
 );
 
 export const loading = (
   <>
-    <H2>Loading</H2>
-    <P>Loading data, please wait.</P>
+    <h2>Loading</h2>
+    <p>Loading data, please wait.</p>
   </>
 );

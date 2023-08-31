@@ -1,0 +1,7 @@
+.navilink {
+    @apply font-bold text-sky-600 px-2 py-1 hover:text-purple-400
+}
+
+.active {
+    @apply text-purple-500
+}

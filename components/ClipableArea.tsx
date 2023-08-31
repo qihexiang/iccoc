@@ -1,4 +1,4 @@
-import { Box, Button, Card, CardActions, Typography } from "@mui/material";
+"use client";
 import useAlert from "./useAlert";
 
 export default function ClipaleArea({ content }: { content: string }) {
@@ -6,36 +6,35 @@ export default function ClipaleArea({ content }: { content: string }) {
   return (
     <>
       {alertElement}
-      <Card variant="outlined">
-        <Box component={"div"} style={{ overflowX: "scroll", padding: 4 }}>
-          <Typography component={"pre"} variant="body2">
+      <div className="rounded shadow-neutral-200 shadow-md border-2 border-black  p-4 mt-2">
+        <div className="overflow-scroll">
+          <pre className="text-sm font-sans">
             {content}
-          </Typography>
-        </Box>
-        <CardActions>
-          <Button
-            onClick={() =>
-              window.navigator.clipboard
-                .writeText(content)
-                .then(() =>
-                  setInformation({
-                    color: "success",
-                    message: "Text successfully copied into your clipboard.",
-                  })
-                )
-                .catch(() =>
-                  setInformation({
-                    color: "warning",
-                    message:
-                      "Unable to copy the text into your clipboard. Please copy it manually.",
-                  })
-                )
-            }
-          >
-            Copy
-          </Button>
-        </CardActions>
-      </Card>
+          </pre>
+        </div>
+        <button
+          className="mt-2 btn info"
+          onClick={() =>
+            window.navigator.clipboard
+              .writeText(content)
+              .then(() =>
+                setInformation({
+                  color: "success",
+                  message: "Text successfully copied into your clipboard.",
+                })
+              )
+              .catch(() =>
+                setInformation({
+                  color: "warning",
+                  message:
+                    "Unable to copy the text into your clipboard. Please copy it manually.",
+                })
+              )
+          }
+        >
+          Copy
+        </button>
+      </div>
     </>
   );
 }

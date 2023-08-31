@@ -1,6 +1,4 @@
-import { Close } from "@mui/icons-material";
-import { Button, Card, CardContent, Typography } from "@mui/material";
-import { Box } from "@mui/system";
+"use client";
 import { useState } from "react";
 
 export default function ExpandableIframe(
@@ -12,38 +10,28 @@ export default function ExpandableIframe(
   const { buttonName, autoExpand, ...iframeProps } = props;
   const [expand, setExpand] = useState(autoExpand ?? false);
   return (
-    <Box>
+    <div>
       {expand ? (
-        <Card>
-          <CardContent>
-            <Box
-              sx={{
-                display: "flex",
-                justifyContent: "space-between",
-                marginBottom: 1,
-              }}
+        <div className="shaodw-neutral-600 shadow-lg rounded p-2">
+          <div className="flex items-center justify-between p-2">
+            <h4>Google Map</h4>
+            <button
+              className="btn danger"
+              onClick={() => setExpand(false)}
             >
-              <Typography variant="h6">Google Map</Typography>
-              <Button
-                color="error"
-                variant="contained"
-                onClick={() => setExpand(false)}
-              >
-                <Close></Close>
-              </Button>
-            </Box>
-            <iframe {...iframeProps}></iframe>
-          </CardContent>
-        </Card>
+              Close
+            </button>
+          </div>
+          <iframe {...iframeProps}></iframe>
+        </div>
       ) : (
-        <Button
-          color="primary"
-          variant="contained"
+        <button
+          className="btn info"
           onClick={() => setExpand(true)}
         >
           {buttonName}
-        </Button>
+        </button>
       )}
-    </Box>
+    </div>
   );
 }

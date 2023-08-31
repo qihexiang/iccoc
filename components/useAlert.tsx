@@ -1,4 +1,4 @@
-import { Alert, Box } from "@mui/material";
+import { Alert, div } from "@mui/material";
 import { useEffect, useState } from "react";
 
 export default function useAlert(autoClose: number) {
@@ -25,11 +25,11 @@ export default function useAlert(autoClose: number) {
   return [
     setInformation,
     open ? (
-      <Box sx={{ margin: 1 }}>
+      <div sx={{ margin: 1 }}>
         <Alert severity={alertInformation.color}>
           {alertInformation.message}
         </Alert>
-      </Box>
+      </div>
     ) : null,
   ] as const;
 }
