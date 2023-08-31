@@ -47,6 +47,7 @@ function Foot(props: { count: number }) {
   return <footer className="container mt-2">
     <div className="text-center">ICCOC2023, International Conference of Computational Organometallic Catalysis</div>
     <div className="text-center">Recently visited: {props.count}</div>
+    <div className="text-center">京ICP备18022349-3号</div>
   </footer>
 }
 
