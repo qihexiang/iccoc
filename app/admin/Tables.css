@@ -1,0 +1,15 @@
+table {
+    @apply w-full
+}
+
+thead, tbody {
+    @apply border-y-2 border-black
+}
+
+th {
+    @apply font-bold
+}
+
+th, td {
+    @apply text-center
+}

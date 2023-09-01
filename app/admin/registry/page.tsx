@@ -31,35 +31,24 @@ export default function AddAdmin() {
   const totp = useTotp(encodedSecret);
   const router = useRouter();
   return (
-    <Box
-      sx={{
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        gap: 1,
-      }}
-    >
+<div className="flex flex-col items-center gap-1">
       {alertComponent}
-      <H1>Add an administrator</H1>
-      <TextField
-        label="Username"
+      <h1>Add an administrator</h1>
+      <input type="text"
         value={username}
         onChange={(e) => setUsername(e.target.value)}
         placeholder="Email as username"
-      ></TextField>
-      <TextField
+      ></input>
+      <input
         type={"password"}
-        label="Secret"
         value={secret}
         onChange={(e) => setSecret(e.target.value)}
         placeholder="Set secret here"
-      ></TextField>
-      {/* <P>{fullTotpURL}</P> */}
+      ></input>
       <QRCodeCanvas value={fullTotpURL}></QRCodeCanvas>
-      <P>Current code should be: {totp}</P>
-      <Button
-        variant="contained"
-        color="success"
+      <p className="typoblock">Current code should be: {totp}</p>
+      <button
+        className="btn safe"
         onClick={() => {
           fetch("/api/v2/admin/registry", {
             method: "POST",
@@ -89,10 +78,10 @@ export default function AddAdmin() {
         }}
       >
         Registry
-      </Button>
-      <Button variant="contained" color="info" onClick={() => router.push("/admin/login")}>
+      </button>
+      <button className="btn info" onClick={() => router.push("/admin/login")}>
         Go back to login
-      </Button>
-    </Box>
+      </button>
+    </div>
   );
 }

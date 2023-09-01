@@ -1,89 +1,165 @@
 "use client";
 
-import StatusIndicator from "@/components/StatusIndicator";
-import { H2, H3, P } from "@/components/TypoElement";
 import useAlert from "@/components/useAlert";
+import APIv2Type from "@/lib/APIv2Type";
 import fetcher, { loading, loadingFailed } from "@/lib/fetcher";
-import {
-  Button,
-  Card,
-  CardActions,
-  CardContent,
-  Checkbox,
-  FormControlLabel,
-  TextField,
-  Typography,
-} from "@mui/material";
-import { Box, Container } from "@mui/system";
+import { useLoadMore } from "@/lib/useLoadMore";
+import { Box } from "@mui/system";
 import { Collaborator, ProjectStatus } from "@prisma/client";
 import axios from "axios";
 import { format } from "date-fns";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
-import { InView } from "react-intersection-observer";
+import { useState } from "react";
 import useSWR from "swr";
+import { GET as GetUser } from "../api/v2/admin/user/[id]/route";
+import { GET as GetUsers } from "../api/v2/admin/user/route";
+import StatusIndicator from "./StatusIndicator";
+import "./tables.css";
+import hotelbooking from "@/pages/api/user/hotelbooking";
 
 export default function AdminHome() {
   const router = useRouter()
   return (
-    <Container>
-      <Box display="flex" gap={1}>
-        <Button variant="contained" color="error" onClick={() => axios.delete("/api/v2/admin/login").then(() => router.push("/admin/login"))}>Logout</Button>
-        <Button variant="contained" color="info" onClick={() => router.push("/admin/registry")}>Registry a new Administrator</Button>
-        <Button variant="contained" color="info" onClick={() => router.push("/admin/users")}>User manage</Button>
-      </Box>
-      <AbstractList></AbstractList>
-    </Container>
+    <>
+      <div className="flex gap-1">
+        <button onClick={() => axios.delete("/api/v2/admin/login").then(() => router.push("/admin"))} className="btn danger">Logout</button>
+        <button onClick={() => router.push("/admin/registry")} className="btn info">Add new administrator</button>
+      </div>
+      <UserList></UserList>
+    </>
   );
 }
 
-function AbstractList() {
-  const { data: list, error } = useSWR<number[]>(
-    "/api/v2/admin/abstract",
-    fetcher,
-    {
-      refreshInterval: 60 * 1000,
-      errorRetryCount: 5,
-      errorRetryInterval: 5 * 1000,
-    }
-  );
+function UserList() {
+  const { data: userIds, error } = useSWR<APIv2Type<typeof GetUsers>>("/api/v2/admin/user", fetcher);
+  const [displayAmount, loadMoreComponent] = useLoadMore(userIds)
 
-  const [displayAmount, setDisplayAmount] = useState(20);
-  const [loadMore, setLoadMore] = useState(false);
+  if (error) return <div><pre>{error}</pre></div>
+  if (userIds === undefined) return <div>Loading...</div>
 
-  useEffect(() => {
-    const interval = setInterval(() => {
-      if (loadMore) {
-        setDisplayAmount((amount) => amount + 20);
-      }
-    }, 1000);
-    return () => clearInterval(interval);
-  }, [loadMore]);
+  return <div className="flex flex-col gap-1 typoblock">
+    {userIds.slice(0, displayAmount).map(({ id }) => <UserItem key={id} id={id}></UserItem>)}
+    {loadMoreComponent}
+  </div>
+}
 
-  useEffect(() => {
-    if (displayAmount > (list?.length ?? 0)) {
-      setLoadMore(false);
-    }
-  }, [list, displayAmount]);
+function UserItem(props: { id: number }) {
+  const { id } = props;
+  const {
+    data: user,
+    error,
+    mutate,
+  } = useSWR<APIv2Type<typeof GetUser>>(`/api/v2/admin/user/${id}`, fetcher, {
+    refreshInterval: 60 * 1000,
+    errorRetryCount: 5,
+    errorRetryInterval: 5 * 1000,
+  });
 
-  if (error) return <Container>{loadingFailed}</Container>;
+  const [newPassword, setNewPassword] = useState("");
 
-  if (list === undefined) return <Container>{loading}</Container>;
+  if (error || user === null) return <Box>Loading failed</Box>;
+  if (user === undefined) return <Box>Loading...</Box>;
 
   return (
-    <>
-      <H2>Abstracts</H2>
-      <Box display="flex" flexDirection="column" gap={1}>
-      {list.map((itemId) => (
-        <AbstractItem abstractId={itemId} key={itemId}></AbstractItem>
-      ))}
-      </Box>
-      {displayAmount < list.length ? (
-        <InView as={"div"} onChange={(inview) => setLoadMore(inview)}>
-          <P>Loading more...</P>
-        </InView>
-      ) : null}
-    </>
+    <div className="p-2 flex flex-col gap-1 rounded shadow-md shadow-neutral-200">
+      <h3>{user.name}</h3>
+      <p className="text-neutral-400 text-sm">
+        {user.email} | {user.title} | {user.institution} | {user.userType}
+      </p>
+      <div className="flex items-center gap-1">
+        <input
+          type="password"
+          placeholder="reset password for user"
+          value={newPassword}
+          onChange={(e) => setNewPassword(e.target.value)}
+        ></input>
+        <button
+          className="btn danger"
+          onClick={() => {
+            axios
+              .put(`/api/v2/admin/user/${id}/passwd`, { newPassword })
+              .then((res) => {
+                alert("Success");
+                setNewPassword("");
+              })
+              .catch((res) => {
+                alert("Failed, retry later");
+              })
+              .finally(mutate);
+          }}
+        >
+          Reset Password
+        </button>
+      </div>
+      <h4>Travel</h4>
+      {user.travel !== null ?
+        <div>
+          <table>
+            <thead>
+              <tr>
+                <th>Arrive</th>
+                <th>Leave</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>{format(new Date(user.travel.arrivalDate), "yyyy-MM-dd")}</td>
+                <td>{format(new Date(user.travel.departureDate), "yyyy-MM-dd")}</td>
+              </tr>
+              <tr><td>{user.travel.arrivalNo}</td><td>{user.travel.departureNo}</td></tr>
+            </tbody>
+          </table>
+          <div className="flex items-center gap-1"><input type="checkbox" checked={user.travel.attendVisit}></input><p>Attend visit on Oct23</p></div>
+        </div>
+        : null}
+      <h4>Hotel</h4>
+      {
+        user.hotelBooking !== null ? <div>
+          <div className="flex items-center gap-1"><input type="checkbox" checked={user.hotelBooking.bookBySelf}></input><p>Book by self</p></div>
+          <div>
+            Check-in: {format(new Date(user.hotelBooking.checkinDate), "yyyy-MM-dd")}
+          </div>
+          <div>
+            Check-out: {format(new Date(user.hotelBooking.checkoutDate), "yyyy-MM-dd")}
+          </div>
+          <div>
+            Selected hotel: {user.hotelBooking.location}
+          </div>
+          <div>
+            Standard Rooms: {user.hotelBooking.standardRooms}
+          </div>
+          <div>
+            King Rooms: {user.hotelBooking.kingRooms}
+          </div>
+        </div> : null
+      }
+      <h4>Collabortors</h4>
+      <table>
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Attend</th>
+          </tr>
+        </thead>
+        <tbody>
+          {
+            user.collaborators.filter(({ _count }) => _count.projects >= 1).map(({ name, email, attend }, idx) => <tr key={idx}>
+              <td>{name}</td>
+              <td>{email}</td>
+              <td><input type="checkbox" checked={attend}></input></td>
+            </tr>)
+          }
+        </tbody>
+      </table>
+      <h4>Abstracts</h4>
+      <div>
+        {
+          user.projects.map(({ id }) => <AbstractItem key={id} abstractId={id}></AbstractItem>)
+        }
+      </div>
+    </div>
   );
 }
 
@@ -120,32 +196,39 @@ function AbstractItem(props: { abstractId: number }) {
 
   if (error)
     return (
-      <Card>
-        <CardContent>{loadingFailed}</CardContent>
-      </Card>
+      <div className="shadow-md shadow-neutral-200 rounded p-2">
+        {loadingFailed}
+      </div>
     );
 
   if (abstract === undefined)
     return (
-      <Card>
-        <CardContent>{loading}</CardContent>
-      </Card>
+      <div className="shadow-md shadow-neutral-200 rounded p-2">
+        {loading}
+      </div>
     );
 
   return (
-    <Card>
-      <CardContent>
-        {alertCompnent}
-        <Box display="flex" gap={1} alignItems="center">
-          <StatusIndicator status={abstract.status}></StatusIndicator>
-          <Typography variant="h5">{abstract.name}</Typography>
-        </Box>
-        <P>
-          Created At: {format(new Date(abstract.createdAt), "yyyy-MM-dd hh:mm:ss")} | Last
-          updated: {format(new Date(abstract.updatedAt), "yyyy-MM-dd hh:mm:ss")}
-        </P>
-        <H3>Authors</H3>
-        <Box display="flex" flexDirection="column" gap={1}>
+    <div className="shadow-md shadow-neutral-200 rounded p-2">
+      {alertCompnent}
+      <div className="flex items-center gap-1">
+        <StatusIndicator status={abstract.status}></StatusIndicator>
+        <h3>{abstract.name}</h3>
+      </div>
+      <p>
+        Created At: {format(new Date(abstract.createdAt), "yyyy-MM-dd hh:mm:ss")} | Last
+        updated: {format(new Date(abstract.updatedAt), "yyyy-MM-dd hh:mm:ss")}
+      </p>
+      <h5>Authors</h5>
+      <table>
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Presontor</th>
+          </tr>
+        </thead>
+        <tbody>
           <CollaboratorItem
             name={`${abstract.user.name} ${abstract.user.institution} ${abstract.user.title}`}
             email={`${abstract.user.email}(${abstract.user.phoneNumber})`}
@@ -159,23 +242,19 @@ function AbstractItem(props: { abstractId: number }) {
               presentor={abstract.presontor === item.id}
             ></CollaboratorItem>
           ))}
-        </Box>
-      </CardContent>
-      <CardActions
-        sx={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-        }}
-      >
-        <Button
+        </tbody>
+      </table>
+
+      <div className="flex justify-between items-center">
+        <Link
+          className="link"
           href={`${abstractPath}/attachment`}
           download={abstract.filename}
         >
           Download abstract
-        </Button>
-        <Button
-          color="success"
+        </Link>
+        <button
+          className="btn safe"
           disabled={abstract.status !== ProjectStatus.SUBMITTED}
           onClick={() => {
             axios
@@ -193,24 +272,17 @@ function AbstractItem(props: { abstractId: number }) {
           }}
         >
           Accept
-        </Button>
-        <Box
-          sx={{
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-          }}
-        >
-          <TextField
-            fullWidth
+        </button>
+        <div className="flex gap-1 items-center mt-2">
+          <input
             placeholder={
               abstract.rejectedWith ?? "Must give a reason to reject"
             }
             value={rejectedWith}
             onChange={(e) => setRejectedWith(e.target.value)}
-          ></TextField>
-          <Button
-            color="error"
+          ></input>
+          <button
+            className="btn danger"
             disabled={
               abstract.status !== ProjectStatus.SUBMITTED || rejectedWith === ""
             }
@@ -233,10 +305,10 @@ function AbstractItem(props: { abstractId: number }) {
             }}
           >
             Reject
-          </Button>
-        </Box>
-        <Button
-          color="primary"
+          </button>
+        </div>
+        <button
+          className="btn primary"
           disabled={
             abstract.status === ProjectStatus.SUBMITTED ||
             abstract.status === ProjectStatus.SAVED
@@ -254,9 +326,9 @@ function AbstractItem(props: { abstractId: number }) {
           }}
         >
           Cancel
-        </Button>
-      </CardActions>
-    </Card>
+        </button>
+      </div>
+    </div>
   );
 }
 
@@ -267,19 +339,10 @@ function CollaboratorItem(props: {
   presentor: boolean;
 }) {
   return (
-    <Box borderBottom={"solid grey 1px"}>
-      <P>{props.name}</P>
-      <P>{props.email}</P>
-      <Box>
-        <FormControlLabel
-          control={<Checkbox checked={props.attend}></Checkbox>}
-          label="Attend"
-        ></FormControlLabel>
-        <FormControlLabel
-          control={<Checkbox checked={props.presentor}></Checkbox>}
-          label="Presentor"
-        ></FormControlLabel>
-      </Box>
-    </Box>
+    <tr>
+      <td>{props.name}</td>
+      <td>{props.email}</td>
+      <td><input type="checkbox" checked={props.presentor}></input></td>
+    </tr>
   );
 }

@@ -13,6 +13,18 @@ export async function GET(
       institution: true,
       title: true,
       userType: true,
+      hotelBooking: true,
+      travel: true,
+      collaborators: {
+        include: {
+          _count: {
+            select: { projects: true }
+          }
+        }
+      },
+      projects: {
+        select: { id: true }
+      }
     },
   });
   if (user === null) return NextResponse.json(null, { status: 404 });

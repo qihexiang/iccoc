@@ -1,5 +1,5 @@
-
 import pageRequireAdmin from "@/lib/pageRequireAdmin";
+import prisma from "@/lib/prisma";
 import { Collaborator, ProjectStatus, UserType } from "@prisma/client";
 import AdminHome from "./AdminHome";
 
@@ -21,5 +21,11 @@ export type AbstractItemData = {
 
 export default async function AdminPage() {
   await pageRequireAdmin()
-  return <AdminHome></AdminHome>;
+  const users = await prisma.user.findMany({
+    include: {
+      collaborators: true,
+      projects: true,
+    }
+  })
+  return <AdminHome></AdminHome>
 }

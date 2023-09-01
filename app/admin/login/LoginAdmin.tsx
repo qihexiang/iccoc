@@ -12,31 +12,21 @@ export default function LoginAdmin() {
   const [username, setUsername] = useState("");
   const [totp, setTotp] = useState("");
   return (
-    <Box
-      sx={{
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        gap: 1,
-      }}
-    >
+    <div className="flex flex-col items-center gap-1">
       {alertComponent}
-      <H1>Login to Admin</H1>
-      <TextField
-        label="Username"
+      <h1>Login to Admin</h1>
+      <input type="text"
         value={username}
         onChange={(e) => setUsername(e.target.value)}
         placeholder="Email as username"
-      ></TextField>
-      <TextField
-        label="Token"
+      ></input>
+      <input type="text"
         value={totp}
         onChange={(e) => setTotp(e.target.value)}
         placeholder="Input your token here"
-      ></TextField>
-      <Button
-        variant="contained"
-        color="success"
+      ></input>
+      <button
+        className="btn safe"
         onClick={() => {
           fetch("/api/v2/admin/login", {
             method: "POST",
@@ -58,7 +48,7 @@ export default function LoginAdmin() {
             } else {
               setInformation({
                 color: "error",
-                message: "Failed to registry",
+                message: "Failed to login",
               });
             }
             setTotp("");
@@ -66,7 +56,7 @@ export default function LoginAdmin() {
         }}
       >
         Login
-      </Button>
-    </Box>
+      </button>
+    </div>
   );
 }
