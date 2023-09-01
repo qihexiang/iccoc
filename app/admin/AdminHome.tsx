@@ -246,13 +246,14 @@ function AbstractItem(props: { abstractId: number }) {
       </table>
 
       <div className="flex justify-between items-center">
-        <Link
+        <a
           className="link"
           href={`${abstractPath}/attachment`}
+          target={"_blank"}
           download={abstract.filename}
         >
           Download abstract
-        </Link>
+        </a>
         <button
           className="btn safe"
           disabled={abstract.status !== ProjectStatus.SUBMITTED}
