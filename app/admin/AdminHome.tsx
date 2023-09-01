@@ -245,7 +245,7 @@ function AbstractItem(props: { abstractId: number }) {
         </tbody>
       </table>
 
-      <div className="flex justify-between items-center">
+      <div className="flex flex-wrap mt-2 justify-between items-center">
         <a
           className="link"
           href={`${abstractPath}/attachment`}
@@ -274,7 +274,7 @@ function AbstractItem(props: { abstractId: number }) {
         >
           Accept
         </button>
-        <div className="flex gap-1 items-center mt-2">
+        <div className="flex gap-1 items-center">
           <input
             placeholder={
               abstract.rejectedWith ?? "Must give a reason to reject"
