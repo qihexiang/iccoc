@@ -22,7 +22,6 @@ export default function LoginPage() {
   useUser({ redirectTo: redirectTo ?? "/abstracts/me", redirectOnLoggedIn: true });
   const router = useRouter();
   const [email, setEmail] = useState("");
-  console.log(redirectTo)
   const [password, setPassword] = useState("");
   const [setAlertInfo, alertElement] = useAlert(6000);
   useEffect(() => {
