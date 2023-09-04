@@ -33,7 +33,12 @@ export default function PasswdView() {
         }}
       >
         <Contact></Contact>
-        <Typography variant="h6">Reset password for {user?.email}</Typography>
+        <Typography variant="h6">Change password</Typography>
+        <TextField
+          disabled
+          value={user?.email}
+          placeholder={user?.email}
+        ></TextField>
         <TextField
           label={"Password"}
           value={newPassword}
@@ -71,7 +76,10 @@ export default function PasswdView() {
               });
           }}
         >
-          Reset Password
+          Change Password
+        </Button>
+        <Button variant="contained" color="success" onClick={() => router.push("/abstracts/me")}>
+          Cancel
         </Button>
       </Box>
     </>

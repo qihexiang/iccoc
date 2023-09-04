@@ -132,6 +132,13 @@ export default function PersonalView() {
         >
           Go back
         </Button>
+        <Button
+          variant="contained"
+          color="error"
+          onClick={() => router.push("/abstracts/passwd")}
+        >
+          Change My Passowrd
+        </Button>
       </Box>
     </Box>
   );
