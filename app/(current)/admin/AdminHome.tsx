@@ -8,7 +8,6 @@ import { Box } from "@mui/system";
 import { Collaborator, ProjectStatus } from "@prisma/client";
 import axios from "axios";
 import { format } from "date-fns";
-import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import useSWR from "swr";
@@ -16,7 +15,6 @@ import { GET as GetUser } from "../api/v2/admin/user/[id]/route";
 import { GET as GetUsers } from "../api/v2/admin/user/route";
 import StatusIndicator from "./StatusIndicator";
 import "./tables.css";
-import hotelbooking from "@/pages/api/user/hotelbooking";
 
 export default function AdminHome() {
   const router = useRouter()

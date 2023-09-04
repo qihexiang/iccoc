@@ -21,15 +21,21 @@ export async function POST(request: NextRequest) {
     where: { username },
     select: { secret: true },
   });
+
   if (admin === null)
     return new Response("Failed to login, retry later", { status: 403 });
+
   if (
     totpGenerator(admin.secret) === totp ||
     totpGenerator(admin.secret, {
       timestamp: new Date().getTime() - 30 * 1000,
     }) === totp
   ) {
-    const cookie = cookies().set("admin", generateToken(username), cookieConfig);
+    const cookie = cookies().set(
+      "admin",
+      generateToken(username),
+      cookieConfig
+    );
     return new Response("Login success", {
       headers: {
         "Set-Cookie": cookie.toString(),
@@ -40,8 +46,11 @@ export async function POST(request: NextRequest) {
 }
 
 export async function DELETE() {
-  const cookie = cookies()
-  cookie.set("admin", "", {...cookieConfig, expires: new Date().getTime() - 1000})
+  const cookie = cookies();
+  cookie.set("admin", "", {
+    ...cookieConfig,
+    expires: new Date().getTime() - 1000,
+  });
   return new Response("Logout success", {
     headers: {
       "Set-Cookie": cookie.toString(),

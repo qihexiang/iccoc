@@ -1,16 +1,15 @@
 import { Box, Link, Typography } from "@mui/material";
-import Category from "./_category";
 import Head from "next/head";
+import Category from "./Category";
 import ICOC2016Photo from "./ICOC2016.png";
-import Image from "next/image";
+
+export const metadata = {
+  title: "ICOC 2016"
+}
 
 export default function Index2016() {
   return (
     <>
-      <Head>
-        <title>ICOC2016</title>
-      </Head>
-      <Category noCategory vertical={false} noHeader={false} />
       <Typography variant="h4">
         ICOC2016: Oct. 20th - 23rd, 2016 at Beijing, China
       </Typography>

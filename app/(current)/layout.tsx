@@ -26,11 +26,9 @@ export default async function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
-      <body>
-        {children}
-        <Foot></Foot>
-      </body>
-    </html>
+    <>
+      <Head></Head>
+      {children}
+    </>
   );
 }

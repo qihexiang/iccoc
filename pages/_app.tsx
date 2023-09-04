@@ -1,10 +1,10 @@
+import ICCOC2023 from "@/images/ICCOC2023.jpg";
 import api from "@/lib/apiRequest";
 import "@/styles/globals.css";
 import "@fontsource/roboto/300.css";
 import "@fontsource/roboto/400.css";
 import "@fontsource/roboto/500.css";
 import "@fontsource/roboto/700.css";
-import { MDXProvider } from "@mdx-js/react";
 import {
   Box,
   Button,
@@ -15,19 +15,13 @@ import {
   MenuList,
   Paper,
   Popper,
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableRow,
-  Typography,
+  Typography
 } from "@mui/material";
-import ICCOC2023 from "@/images/ICCOC2023.jpg";
+import { LocalizationProvider } from "@mui/x-date-pickers";
+import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import type { AppProps } from "next/app";
 import { useRouter } from "next/router";
 import { useEffect, useRef, useState } from "react";
-import { LocalizationProvider } from "@mui/x-date-pickers";
-import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 
 const mainRoutes = [
   ["Home", "/"],
@@ -156,80 +150,6 @@ export function Foot() {
   );
 }
 
-function MDXMapper({
-  children,
-}: {
-  children: JSX.Element | JSX.Element[] | null;
-}) {
-  return (
-    <MDXProvider
-      components={{
-        h1: ({ children }) => (
-          <Typography variant="h4" sx={{ marginTop: 2 }}>
-            {children}
-          </Typography>
-        ),
-        h2: ({ children }) => (
-          <Typography variant="h5" sx={{ marginTop: 2 }}>
-            {children}
-          </Typography>
-        ),
-        h3: ({ children }) => (
-          <Typography variant="subtitle2" sx={{ marginTop: 2 }}>
-            {children}
-          </Typography>
-        ),
-        p: ({ children }) => (
-          <Typography variant="body1">{children}</Typography>
-        ),
-        span: ({ children }) => (
-          <Typography component="span" variant="body1">
-            {children}
-          </Typography>
-        ),
-        li: ({ children }) => (
-          <Typography component="li" variant="body1">
-            {children}
-          </Typography>
-        ),
-        table: ({ children }) => <Table>{children}</Table>,
-        thead: ({ children }) => <TableHead>{children}</TableHead>,
-        tbody: ({ children }) => <TableBody>{children}</TableBody>,
-        tr: ({ children }) => <TableRow>{children}</TableRow>,
-        th: ({ children }) => <TableCell>{children}</TableCell>,
-        td: ({ children }) => <TableCell>{children}</TableCell>,
-        pre: ({ children }) => (
-          <Typography
-            variant="body2"
-            component={"pre"}
-            style={{ overflow: "scroll" }}
-          >
-            {children}
-          </Typography>
-        ),
-        code: ({ children }) => (
-          <Typography variant="body2" component={"code"}>
-            {children}
-          </Typography>
-        ),
-        img: (props) => (
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-          >
-            <img {...props} style={{ maxWidth: "100%" }}></img>
-          </div>
-        ),
-      }}
-    >
-      {children}
-    </MDXProvider>
-  );
-}
-
 export default function App({ Component, pageProps }: AppProps) {
   const router = useRouter();
   return (
@@ -237,17 +157,13 @@ export default function App({ Component, pageProps }: AppProps) {
       <Container component="div" className="App">
         {router.pathname.startsWith("/previous") ? (
           <>
-            <MDXMapper>
               <Component {...pageProps} />
-            </MDXMapper>
             <Foot></Foot>
           </>
         ) : (
           <>
             <Head></Head>
-            <MDXMapper>
               <Component {...pageProps} />
-            </MDXMapper>
             <Foot></Foot>
           </>
         )}
