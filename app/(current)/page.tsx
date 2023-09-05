@@ -32,7 +32,7 @@ export default function Homepage() {
 
       <ul>
         <LI>
-          The International Conference on Computational Organometallic Catalysis
+          The International Conference of Computational Organometallic Catalysis
           2023 (ICCOC2023) focuses on the application of theoretical and
           computational chemistry in homogeneous and hetergeneous organometallic
           catalysis. Advances covered range from new catalyzed reactions and
