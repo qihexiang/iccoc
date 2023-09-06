@@ -29,7 +29,7 @@ type EditableStatus = {
 export default function HotelView() {
   const [setAlertInfo, alertElement] = useAlert(6000);
 
-  const hotelList = useMemo(() => ["Guizhou Hotel", "Guest House of BUCT"], []);
+  const hotelList = useMemo(() => ["Guizhou Hotel (Standard room 658 CNY incluidng one breakfast)", "Guest House of BUCT (Standard twin room 380 CNY including two breakfast)"], []);
 
   const user = useUser({
     redirectTo: "/abstracts/login?redirectTo=/abstracts/hotelbooking",
