@@ -18,14 +18,7 @@ const dataSchema = z.object({
 
 export type SpeakersProps = z.infer<typeof dataSchema>;
 
-export const metadata: Metadata = {
-  title: "Invited speakers | ICCOC2023",
-};
-
-export default async function SpeakersPage() {
-  const json = await loadJson();
-  return <SpeakersView {...json}></SpeakersView>;
-}
+export const revalidate = 0
 
 const loadJson = async () => {
   const data = await readFile(join(cwd(), "jsonData", "speakers.json"), "utf-8")
@@ -47,3 +40,12 @@ const loadJson = async () => {
     };
   }
 };
+
+export const metadata: Metadata = {
+  title: "Invited speakers | ICCOC2023",
+};
+
+export default async function SpeakersPage() {
+  const json = await loadJson();
+  return <SpeakersView {...json}></SpeakersView>;
+}
