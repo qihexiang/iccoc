@@ -8,8 +8,10 @@ export async function GET(req: NextRequest) {
     return adminCheck;
   }
   const users = await prisma.user.findMany({
-    select: { id: true },
     orderBy: { id: "desc" },
+    select: {
+      email: true, id: true, institution: true, phoneNumber: true, name: true
+    }
   });
   return NextResponse.json(users);
 }

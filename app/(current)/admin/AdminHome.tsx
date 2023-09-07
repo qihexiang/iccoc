@@ -9,7 +9,7 @@ import { Collaborator, ProjectStatus } from "@prisma/client";
 import axios from "axios";
 import { format } from "date-fns";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import useSWR from "swr";
 import { GET as GetUser } from "../api/v2/admin/user/[id]/route";
 import { GET as GetUsers } from "../api/v2/admin/user/route";
@@ -31,13 +31,22 @@ export default function AdminHome() {
 
 function UserList() {
   const { data: userIds, error } = useSWR<APIv2Type<typeof GetUsers>>("/api/v2/admin/user", fetcher);
-  const [displayAmount, loadMoreComponent] = useLoadMore(userIds)
+  const [displayAmount, loadMoreComponent, reset] = useLoadMore(userIds)
+  const [search, setSearch] = useState("");
+  const keywords = useMemo(() => search.split("; ").map(keyword => keyword.toLowerCase()), [search])
+
+  const searchFilter = useCallback((item: NonNullable<typeof userIds>[number]) => {
+    return keywords.every(keyword => 
+      item.email.toLowerCase().includes(keyword) || item.name.toLowerCase().includes(keyword) || item.phoneNumber.includes(keyword) || item.institution.toLowerCase().includes(keyword)
+    )
+  }, [keywords])
 
   if (error) return <div><pre>{error}</pre></div>
   if (userIds === undefined) return <div>Loading...</div>
 
   return <div className="flex flex-col gap-1 typoblock">
-    {userIds.slice(0, displayAmount).map(({ id }) => <UserItem key={id} id={id}></UserItem>)}
+    <input className="input" value={search} onChange={e => {setSearch(e.target.value); reset()}} placeholder="Search with user name, institution, email and telephone number."></input>
+    {userIds.filter(searchFilter).slice(0, displayAmount).map(({ id }) => <UserItem key={id} id={id}></UserItem>)}
     {loadMoreComponent}
   </div>
 }

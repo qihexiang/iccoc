@@ -1,5 +1,5 @@
 import { P } from "@/components/TypoElement";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { InView } from "react-intersection-observer";
 
 export function useLoadMore<T>(list: T[] | undefined, initState: number = 20) {
@@ -27,5 +27,7 @@ export function useLoadMore<T>(list: T[] | undefined, initState: number = 20) {
         </InView>
     ) : null
 
-    return [displayAmount, loadMoreComponent] as const
+    const reset = useCallback(() => setDisplayAmount(initState), [initState])
+
+    return [displayAmount, loadMoreComponent, reset] as const
 }
