@@ -1,6 +1,6 @@
 import Contact from "@/components/Contact";
 import StatusIndicator from "@/components/StatusIndicator";
-import { P } from "@/components/TypoElement";
+import { H2, P } from "@/components/TypoElement";
 import useAlert from "@/components/useAlert";
 import api from "@/lib/apiRequest";
 import { useUser } from "@/lib/useUser";
@@ -13,13 +13,19 @@ import {
   CardActions,
   CardContent,
   Checkbox,
+  Chip,
   FormControl,
   FormControlLabel,
   InputLabel,
   MenuItem,
   Select,
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableRow,
   TextField,
-  Typography
+  Typography,
 } from "@mui/material";
 import {
   Collaborator,
@@ -30,7 +36,13 @@ import {
 } from "@prisma/client";
 import Head from "next/head";
 import { useRouter } from "next/router";
-import { createContext, useCallback, useContext, useEffect, useState } from "react";
+import {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
 
 type UserProjectData = {
   projects: (Project & { collaborators: Collaborator[] })[];
@@ -44,7 +56,7 @@ const UserProjectCtx = createContext<
 >({
   projects: [],
   collaborators: [],
-  refresh: (prop) => { },
+  refresh: (prop) => {},
 });
 
 export default function MeView() {
@@ -63,55 +75,58 @@ export default function MeView() {
     collaborators: [],
   });
 
-  const refresh = useCallback((prop?: keyof UserProjectData) => {
-    if (prop === "collaborators") {
-      api
-        .get(`/user/collaborator`)
-        .catch(() => ({ status: 500, data: "Network Error" }))
-        .then((res) => {
-          if (res.status < 400) {
-            setData(data => ({ ...data, collaborators: res.data }));
-          } else {
-            setAlertInfo({
-              color: "error",
-              message: "Failed to get data, please refresh and retry",
-            });
-          }
-        });
-    }
-    if (prop === "projects") {
-      api
-        .get("/user/project")
-        .catch(() => ({ status: 500, data: "Network Error" }))
-        .then((res) => {
-          if (res.status < 400) {
-            setData(data => ({ ...data, projects: res.data }));
-          } else {
-            setAlertInfo({
-              color: "error",
-              message: "Failed to get data, please refresh and retry",
-            });
-          }
-        });
-    }
-    if (prop === undefined) {
-      Promise.all([api.get("/user/project"), api.get("/user/collaborator")])
-        .catch(() => [
-          { status: 500, data: "Network Error" },
-          { status: 500, data: "Network Error" },
-        ])
-        .then(([pRes, cRes]) => {
-          if (pRes.status < 400 && cRes.status < 400) {
-            setData({ projects: pRes.data, collaborators: cRes.data });
-          } else {
-            setAlertInfo({
-              color: "error",
-              message: "Failed to get data, please refresh and retry",
-            });
-          }
-        });
-    }
-  }, [setAlertInfo]);
+  const refresh = useCallback(
+    (prop?: keyof UserProjectData) => {
+      if (prop === "collaborators") {
+        api
+          .get(`/user/collaborator`)
+          .catch(() => ({ status: 500, data: "Network Error" }))
+          .then((res) => {
+            if (res.status < 400) {
+              setData((data) => ({ ...data, collaborators: res.data }));
+            } else {
+              setAlertInfo({
+                color: "error",
+                message: "Failed to get data, please refresh and retry",
+              });
+            }
+          });
+      }
+      if (prop === "projects") {
+        api
+          .get("/user/project")
+          .catch(() => ({ status: 500, data: "Network Error" }))
+          .then((res) => {
+            if (res.status < 400) {
+              setData((data) => ({ ...data, projects: res.data }));
+            } else {
+              setAlertInfo({
+                color: "error",
+                message: "Failed to get data, please refresh and retry",
+              });
+            }
+          });
+      }
+      if (prop === undefined) {
+        Promise.all([api.get("/user/project"), api.get("/user/collaborator")])
+          .catch(() => [
+            { status: 500, data: "Network Error" },
+            { status: 500, data: "Network Error" },
+          ])
+          .then(([pRes, cRes]) => {
+            if (pRes.status < 400 && cRes.status < 400) {
+              setData({ projects: pRes.data, collaborators: cRes.data });
+            } else {
+              setAlertInfo({
+                color: "error",
+                message: "Failed to get data, please refresh and retry",
+              });
+            }
+          });
+      }
+    },
+    [setAlertInfo]
+  );
 
   useEffect(() => {
     refresh();
@@ -141,20 +156,32 @@ export default function MeView() {
             refresh,
           }}
         >
-          {data.projects.map((p, idx) => (
-            <ProjectItem
-              key={idx}
-              project={p}
-              user={user}
-              afterSave={refresh}
-            ></ProjectItem>
-          ))}
-          <Typography variant="subtitle2">Add a new abstract?</Typography>
-          <ProjectItem
-            project={null}
-            user={user}
-            afterSave={refresh}
-          ></ProjectItem>
+          <Table>
+            <TableHead>
+              <TableRow>
+                <TableCell>Type</TableCell>
+                <TableCell>Title</TableCell>
+                <TableCell>Status</TableCell>
+                <TableCell>Presentor</TableCell>
+                <TableCell>Operations</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {data.projects.map((p, idx) => (
+                <ProjectItem
+                  key={idx}
+                  project={p}
+                  user={user}
+                  afterSave={refresh}
+                ></ProjectItem>
+              ))}
+              <ProjectItem
+                project={null}
+                user={user}
+                afterSave={refresh}
+              ></ProjectItem>
+            </TableBody>
+          </Table>
         </UserProjectCtx.Provider>
       </Box>
     </>
@@ -217,35 +244,42 @@ function ProjectItem(props: {
   const [setAlertInfo, alertElement] = useAlert(6000);
   if (editState || project === null) {
     return (
-      <ProjectEditor
-        project={project}
-        user={props.user}
-        afterSave={() => {
-          setEditState(false);
-          afterSave();
-        }}
-      ></ProjectEditor>
+      <TableRow>
+        <TableCell colSpan={5}>
+          <ProjectEditor
+            project={project}
+            user={props.user}
+            afterSave={() => {
+              setEditState(false);
+              afterSave();
+            }}
+          ></ProjectEditor>
+        </TableCell>
+      </TableRow>
     );
   } else {
     const presontor = collaborators.find((c) => c.id === project.presontor);
     return (
-      <Card>
-        {alertElement}
-        <CardContent>
-          <Box display={"flex"} gap={1}>
-            <StatusIndicator status={project.status}></StatusIndicator>
-            <Typography variant="h6">{project.name}</Typography>
-          </Box>
+      <TableRow>
+        <TableCell>
+          <Chip
+            color={project.type === "POSTER" ? "secondary" : "primary"}
+            label={project.type}
+          ></Chip>
+        </TableCell>
+        <TableCell>{project.name}</TableCell>
+        <TableCell>
+          <StatusIndicator status={project.status}></StatusIndicator>
           {project.status === ProjectStatus.REJECTED ? (
             <P>{project.rejectedWith}</P>
           ) : null}
-          <Typography variant="subtitle1">
-            {presontor === undefined
-              ? `${props.user.name} (${props.user.email})`
-              : `${presontor.name} (${presontor.email})`}
-          </Typography>
-        </CardContent>
-        <CardActions>
+        </TableCell>
+        <TableCell>
+          {presontor === undefined
+            ? `${props.user.name} (${props.user.email})`
+            : `${presontor.name} (${presontor.email})`}
+        </TableCell>
+        <TableCell>
           {project.status === ProjectStatus.SAVED ? (
             <ButtonGroup variant="contained">
               <Button onClick={() => setEditState(true)} color="primary">
@@ -299,7 +333,7 @@ function ProjectItem(props: {
             </ButtonGroup>
           ) : null}
           {project.status === ProjectStatus.SUBMITTED ||
-            project.status === ProjectStatus.REJECTED ? (
+          project.status === ProjectStatus.REJECTED ? (
             <Button
               variant="contained"
               color="info"
@@ -323,8 +357,8 @@ function ProjectItem(props: {
               Withdraw
             </Button>
           ) : null}
-        </CardActions>
-      </Card>
+        </TableCell>
+      </TableRow>
     );
   }
 }
@@ -365,156 +399,163 @@ function ProjectEditor(props: {
         .catch(() => ({ status: 500, data: "Network Error" }));
 
     return (
-      <Card>
-        <CardContent>
-          {alertElement}
-          <Box display={"flex"} flexDirection={"column"} gap={2}>
-            <FormControl>
-              <InputLabel>Type</InputLabel>
-              <Select
-                label={"Type"}
-                value={project.type}
-                onChange={(e) =>
-                  updateProject({ type: e.target.value as ProjectType })
-                }
-              >
-                <MenuItem value={ProjectType.POSTER}>Poster</MenuItem>
-                <MenuItem value={ProjectType.TALK}>Talk</MenuItem>
-              </Select>
-            </FormControl>
-            <TextField
-              label={"Title"}
-              value={project.name}
-              onChange={(e) => updateProject({ name: e.target.value })}
-            ></TextField>
-            <Box display={"flex"} gap={1} flexWrap={"wrap"}>
-              <Box display="flex" gap={1} alignItems="center">
-                <Button
-                  href={`/api/user/project/${project.id}/attachment`}
-                  download={project.filename}
-                >
-                  {project.filename}
-                </Button>
-                <Button
-                  disabled={waiting !== undefined}
-                  variant="contained"
-                  component="label"
-                >
-                  <Upload></Upload>
-                  {waiting === undefined
-                    ? `upload file to replace ${project.filename}`
-                    : waiting}
-                  <input
-                    onChange={(e) => {
-                      const form = new FormData();
-                      if (e.target.files === null) {
-                        return;
-                      }
-                      form.append("updated", e.target.files[0]);
-                      api
-                        .put(`/user/project/${projectId}/attachment`, form, {
-                          onUploadProgress(e) {
-                            if (e.total !== undefined) {
-                              setWaiting(
-                                `${((e.loaded / e.total) * 100).toFixed(2)}%`
-                              );
-                            } else {
-                              setWaiting(
-                                `${(e.loaded / 1024 / 1024).toFixed(2)}MB`
-                              );
-                            }
-                          },
-                        })
-                        .catch(() => ({ status: 500, data: "Network Error" }))
-                        .then((res) => {
-                          if (res.status < 400) {
-                            updateProject({ filename: e.target.files![0].name });
-                          } else {
-                            setAlertInfo({
-                              color: "error",
-                              message:
-                                "Failed to update the file. May it's larger than 32MB?",
-                            });
-                          }
-                        })
-                        .finally(() => setWaiting(undefined));
-                    }}
-                    hidden
-                    type="file"
-                  />
-                </Button>
-                <Button color="info" href="/Template.docx" download={"Template.docx"}>Download Template</Button>
-              </Box>
-            </Box>
-            <Box display={"flex"} gap={1} flexWrap={"wrap"}>
-              <TextField
-                label={"Full name"}
-                value={props.user.name}
-                disabled
-              ></TextField>
-              <TextField
-                label={"Email address"}
-                value={props.user.email}
-                disabled
-              ></TextField>
-              <FormControlLabel
-                label="Attend"
-                control={<Checkbox checked={true} disabled></Checkbox>}
-              ></FormControlLabel>
+      <Box display={"flex"} flexDirection={"column"} marginTop={2}>
+        {alertElement}
+        <Box display={"flex"} flexDirection={"column"} gap={1}>
+          <Typography variant="h5">Update abstract</Typography>
+          <FormControl>
+            <InputLabel>Type</InputLabel>
+            <Select
+              label={"Type"}
+              value={project.type}
+              onChange={(e) =>
+                updateProject({ type: e.target.value as ProjectType })
+              }
+            >
+              <MenuItem value={ProjectType.POSTER}>Poster</MenuItem>
+              <MenuItem value={ProjectType.TALK}>Talk</MenuItem>
+            </Select>
+          </FormControl>
+          <TextField
+            label={"Title"}
+            value={project.name}
+            onChange={(e) => updateProject({ name: e.target.value })}
+          ></TextField>
+          <Box display={"flex"} gap={1} flexWrap={"wrap"}>
+            <Box display="flex" gap={1} alignItems="center">
               <Button
-                variant="contained"
-                color="info"
-                onClick={() => router.push("/abstracts/personal")}
+                href={`/api/user/project/${project.id}/attachment`}
+                download={project.filename}
               >
-                Modify
+                {project.filename}
+              </Button>
+              <Button
+                disabled={waiting !== undefined}
+                variant="contained"
+                component="label"
+              >
+                <Upload></Upload>
+                {waiting === undefined
+                  ? `upload file to replace ${project.filename}`
+                  : waiting}
+                <input
+                  onChange={(e) => {
+                    const form = new FormData();
+                    if (e.target.files === null) {
+                      return;
+                    }
+                    form.append("updated", e.target.files[0]);
+                    api
+                      .put(`/user/project/${projectId}/attachment`, form, {
+                        onUploadProgress(e) {
+                          if (e.total !== undefined) {
+                            setWaiting(
+                              `${((e.loaded / e.total) * 100).toFixed(2)}%`
+                            );
+                          } else {
+                            setWaiting(
+                              `${(e.loaded / 1024 / 1024).toFixed(2)}MB`
+                            );
+                          }
+                        },
+                      })
+                      .catch(() => ({ status: 500, data: "Network Error" }))
+                      .then((res) => {
+                        if (res.status < 400) {
+                          updateProject({
+                            filename: e.target.files![0].name,
+                          });
+                        } else {
+                          setAlertInfo({
+                            color: "error",
+                            message:
+                              "Failed to update the file. May it's larger than 32MB?",
+                          });
+                        }
+                      })
+                      .finally(() => setWaiting(undefined));
+                  }}
+                  hidden
+                  type="file"
+                />
+              </Button>
+              <Button
+                color="info"
+                href="/Template.docx"
+                download={"Template.docx"}
+              >
+                Download Template
               </Button>
             </Box>
-            {project.collaborators.map((c, idx) => (
-              <CollaboratorEditor
-                key={idx}
-                projectId={project.id}
-                email={c.email}
-                afterSave={(updated) => setProject(updated)}
-              ></CollaboratorEditor>
-            ))}
-            <Typography variant="overline">Add another collaborator</Typography>
-            <CollaboratorEditor
-              projectId={project.id}
-              afterSave={(project) => {
-                setProject(project);
-              }}
-            ></CollaboratorEditor>
-            <FormControl>
-              <InputLabel>Presontor</InputLabel>
-              <Select
-                label={"Presontor"}
-                value={project.presontor ?? -1}
-                onChange={(e) => {
-                  if (
-                    e.target.value === -1 ||
-                    !collaborators
-                      .map((c) => c.id)
-                      .includes(e.target.value as number)
-                  ) {
-                    updateProject({ presontor: null });
-                  } else {
-                    updateProject({ presontor: e.target.value as number });
-                  }
-                }}
-              >
-                <MenuItem value={-1}>
-                  {props.user.name} - {props.user.email}
-                </MenuItem>
-                {project.collaborators.map((c, idx) => (
-                  <MenuItem key={idx} value={c.id}>
-                    {c.name} - {c.email}
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
           </Box>
-        </CardContent>
-        <CardActions>
+          <Box display={"flex"} gap={1} flexWrap={"wrap"}>
+            <TextField
+              label={"Full name"}
+              value={props.user.name}
+              disabled
+            ></TextField>
+            <TextField
+              label={"Email address"}
+              value={props.user.email}
+              disabled
+            ></TextField>
+            <FormControlLabel
+              label="Attend"
+              control={<Checkbox checked={true} disabled></Checkbox>}
+            ></FormControlLabel>
+            <Button
+              variant="contained"
+              color="info"
+              onClick={() => router.push("/abstracts/personal")}
+            >
+              Modify
+            </Button>
+          </Box>
+          {project.collaborators.map((c, idx) => (
+            <CollaboratorEditor
+              key={idx}
+              projectId={project.id}
+              email={c.email}
+              afterSave={(updated) => setProject(updated)}
+            ></CollaboratorEditor>
+          ))}
+          <Typography variant="overline">Add another collaborator</Typography>
+          <CollaboratorEditor
+            projectId={project.id}
+            afterSave={(project) => {
+              setProject(project);
+            }}
+          ></CollaboratorEditor>
+          <FormControl>
+            <InputLabel>Presontor</InputLabel>
+            <Select
+              label={"Presontor"}
+              value={project.presontor ?? -1}
+              onChange={(e) => {
+                if (
+                  e.target.value === -1 ||
+                  !collaborators
+                    .map((c) => c.id)
+                    .includes(e.target.value as number)
+                ) {
+                  updateProject({ presontor: null });
+                } else {
+                  updateProject({ presontor: e.target.value as number });
+                }
+              }}
+            >
+              <MenuItem value={-1}>
+                {props.user.name} - {props.user.email}
+              </MenuItem>
+              {project.collaborators.map((c, idx) => (
+                <MenuItem key={idx} value={c.id}>
+                  {c.name} - {c.email}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+        </Box>
+        <Box display={"flex"} gap={1} marginTop={1} alignItems={"center"}>
           <Button
             variant="contained"
             color="success"
@@ -540,8 +581,7 @@ function ProjectEditor(props: {
             onClick={() => {
               upload().then(async (res) => {
                 if (res.status < 400) {
-                  await api
-                    .post(`/user/project/${project.id}/status`)
+                  await api.post(`/user/project/${project.id}/status`);
                   setProject(null);
                   props.afterSave();
                 } else {
@@ -555,8 +595,8 @@ function ProjectEditor(props: {
           >
             Save & Submit
           </Button>
-        </CardActions>
-      </Card>
+        </Box>
+      </Box>
     );
   }
 }
@@ -599,8 +639,8 @@ function ProjectCreator(props: {
   };
 
   return (
-    <Card>
-      <CardContent>
+    <Box display={"flex"} flexDirection={"column"} gap={1}>
+        <Typography variant="h5">Submit a new abstract</Typography>
         {alertElement}
         <Box display={"flex"} flexDirection={"column"} gap={2}>
           <FormControl>
@@ -640,11 +680,16 @@ function ProjectCreator(props: {
                 type="file"
               />
             </Button>
-            <Button color="info" href="/Template.docx" download={"Template.docx"}>Download Template</Button>
+            <Button
+              color="info"
+              href="/Template.docx"
+              download={"Template.docx"}
+            >
+              Download Template
+            </Button>
           </Box>
         </Box>
-      </CardContent>
-      <CardActions>
+      <Box display={"flex"} gap={1}>
         <Button
           variant="contained"
           color="success"
@@ -664,8 +709,8 @@ function ProjectCreator(props: {
         >
           Next
         </Button>
-      </CardActions>
-    </Card>
+      </Box>
+    </Box>
   );
 }
 
