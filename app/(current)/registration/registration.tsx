@@ -1,9 +1,11 @@
 "use client";
 
+import PaymentQrCode from "@/images/QRCode.png";
 import ClipableArea from "@/components/ClipableArea";
 import {
   H1,
   H2,
+  H3,
   LI,
   P,
   SPAN,
@@ -15,6 +17,7 @@ import {
 } from "@/components/TypoElement";
 import { Button, Link } from "@mui/material";
 import { Box, Container } from "@mui/system";
+import Image from "next/image";
 import NextLink from "next/link"
 
 export default function Registration() {
@@ -59,7 +62,10 @@ export default function Registration() {
         sure that they are fully insured from their home institution.
       </P>
       <H2>Method of payment:</H2>
-      <ClipableArea
+      <Box display={"flex"} flexWrap={"wrap"} justifyContent={"space-between"}>
+        <Box>
+          <H2>Money transfer</H2>
+        <ClipableArea
         content={`Beijing Univ. of Chem. Tech.
 Beneficiary Address: BeiSanHuan East Rd. 15th, ChaoYang District, Beijing, 100029 P. R. China
 Bank Name: Bank of Beijing, Yinghua Branch
@@ -73,6 +79,15 @@ Bank Address: BeiSanHuan East Rd. 15th, ChaoYang District, Beijing, 100029 P. R.
 银行账号： 0109 0504 3001 2010 5029 689
 `}
       ></ClipableArea>
+        </Box>
+        <Box>
+          <H2>
+            Wechat Pay
+          </H2>
+          <Image src={PaymentQrCode} alt="payment qrcode"></Image>
+          <P><center>ICCOC2023@Beijing</center></P>
+        </Box>
+      </Box>
     </Container>
   );
 }

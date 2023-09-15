@@ -8,7 +8,7 @@ export default function ClipaleArea({ content }: { content: string }) {
       {alertElement}
       <Card variant="outlined">
         <Box component={"div"} style={{ overflowX: "scroll", padding: 4 }}>
-          <Typography component={"pre"} variant="body2">
+          <Typography maxWidth={"100%"} component={"pre"} variant="body2">
             {content}
           </Typography>
         </Box>
