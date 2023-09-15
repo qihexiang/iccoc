@@ -29,7 +29,19 @@ type EditableStatus = {
 export default function HotelView() {
   const [setAlertInfo, alertElement] = useAlert(6000);
 
-  const hotelList = useMemo(() => ["Guizhou Hotel (Standard room 658 CNY incluidng one breakfast)", "Guest House of BUCT (Standard twin room 380 CNY including two breakfast)"], []);
+  const hotelList = useMemo(
+    () => [
+      {
+        name: "Guizhou Hotel",
+        notice: "(Standard room 658 CNY incluidng one breakfast)",
+      },
+      {
+        name: "Guest House of BUCT",
+        notice: "(Standard twin room 380 CNY including two breakfast)",
+      },
+    ],
+    []
+  );
 
   const user = useUser({
     redirectTo: "/abstracts/login?redirectTo=/abstracts/hotelbooking",
@@ -59,7 +71,7 @@ export default function HotelView() {
     if (otherHotel !== undefined) {
       updateHotelInfo({ location: otherHotel });
     } else {
-      updateHotelInfo({ location: hotelList[0] });
+      updateHotelInfo({ location: hotelList[0].name });
     }
   }, [otherHotel, updateHotelInfo, hotelList]);
 
@@ -68,11 +80,11 @@ export default function HotelView() {
       updateHotelInfo({ needHotelBookingHelp: false });
     } else {
       updateHotelInfo({
-        location: hotelList.includes(hotelInfo.location)
+        location: hotelList.find(({name}) => hotelInfo.location == name) !== undefined
           ? hotelInfo.location
-          : hotelList[0],
+          : hotelList[0].name,
       });
-      setOtherHotel(undefined)
+      setOtherHotel(undefined);
     }
   }, [bookBySelf, hotelInfo.location, hotelList, updateHotelInfo]);
 
@@ -247,7 +259,9 @@ export default function HotelView() {
         ></DatePicker>
       </Box>
       <Box sx={{ display: "flex", gap: 1, alignItems: "center" }}>
-        <Typography variant="subtitle1">Number of standard rooms (two beds in one room)</Typography>
+        <Typography variant="subtitle1">
+          Number of standard rooms (two beds in one room)
+        </Typography>
         <TextField
           disabled={!hotelInfo.needHotelBookingHelp}
           type="number"
@@ -280,16 +294,16 @@ export default function HotelView() {
       </Box>
       <Typography variant="subtitle1">Select a hotel</Typography>
       <Box display={"flex"} flexDirection={"row"} gap={1}>
-        {hotelList.map((hotelName, idx) => (
+        {hotelList.map(({name, notice}, idx) => (
           <FormControlLabel
             key={idx}
-            label={hotelName}
+            label={<div>{name}<br></br>{notice}</div>}
             control={
               <Checkbox
-                checked={hotelName === hotelInfo.location}
+                checked={name === hotelInfo.location}
                 onChange={(e) => {
                   if (e.target.checked) {
-                    updateHotelInfo({ location: hotelName });
+                    updateHotelInfo({ location: name });
                     setOtherHotel(undefined);
                   }
                 }}
