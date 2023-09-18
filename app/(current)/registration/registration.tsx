@@ -1,31 +1,29 @@
 "use client";
 
-import PaymentQrCode from "@/images/QRCode.png";
 import ClipableArea from "@/components/ClipableArea";
 import {
   H1,
   H2,
-  H3,
-  LI,
   P,
   SPAN,
   TABLE,
   TBODY,
   TD,
   THEAD,
-  TR,
+  TR
 } from "@/components/TypoElement";
+import PaymentQrCode from "@/images/QRCode.png";
 import {
   Button,
-  Link,
   Table,
   TableBody,
   TableCell,
   TableHead,
-  TableRow,
+  TableRow
 } from "@mui/material";
 import { Box, Container } from "@mui/system";
 import Image from "next/image";
+import Link from "next/link";
 import NextLink from "next/link";
 
 export default function Registration() {
@@ -93,6 +91,7 @@ export default function Registration() {
                   width={128}
                 ></Image>
                 <P>ICCOC2023@Beijing</P>
+                <Link href={"/发票开具流程.pdf"} download={"发票开具流程.pdf"}>发票开具流程(Receipt Process)</Link>
               </Box>
             </TableCell>
             <TableCell>
