@@ -92,9 +92,7 @@ export default function Registration() {
                   alt="payment qrcode"
                   width={128}
                 ></Image>
-                <P>
-                  <center>ICCOC2023@Beijing</center>
-                </P>
+                <P>ICCOC2023@Beijing</P>
               </Box>
             </TableCell>
             <TableCell>
