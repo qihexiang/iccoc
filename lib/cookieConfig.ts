@@ -23,7 +23,7 @@ export function parseToken(data: string | undefined) {
 }
 
 export default {
-    maxAge: 4 * 60 * 60 * 1000,
+    maxAge: 4 * 60 * 60,
     sameSite: "lax",
     httpOnly: true,
     secure: process.env["NODE_ENV"] === "production",
