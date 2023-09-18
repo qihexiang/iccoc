@@ -15,17 +15,31 @@ import {
   THEAD,
   TR,
 } from "@/components/TypoElement";
-import { Button, Link } from "@mui/material";
+import {
+  Button,
+  Link,
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableRow,
+} from "@mui/material";
 import { Box, Container } from "@mui/system";
 import Image from "next/image";
-import NextLink from "next/link"
+import NextLink from "next/link";
 
 export default function Registration() {
   return (
     <Container>
       <H1>Registration</H1>
       <Box>
-        <Button variant="contained" LinkComponent={NextLink} href={"/abstracts/registration"}>Registration</Button>
+        <Button
+          variant="contained"
+          LinkComponent={NextLink}
+          href={"/abstracts/registration"}
+        >
+          Registration
+        </Button>
       </Box>
       <H2>Registration fees:</H2>
       <TABLE>
@@ -62,11 +76,30 @@ export default function Registration() {
         sure that they are fully insured from their home institution.
       </P>
       <H2>Method of payment:</H2>
-      <Box display={"flex"} flexWrap={"wrap"} justifyContent={"space-between"}>
-        <Box>
-          <H2>Money transfer</H2>
-        <ClipableArea
-        content={`Beijing Univ. of Chem. Tech.
+      <Table>
+        <TableHead>
+          <TableRow>
+            <TableCell sx={{textAlign: "center"}}>Wechat Pay(微信支付)</TableCell>
+            <TableCell sx={{textAlign: "center"}}>Money Transfer(转账)</TableCell>
+          </TableRow>
+        </TableHead>
+        <TableBody>
+          <TableRow>
+            <TableCell>
+              <Box display={"flex"} flexDirection={"column"} alignItems={"center"}>
+                <Image
+                  src={PaymentQrCode}
+                  alt="payment qrcode"
+                  width={128}
+                ></Image>
+                <P>
+                  <center>ICCOC2023@Beijing</center>
+                </P>
+              </Box>
+            </TableCell>
+            <TableCell>
+              <ClipableArea
+                content={`Beijing Univ. of Chem. Tech.
 Beneficiary Address: BeiSanHuan East Rd. 15th, ChaoYang District, Beijing, 100029 P. R. China
 Bank Name: Bank of Beijing, Yinghua Branch
 Bank Account: 0109 0504 3001 2010 5029 689
@@ -78,16 +111,11 @@ Bank Address: BeiSanHuan East Rd. 15th, ChaoYang District, Beijing, 100029 P. R.
 银行：北京银行樱花支行
 银行账号： 0109 0504 3001 2010 5029 689
 `}
-      ></ClipableArea>
-        </Box>
-        <Box>
-          <H2>
-            Wechat Pay
-          </H2>
-          <Image src={PaymentQrCode} alt="payment qrcode"></Image>
-          <P><center>ICCOC2023@Beijing</center></P>
-        </Box>
-      </Box>
+              ></ClipableArea>
+            </TableCell>
+          </TableRow>
+        </TableBody>
+      </Table>
     </Container>
   );
 }
