@@ -91,7 +91,7 @@ export default function Registration() {
                   width={128}
                 ></Image>
                 <P>ICCOC2023@Beijing</P>
-                <Link href={"/发票开具流程.pdf"} download={"发票开具流程.pdf"}>发票开具流程(Receipt Process)</Link>
+                <Link href={"/发票开具流程.pdf"} download={"发票开具流程.pdf"}>Receipt Process(发票开具流程)</Link>
               </Box>
             </TableCell>
             <TableCell>
