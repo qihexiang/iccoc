@@ -21,6 +21,7 @@ export default function AdminHome() {
   return (
     <>
       <div className="flex gap-1">
+        <a href="/api/v2/admin/download" download={`exported_${format(new Date(), "yy-MM-dd_hh:mm:ss")}.csv`} className="btn safe">Downlaod</a>
         <button onClick={() => axios.delete("/api/v2/admin/login").then(() => router.push("/admin"))} className="btn danger">Logout</button>
         <button onClick={() => router.push("/admin/registry")} className="btn info">Add new administrator</button>
       </div>
