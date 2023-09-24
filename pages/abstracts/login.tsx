@@ -143,7 +143,7 @@ export default function LoginPage() {
         Abstracts can be prepared according to the provided templates and submit
         it on line which will be available soon.
       </P>
-      <Link href="./Template.docx">Abstract_doc Template</Link>
+      <Link href="/Template.docx">Abstract_doc Template</Link>
       <H2>Information for Poster Presenters:</H2>
       <P>
         The poster (A0 size) should be designed to fit the space of 85 cm width
