@@ -5,7 +5,7 @@ import APIv2Type from "@/lib/APIv2Type";
 import fetcher, { loading, loadingFailed } from "@/lib/fetcher";
 import { useLoadMore } from "@/lib/useLoadMore";
 import { Box } from "@mui/system";
-import { Collaborator, ProjectStatus } from "@prisma/client";
+import { Collaborator, ProjectStatus, ProjectType } from "@prisma/client";
 import axios from "axios";
 import { format } from "date-fns";
 import { useRouter } from "next/navigation";
@@ -189,6 +189,7 @@ function AbstractItem(props: { abstractId: number }) {
     };
     filename: string;
     status: ProjectStatus;
+    type: ProjectType;
     presontor: number | null;
     createdAt: string;
     updatedAt: string;
@@ -221,6 +222,7 @@ function AbstractItem(props: { abstractId: number }) {
       {alertCompnent}
       <div className="flex items-center gap-1">
         <StatusIndicator status={abstract.status}></StatusIndicator>
+        <div className="rounded-full primary">{abstract.type}</div>
         <h3>{abstract.name}</h3>
       </div>
       <p>
