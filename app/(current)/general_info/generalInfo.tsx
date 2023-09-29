@@ -24,7 +24,7 @@ export default function GeneralInfo() {
       </ul>
       <H2>Instructions for Poster Presenters:</H2>
       <ul>
-        <LI>The size of poster board is 90cm (width) X 120cm (height).</LI>
+        <LI>The size of poster board is 90cm (width) X 120cm (height) and the poster should be designed to fit A0 size.</LI>
         <LI>
           All posters are to be mounted between 12:30 and 14:30, Oct. 20
           <sup>th</sup>. Posters are to be removed before noon on Oct. 23
