@@ -1,7 +1,7 @@
 "use client";
 
 import { H1, H2, LI, P } from "@/components/TypoElement";
-import { Container, Typography } from "@mui/material";
+import { Container } from "@mui/material";
 
 export default function GeneralInfo() {
   return (
