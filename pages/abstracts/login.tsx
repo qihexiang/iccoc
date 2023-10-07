@@ -108,13 +108,13 @@ export default function LoginPage() {
             Reset
           </Button>
         </ButtonGroup>
-        <Button
+        {/* <Button
           variant="contained"
           color="info"
           onClick={() => router.push("/abstracts/registration")}
         >
           Registration
-        </Button>
+        </Button> */}
       </Box>
       <H2>Abstract Submission and Deadlines:</H2>
       <ul>

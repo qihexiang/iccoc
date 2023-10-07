@@ -175,11 +175,11 @@ export default function MeView() {
                   afterSave={refresh}
                 ></ProjectItem>
               ))}
-              <ProjectItem
+              {/* <ProjectItem
                 project={null}
                 user={user}
                 afterSave={refresh}
-              ></ProjectItem>
+              ></ProjectItem> */}
             </TableBody>
           </Table>
         </UserProjectCtx.Provider>
@@ -280,7 +280,7 @@ function ProjectItem(props: {
             : `${presontor.name} (${presontor.email})`}
         </TableCell>
         <TableCell>
-          {project.status === ProjectStatus.SAVED ? (
+          {/* {project.status === ProjectStatus.SAVED ? (
             <ButtonGroup variant="contained">
               <Button onClick={() => setEditState(true)} color="primary">
                 Edit
@@ -356,7 +356,7 @@ function ProjectItem(props: {
             >
               Withdraw
             </Button>
-          ) : null}
+          ) : null} */}
         </TableCell>
       </TableRow>
     );
