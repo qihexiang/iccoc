@@ -2,6 +2,8 @@
 
 import { H1, H2, LI, P } from "@/components/TypoElement";
 import { Container } from "@mui/material";
+import Image from "next/image";
+import ConfMap from "@/images/ConfMap.png";
 
 export default function GeneralInfo() {
   return (
@@ -11,6 +13,11 @@ export default function GeneralInfo() {
         There will be 6 keynote lectures, 46 invited lectures presented in the
         two-day conference of ICCOC2023.
       </P>
+      <H1>Conference place:</H1>
+      <P>Conference Center of Beijing University of Chemical Technology (BUCT)
+        Map:
+      </P>
+      <Image src={ConfMap} style={{maxWidth: "100%",objectFit: "contain"}} alt="conference map"></Image>
       <H2>Instructions for Speakers:</H2>
       <ul>
         <LI>

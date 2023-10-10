@@ -17,7 +17,7 @@ export default function SpeakersView(props: SpeakersProps) {
       <H1>Invited Speakers</H1>
       <Typography variant={"overline"}>(list in alphabetical order)</Typography>
       <ul>
-        {sortBy(speakers, ["lastName", "fistName", "college"]).map(
+        {sortBy(speakers, ["lastName", "firstName", "college"]).map(
           ({ firstName, lastName, college, url }, idx) => {
             return (
               <Typography key={idx} variant="body1" component={"li"}>
