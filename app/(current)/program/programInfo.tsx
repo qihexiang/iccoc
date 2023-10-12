@@ -8,15 +8,16 @@ import NextLink from "next/link";
 
 export default function ProgramInfo() {
   return (
-    <Container
-      sx={{ display: "flex", alignItems: "center", justifyContent: "center" }}
-    >
-      <Box sx={{padding: 1}}>
+    <Container>
+      <Box sx={{padding: 1, textAlign: "center"}}>
         <Image
-          style={{ height: "100%", width: "100%", border: "1px solid rgba(0,0,0,1)", boxShadow: "0 0 8px 8px rgba(0,0,0,0.1)" }}
+          style={{ maxWidth: 768, objectFit: "contain", height: "auto", border: "1px solid rgba(0,0,0,1)", boxShadow: "0 0 8px 8px rgba(0,0,0,0.1)" }}
           src={LectureTimetable}
           alt="program table"
         ></Image>
+      </Box>
+      <Box sx={{padding: 1}}>
+        <object data="/program.pdf" style={{border: "none", width: "100%", minHeight: "100vh"}}></object>
       </Box>
     </Container>
   );
