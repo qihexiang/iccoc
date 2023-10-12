@@ -4,6 +4,8 @@ import ExpandableIframe from "@/components/ExpandableIframe";
 import { H1, H2, P } from "@/components/TypoElement";
 import { Button, Container, Link, Typography } from "@mui/material";
 import { Box } from "@mui/system";
+import Image from "next/image";
+import AccommodationMap from "@/images/AccommadationMap.png";
 import NextLink from "next/link"
 
 export default function AccommodationInfo() {
@@ -18,7 +20,6 @@ export default function AccommodationInfo() {
         Kindly remind all participants to make hotel reservations soon.
       </P>
       <P>
-        {" "}
         Hotel accommodation is not included in the registration fees. However, a
         limited number of rooms are available at special rates to conference
         attendees at the Beijing Guizhou Hotel.
@@ -53,6 +54,9 @@ export default function AccommodationInfo() {
       </P>
       <P>Tel: +86-10-64435232</P>
       <Link href="https://j.map.baidu.com/fa/Kt8J">Baidu Map</Link>
+      <div style={{textAlign:"center"}}>
+        <Image src={AccommodationMap} alt="map" style={{width: "100%", maxWidth: 768, height: "auto"}}></Image>
+      </div>
     </Container>
   );
 }

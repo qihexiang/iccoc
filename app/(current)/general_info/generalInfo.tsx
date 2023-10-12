@@ -21,7 +21,7 @@ export default function GeneralInfo() {
       <div style={{textAlign: "center"}}>
         <Image
           src={ConfMap}
-          style={{ maxWidth: 768, height: "auto", objectFit: "contain" }}
+          style={{ width: "100%", maxWidth: 768, height: "auto", objectFit: "contain" }}
           alt="conference map"
         ></Image>
       </div>
