@@ -14,10 +14,17 @@ export default function GeneralInfo() {
         two-day conference of ICCOC2023.
       </P>
       <H1>Conference place:</H1>
-      <P>Conference Center of Beijing University of Chemical Technology (BUCT)
+      <P>
+        Conference Center of Beijing University of Chemical Technology (BUCT)
         Map:
       </P>
-      <Image src={ConfMap} style={{maxWidth: "100%",objectFit: "contain"}} alt="conference map"></Image>
+      <div style={{textAlign: "center"}}>
+        <Image
+          src={ConfMap}
+          style={{ maxWidth: 768, height: "auto", objectFit: "contain" }}
+          alt="conference map"
+        ></Image>
+      </div>
       <H2>Instructions for Speakers:</H2>
       <ul>
         <LI>
@@ -31,7 +38,10 @@ export default function GeneralInfo() {
       </ul>
       <H2>Instructions for Poster Presenters:</H2>
       <ul>
-        <LI>The size of poster board is 90cm (width) X 120cm (height) and the poster should be designed to fit A0 size.</LI>
+        <LI>
+          The size of poster board is 90cm (width) X 120cm (height) and the
+          poster should be designed to fit A0 size.
+        </LI>
         <LI>
           All posters are to be mounted between 12:30 and 14:30, Oct. 20
           <sup>th</sup>. Posters are to be removed before noon on Oct. 23
