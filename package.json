@@ -48,7 +48,7 @@
     "swr": "^2.2.1",
     "totp-generator": "^0.0.14",
     "typescript": "5.1.6",
-    "zod": "^3.22.1"
+    "zod": "^3.22.4"
   },
   "devDependencies": {
     "@types/formidable": "^2.0.6",
