@@ -117,6 +117,7 @@ export default function TravelView() {
       {alertElement}
       <Box sx={{ display: "flex", gap: 1 }}>
         <DatePicker
+          disabled
           label={"Arrival date"}
           minDate={new Date()}
           maxDate={confEnd}
@@ -126,6 +127,7 @@ export default function TravelView() {
           }
         ></DatePicker>
         <TextField
+          disabled
           label={"Arrival flight number/train number"}
           value={travelInfo.arrivalNo}
           onChange={(e) => updateTravelInfo({ arrivalNo: e.target.value })}
@@ -133,6 +135,7 @@ export default function TravelView() {
       </Box>
       <Box sx={{ display: "flex", gap: 1 }}>
         <DatePicker
+          disabled
           minDate={travelInfo.arrivalDate}
           label={"Departure date"}
           value={travelInfo.departureDate}
@@ -141,6 +144,7 @@ export default function TravelView() {
           }
         ></DatePicker>
         <TextField
+          disabled
           label={"Departure flight number/train number"}
           value={travelInfo.departureNo}
           onChange={(e) => updateTravelInfo({ departureNo: e.target.value })}
@@ -150,6 +154,7 @@ export default function TravelView() {
         label="Attend visit on October 23"
         control={
           <Checkbox
+            disabled
             checked={travelInfo.attendVisit}
             onChange={(e) =>
               updateTravelInfo({ attendVisit: e.target.checked })
@@ -158,8 +163,8 @@ export default function TravelView() {
         }
       ></FormControlLabel>
       <Box sx={{ display: "flex", gap: 1 }}>
-        <Button
-          disabled={!validated.validated}
+        {/* <Button
+          disabled
           variant="contained"
           color="success"
           onClick={() => {
@@ -177,7 +182,7 @@ export default function TravelView() {
           }}
         >
           Save
-        </Button>
+        </Button> */}
         <Button
           variant="contained"
           color="info"
