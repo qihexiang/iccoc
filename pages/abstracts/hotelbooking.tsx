@@ -239,7 +239,7 @@ export default function HotelView() {
       {alertElement}
       <Box sx={{ display: "flex", gap: 1 }}>
         <DatePicker
-          disabled={!hotelInfo.needHotelBookingHelp}
+          disabled
           label={"checkin date"}
           minDate={new Date()}
           maxDate={confEnd}
@@ -249,7 +249,7 @@ export default function HotelView() {
           }
         ></DatePicker>
         <DatePicker
-          disabled={!hotelInfo.needHotelBookingHelp}
+          disabled
           minDate={hotelInfo.checkinDate}
           label={"checkout date"}
           value={hotelInfo.checkoutDate}
@@ -263,7 +263,7 @@ export default function HotelView() {
           Number of standard rooms (two beds in one room)
         </Typography>
         <TextField
-          disabled={!hotelInfo.needHotelBookingHelp}
+          disabled
           type="number"
           value={hotelInfo.standardRooms}
           onChange={(e) =>
@@ -279,7 +279,7 @@ export default function HotelView() {
       <Box sx={{ display: "flex", gap: 1, alignItems: "center" }}>
         <Typography variant="subtitle1">Number of king rooms</Typography>
         <TextField
-          disabled={!hotelInfo.needHotelBookingHelp}
+          disabled
           type="number"
           value={hotelInfo.kingRooms}
           onChange={(e) =>
@@ -300,6 +300,7 @@ export default function HotelView() {
             label={<div>{name}<br></br>{notice}</div>}
             control={
               <Checkbox
+                disabled
                 checked={name === hotelInfo.location}
                 onChange={(e) => {
                   if (e.target.checked) {
@@ -317,7 +318,7 @@ export default function HotelView() {
             control={
               <>
                 <Checkbox
-                  disabled={hotelInfo.needHotelBookingHelp}
+                  disabled
                   checked={otherHotel !== undefined}
                   onChange={(e) => {
                     if (e.target.checked) setOtherHotel("");
@@ -328,7 +329,7 @@ export default function HotelView() {
             }
           ></FormControlLabel>
           <TextField
-            disabled={hotelInfo.needHotelBookingHelp}
+            disabled
             value={otherHotel ?? ""}
             onChange={(e) => setOtherHotel(e.target.value)}
             placeholder="Input hotel you choose."
@@ -336,7 +337,7 @@ export default function HotelView() {
         </Box>
       </Box>
       <Box sx={{ display: "flex", gap: 1 }}>
-        <Button
+        {/* <Button
           disabled={
             (!bookBySelf && !hotelInfo.needHotelBookingHelp) ||
             !validated.validated
@@ -374,7 +375,7 @@ export default function HotelView() {
           }}
         >
           Save
-        </Button>
+        </Button> */}
         <Button
           variant="contained"
           color="info"
