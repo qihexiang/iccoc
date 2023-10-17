@@ -11,7 +11,7 @@ export default function ProgramInfo() {
     <Container>
       <Box sx={{padding: 1, textAlign: "center"}}>
         <Image
-          style={{ maxWidth: 768, objectFit: "contain", height: "auto", border: "1px solid rgba(0,0,0,1)", boxShadow: "0 0 8px 8px rgba(0,0,0,0.1)" }}
+          style={{ maxWidth: 768, width: "100%", objectFit: "contain", height: "auto", border: "1px solid rgba(0,0,0,1)", boxShadow: "0 0 8px 8px rgba(0,0,0,0.1)" }}
           src={LectureTimetable}
           alt="program table"
         ></Image>
