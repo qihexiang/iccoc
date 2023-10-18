@@ -23,7 +23,7 @@ export default function Homepage() {
       <P>
         It is our great pleasure to invite you to the International Conference
         of Computational Organometallic Catalysis (ICCOC2023), which will be
-        held in Beijing, China, from October 20<sup>th</sup> to 23<sup>th</sup>,
+        held in Beijing, China, from October 20<sup>th</sup> to 23<sup>rd</sup>,
         2023. This is an international conference dedicated to promoting
         advances in the integration of theoretical and computational chemistry
         with homogeneous and heterogeneous catalysis involving transition
