@@ -1,6 +1,7 @@
 "use client";
 
 import { H1, H2, LI, P } from "@/components/TypoElement";
+import GroupPhoto from "@/images/GroupPhoto.jpg"
 import BUCT from "@/images/BUCT.jpg";
 import CRE from "@/images/CRE.png";
 import ForbiddenCity from "@/images/forbiddencity.jpg";
@@ -18,8 +19,13 @@ import Image from "next/image";
 export default function Homepage() {
   return (
     <Container>
+      <div style={{ textAlign: "center" }}>
+        <Image style={{ maxWidth: "80%", height: "auto", objectFit: "contain" }} src={GroupPhoto} alt="group_photo" width={1280}></Image>
+      </div>
+      <div style={{ textAlign: "center" }}>
+        <a href={GroupPhoto.src} download={"ICCOC2023.jpg"}>Download Origin Photo(JPG)</a>
+      </div>
       <H1>Welcome</H1>
-
       <P>
         It is our great pleasure to invite you to the International Conference
         of Computational Organometallic Catalysis (ICCOC2023), which will be
