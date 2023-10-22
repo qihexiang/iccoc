@@ -23,7 +23,7 @@ export default function Homepage() {
         <Image style={{ maxWidth: "80%", height: "auto", objectFit: "contain" }} src={GroupPhoto} alt="group_photo" width={1280}></Image>
       </div>
       <div style={{ textAlign: "center" }}>
-        <a href={GroupPhoto.src} download={"ICCOC2023.jpg"}>Download Origin Photo(JPG)</a>
+        <a href={GroupPhoto.src} download={"ICCOC2023.jpg"}>Download original picture (JPG)</a>
       </div>
       <H1>Welcome</H1>
       <P>
