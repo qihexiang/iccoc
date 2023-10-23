@@ -22,7 +22,6 @@ const mainRoutes = [
   ["General Info", "/general_info"],
   ["Speakers", "/speakers"],
   ["Registration", "/registration"],
-  ["Abstracts", "/abstracts"],
   ["Visa Info", "/visa"],
   ["Accommodation", "/accommodation"],
 ];

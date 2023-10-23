@@ -30,15 +30,6 @@ export default function Registration() {
   return (
     <Container>
       <H1>Registration</H1>
-      <Box>
-        <Button
-          variant="contained"
-          LinkComponent={NextLink}
-          href={"/abstracts/registration"}
-        >
-          Registration
-        </Button>
-      </Box>
       <H2>Registration fees:</H2>
       <TABLE>
         <THEAD>
