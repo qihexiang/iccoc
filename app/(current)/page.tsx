@@ -2,6 +2,7 @@
 
 import { H1, H2, LI, P } from "@/components/TypoElement";
 import GroupPhoto from "@/images/GroupPhoto.jpg"
+import CloseCeremony from "@/images/CloseCeremony.jpg";
 import BUCT from "@/images/BUCT.jpg";
 import CRE from "@/images/CRE.png";
 import ForbiddenCity from "@/images/forbiddencity.jpg";
@@ -23,7 +24,13 @@ export default function Homepage() {
         <Image style={{ maxWidth: "80%", height: "auto", objectFit: "contain" }} src={GroupPhoto} alt="group_photo" width={1280}></Image>
       </div>
       <div style={{ textAlign: "center" }}>
-        <a href={GroupPhoto.src} download={"ICCOC2023.jpg"}>Download original picture (JPG)</a>
+        <a href={GroupPhoto.src} download={"ICCOC2023.jpg"}>Download original picture (JPG) </a>
+      </div>
+      <div style={{ textAlign: "center" }}>
+        <Image style={{ maxWidth: "80%", height: "auto", objectFit: "contain" }} src={CloseCeremony} alt="group_photo" width={1280}></Image>
+      </div>
+      <div style={{ textAlign: "center" }}>
+        <a href={CloseCeremony.src} download={"CloseCeremony.jpg"}>Download original picture (JPG) </a>
       </div>
       <H1>Welcome</H1>
       <P>
