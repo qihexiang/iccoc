@@ -1,0 +1,24 @@
+1:"$Sreact.fragment"
+4:I[4922,[],""]
+5:I[3720,[],""]
+6:I[5631,["897","static/chunks/897-6437f197a60c8310.js","224","static/chunks/224-5c1ac9d478d86cb3.js","478","static/chunks/app/(current)/program/page-b30082a11abea731.js"],"default"]
+7:I[2466,[],"MetadataBoundary"]
+9:I[2466,[],"OutletBoundary"]
+c:I[6114,[],"AsyncMetadataOutlet"]
+e:I[2466,[],"ViewportBoundary"]
+10:I[4797,[],""]
+:HL["/_next/static/css/e5f8b61f61e8d125.css","style"]
+0:{"P":null,"b":"p_dVZcZgFGE-bTxZnsHHF","p":"","c":["","program"],"i":false,"f":[[["",{"children":["(current)",{"children":["program",{"children":["__PAGE__",{}]}]}]},"$undefined","$undefined",true],["",["$","$1","c",{"children":[[["$","link","0",{"rel":"stylesheet","href":"/_next/static/css/e5f8b61f61e8d125.css","precedence":"next","crossOrigin":"$undefined","nonce":"$undefined"}]],"$L2"]}],{"children":["(current)",["$","$1","c",{"children":[null,"$L3"]}],{"children":["program",["$","$1","c",{"children":[null,["$","$L4",null,{"parallelRouterKey":"children","error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L5",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","forbidden":"$undefined","unauthorized":"$undefined"}]]}],{"children":["__PAGE__",["$","$1","c",{"children":[["$","$L6",null,{}],["$","$L7",null,{"children":"$L8"}],null,["$","$L9",null,{"children":["$La","$Lb",["$","$Lc",null,{"promise":"$@d"}]]}]]}],{},null,false]},null,false]},null,false]},null,false],["$","$1","h",{"children":[null,["$","$1","Qj4mRDOZvsB_7zELhOMHz",{"children":[["$","$Le",null,{"children":"$Lf"}],null]}],null]}],false]],"m":"$undefined","G":["$10","$undefined"],"s":false,"S":true}
+11:I[6815,["897","static/chunks/897-6437f197a60c8310.js","177","static/chunks/app/layout-b198393d4e08dd73.js"],"default"]
+12:I[849,["897","static/chunks/897-6437f197a60c8310.js","63","static/chunks/63-f908a6fd23adf706.js","437","static/chunks/437-14313d98f7fef672.js","548","static/chunks/548-109842f2bd65c348.js","410","static/chunks/app/(current)/layout-680fe5a13f8c68a4.js"],"default"]
+13:I[3108,["897","static/chunks/897-6437f197a60c8310.js","63","static/chunks/63-f908a6fd23adf706.js","437","static/chunks/437-14313d98f7fef672.js","548","static/chunks/548-109842f2bd65c348.js","192","static/chunks/app/(current)/not-found-05f4df10b31451ba.js"],"default"]
+14:"$Sreact.suspense"
+15:I[6114,[],"AsyncMetadata"]
+2:["$","html",null,{"lang":"en","children":["$","body",null,{"children":[["$","$L4",null,{"parallelRouterKey":"children","error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L5",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":[[["$","title",null,{"children":"404: This page could not be found."}],["$","div",null,{"style":{"fontFamily":"system-ui,\"Segoe UI\",Roboto,Helvetica,Arial,sans-serif,\"Apple Color Emoji\",\"Segoe UI Emoji\"","height":"100vh","textAlign":"center","display":"flex","flexDirection":"column","alignItems":"center","justifyContent":"center"},"children":["$","div",null,{"children":[["$","style",null,{"dangerouslySetInnerHTML":{"__html":"body{color:#000;background:#fff;margin:0}.next-error-h1{border-right:1px solid rgba(0,0,0,.3)}@media (prefers-color-scheme:dark){body{color:#fff;background:#000}.next-error-h1{border-right:1px solid rgba(255,255,255,.3)}}"}}],["$","h1",null,{"className":"next-error-h1","style":{"display":"inline-block","margin":"0 20px 0 0","padding":"0 23px 0 0","fontSize":24,"fontWeight":500,"verticalAlign":"top","lineHeight":"49px"},"children":404}],["$","div",null,{"style":{"display":"inline-block"},"children":["$","h2",null,{"style":{"fontSize":14,"fontWeight":400,"lineHeight":"49px","margin":0},"children":"This page could not be found."}]}]]}]}]],[]],"forbidden":"$undefined","unauthorized":"$undefined"}],["$","$L11",null,{}]]}]}]
+3:[["$","$L12",null,{}],["$","$L4",null,{"parallelRouterKey":"children","error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L5",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":[["$","$L13",null,{}],[]],"forbidden":"$undefined","unauthorized":"$undefined"}]]
+8:["$","$14",null,{"fallback":null,"children":["$","$L15",null,{"promise":"$@16"}]}]
+b:null
+f:[["$","meta","0",{"charSet":"utf-8"}],["$","meta","1",{"name":"viewport","content":"width=device-width, initial-scale=1"}]]
+a:null
+16:{"metadata":[["$","title","0",{"children":"Program | ICCOC2023"}],["$","meta","1",{"name":"description","content":"Homepage of International Conference of Computational Organometallic Chemistry"}],["$","meta","2",{"name":"keywords","content":"ICCOC,Catalyst,Chemistry,Computational Chemistry,Organometallic Chemistry"}]],"error":null,"digest":"$undefined"}
+d:{"metadata":"$16:metadata","error":null,"digest":"$undefined"}
