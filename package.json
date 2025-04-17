@@ -20,7 +20,7 @@
     "@mui/system": "^7.0.2",
     "@types/react": "18.0.28",
     "@types/react-dom": "18.0.11",
-    "eslint": "^8.57.1",
+    "eslint": "^9.24.0",
     "eslint-config-next": "^15.3.0",
     "forwarded-parse": "^2.1.2",
     "iron-session": "^6.3.1",
