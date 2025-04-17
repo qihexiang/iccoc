@@ -1,5 +1,3 @@
-"use client";
-
 import { Container, Link, Typography } from "@mui/material";
 import { sortBy } from "lodash";
 import { SpeakersProps } from "./page";

@@ -38,4 +38,6 @@ next-env.d.ts
 .env
 
 # Too many binary files here
-public/ 
+# public/
+
+package/

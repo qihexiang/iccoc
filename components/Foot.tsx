@@ -1,16 +1,8 @@
 "use client";
 
-import api from "@/lib/apiRequest";
 import { Container, Typography } from "@mui/material";
-import { useState, useEffect } from "react";
 
 export default function Foot() {
-  const [count, setCount] = useState<number>();
-  useEffect(() => {
-    api.get("/counter").then((res) => {
-      setCount(res.data.count);
-    });
-  }, []);
   return (
     <Container>
       <Typography
@@ -20,9 +12,6 @@ export default function Foot() {
       >
         ICCOC2023, International Conference of Computational Organometallic
         Catalysis
-      </Typography>
-      <Typography sx={{ textAlign: "center" }} variant="body2">
-        Recently visited: {count}
       </Typography>
       <Typography
         variant="body2"

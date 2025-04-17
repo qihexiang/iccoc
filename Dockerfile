@@ -1,8 +1,8 @@
-FROM fedora:latest as builder
+FROM rockylinux:latest as builder
 
 RUN env
 
-RUN dnf install nodejs bzip2 pbzip2 tar git -y
+RUN dnf module enable nodejs:22 -y && dnf install nodejs npm bzip2 pbzip2 tar git -y
 
 RUN npm install -g pnpm
 

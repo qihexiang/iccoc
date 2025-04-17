@@ -1,5 +1,3 @@
-import { Typography } from "@mui/material";
-import { Container } from "@mui/system";
 import { Metadata } from "next";
 import VisaInfo from "./visaInfo";
 

@@ -1,5 +1,4 @@
 import ICCOC2023 from "@/images/ICCOC2023.jpg";
-import api from "@/lib/apiRequest";
 import "@/styles/globals.css";
 import "@fontsource/roboto/300.css";
 import "@fontsource/roboto/400.css";
@@ -17,11 +16,9 @@ import {
   Popper,
   Typography
 } from "@mui/material";
-import { LocalizationProvider } from "@mui/x-date-pickers";
-import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import type { AppProps } from "next/app";
 import { useRouter } from "next/router";
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 
 const mainRoutes = [
   ["Home", "/"],
@@ -119,12 +116,6 @@ function Head() {
 }
 
 export function Foot() {
-  const [count, setCount] = useState(0);
-  useEffect(() => {
-    api.get("/counter").then((res) => {
-      setCount(res.data.count);
-    });
-  }, []);
   return (
     <>
       <Typography
@@ -134,9 +125,6 @@ export function Foot() {
       >
         ICCOC2023, International Conference of Computational Organometallic
         Catalysis
-      </Typography>
-      <Typography sx={{ textAlign: "center" }} variant="body2">
-        Recently visited: {count}
       </Typography>
       <Typography
         variant="body2"
@@ -153,7 +141,6 @@ export function Foot() {
 export default function App({ Component, pageProps }: AppProps) {
   const router = useRouter();
   return (
-    <LocalizationProvider dateAdapter={AdapterDateFns}>
       <Container component="div" className="App">
         {router.pathname.startsWith("/previous") ? (
           <>
@@ -168,6 +155,5 @@ export default function App({ Component, pageProps }: AppProps) {
           </>
         )}
       </Container>
-    </LocalizationProvider>
   );
 }
